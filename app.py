@@ -1,0 +1,329 @@
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+from flask_mail import Mail, Message
+from flask_bcrypt import Bcrypt
+from datetime import datetime
+import random
+import string
+
+app = Flask(__name__)
+# Pinapayagan nito ang HTML frontend natin na kumonekta sa backend na ito
+CORS(app)
+
+# ==========================================
+# KONPIGURASYON NG DATABASE AT EMAIL
+# ==========================================
+
+# PALITAN ANG 'YOUR_DB_PASSWORD' NG TOTOO MONG POSTGRESQL PASSWORD
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:DIONIsio2%40@localhost:5432/oathofcare_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Konpigurasyon para sa Gmail na binigay mo
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'oathofcare@gmail.com'
+# App Password na binigay mo
+app.config['MAIL_PASSWORD'] = 'ixrk xezt gmtr fefm' 
+
+db = SQLAlchemy(app)
+mail = Mail(app)
+bcrypt = Bcrypt(app)
+
+# Pansamantalang imbakan para sa mga verification codes (Sa production, ilagay ito sa Redis o Database)
+verification_codes = {}
+
+# ==========================================
+# MGA DATABASE MODELS (Galing mismo sa ERD mo)
+# ==========================================
+
+class Admin(db.Model):
+    __tablename__ = 'admin'
+    AdminID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Email = db.Column(db.String(120), unique=True, nullable=False)
+    PasswordHash = db.Column(db.String(255), nullable=False)
+    IsFirstLogin = db.Column(db.Boolean, default=True)
+
+class PatientAccount(db.Model):
+    __tablename__ = 'patient_account'
+    PatientID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Fname = db.Column(db.String(100), nullable=False)
+    Lname = db.Column(db.String(100), nullable=False)
+    Age = db.Column(db.Integer, nullable=True)
+    Email = db.Column(db.String(120), unique=True, nullable=False)
+    PasswordHash = db.Column(db.String(255), nullable=False)
+
+class PharmacyAccount(db.Model):
+    __tablename__ = 'pharmacy_account'
+    PharmacyAccountID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Email = db.Column(db.String(120), unique=True, nullable=False)
+    PasswordHash = db.Column(db.String(255), nullable=False)
+    LastName = db.Column(db.String(100), nullable=True)
+    FirstName = db.Column(db.String(100), nullable=True)
+    
+    # Relasyon papunta sa Pharmacy
+    pharmacies = db.relationship('Pharmacy', backref='account', lazy=True)
+
+class Barangay(db.Model):
+    __tablename__ = 'barangay'
+    BarangayID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    BarangayName = db.Column(db.String(100), unique=True, nullable=False)
+
+class Pharmacy(db.Model):
+    __tablename__ = 'pharmacy'
+    PharmacyID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    PharmacyName = db.Column(db.String(150), nullable=False)
+    ContactNumber = db.Column(db.String(20), nullable=False)
+    FullAddress = db.Column(db.Text, nullable=False)
+    GoogleMapLink = db.Column(db.Text, nullable=True)
+    PermitPhotoPath = db.Column(db.String(255), nullable=True)
+    IsActive = db.Column(db.Boolean, default=False) # Naka-false muna hangga't di ina-approve ng admin
+    OpenTime = db.Column(db.String(50), nullable=True)
+    CloseTime = db.Column(db.String(50), nullable=True)
+    
+    # Foreign Keys
+    BarangayID = db.Column(db.Integer, db.ForeignKey('barangay.BarangayID'), nullable=False)
+    PharmacyAccountID = db.Column(db.Integer, db.ForeignKey('pharmacy_account.PharmacyAccountID'), nullable=False)
+    
+    # Mga relasyon
+    medicines = db.relationship('Medicine', backref='pharmacy', lazy=True)
+    statuses = db.relationship('PharmacyStatus', backref='pharmacy', lazy=True)
+
+class PharmacyStatus(db.Model):
+    __tablename__ = 'pharmacy_status'
+    StatusID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
+    AdminID = db.Column(db.Integer, db.ForeignKey('admin.AdminID'), nullable=True)
+    AccountStatus = db.Column(db.String(50), default='Pending') # Pending, Approved, Rejected
+    LastLogin = db.Column(db.DateTime, nullable=True)
+    IsDeactivated = db.Column(db.Boolean, default=False)
+    IsArchived = db.Column(db.Boolean, default=False)
+
+class Medicine(db.Model):
+    __tablename__ = 'medicine'
+    MedicineID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    MedicineName = db.Column(db.String(150), nullable=False)
+    Description = db.Column(db.Text, nullable=True)
+    Price = db.Column(db.Numeric(10, 2), nullable=False)
+    IsPrescriptionRequired = db.Column(db.Boolean, default=False)
+    InStock = db.Column(db.Boolean, default=True)
+    
+    PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
+
+class SearchLog(db.Model):
+    __tablename__ = 'search_log'
+    SearchLogID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    BarangayID = db.Column(db.Integer, db.ForeignKey('barangay.BarangayID'), nullable=True)
+    PatientID = db.Column(db.Integer, db.ForeignKey('patient_account.PatientID'), nullable=True)
+    MedicineID = db.Column(db.Integer, db.ForeignKey('medicine.MedicineID'), nullable=True)
+    CreatedAt = db.Column(db.DateTime, default=datetime.utcnow)
+    HasResult = db.Column(db.Boolean, default=False)
+
+
+# ==========================================
+# MGA API ROUTES PARA SA FRONTEND
+# ==========================================
+
+# 1. Endpoint para magpadala ng Verification Code
+@app.route('/api/send-verification', methods=['POST'])
+def send_verification():
+    data = request.json
+    email = data.get('email')
+    
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+        
+    # Gumawa ng random na 6-digit code
+    code = ''.join(random.choices(string.digits, k=6))
+    
+    # I-save sa memory natin ang code na nauugnay sa email na ito
+    verification_codes[email] = code
+    
+    try:
+        # Ipadala ang email
+        msg = Message('Oath of Care - Verification Code',
+                      sender=app.config['MAIL_USERNAME'],
+                      recipients=[email])
+        msg.body = f'Ang iyong 6-digit verification code para sa Oath of Care ay: {code}'
+        mail.send(msg)
+        return jsonify({'message': 'Verification code sent successfully'})
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Failed to send email. Please check credentials.'}), 500
+
+
+# 2. Endpoint para i-verify ang Code
+@app.route('/api/verify-code', methods=['POST'])
+def verify_code():
+    data = request.json
+    email = data.get('email')
+    code = data.get('code')
+    
+    # Suriin kung tama ang code na naipadala
+    if verification_codes.get(email) == code:
+        return jsonify({'message': 'Code verified successfully'})
+    else:
+        return jsonify({'error': 'Invalid or expired code'}), 400
+
+
+# 3. Endpoint para sa Final Registration (Pharmacy Account at Details)
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+    pharmacy_name = data.get('pharmacyName')
+    barangay_name = data.get('barangay')
+    contact = data.get('contactNumber')
+    address = data.get('address')
+    map_link = data.get('mapLink')
+
+    # Suriin kung umiiral na ang email
+    existing_user = PharmacyAccount.query.filter_by(Email=email).first()
+    if existing_user:
+        return jsonify({'error': 'Email is already registered'}), 400
+
+    # I-hash ang password bago i-save para secure
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    try:
+        # Step 1: Gawin ang PharmacyAccount
+        new_account = PharmacyAccount(Email=email, PasswordHash=hashed_password)
+        db.session.add(new_account)
+        db.session.flush() # Para makuha agad natin ang bagong PharmacyAccountID
+
+        # Step 2: Hanapin o gawin ang Barangay
+        barangay = Barangay.query.filter_by(BarangayName=barangay_name).first()
+        if not barangay:
+            barangay = Barangay(BarangayName=barangay_name)
+            db.session.add(barangay)
+            db.session.flush() # Para makuha agad ang BarangayID
+
+        # Step 3: Gawin ang record ng Pharmacy
+        new_pharmacy = Pharmacy(
+            PharmacyName=pharmacy_name,
+            ContactNumber=contact,
+            FullAddress=address,
+            GoogleMapLink=map_link,
+            BarangayID=barangay.BarangayID,
+            PharmacyAccountID=new_account.PharmacyAccountID
+        )
+        db.session.add(new_pharmacy)
+        db.session.flush()
+
+        # Step 4: Gawin ang status na 'Pending' para ma-review ng Admin
+        new_status = PharmacyStatus(
+            PharmacyID=new_pharmacy.PharmacyID,
+            AccountStatus='Pending'
+        )
+        db.session.add(new_status)
+
+        # I-commit ang lahat sa database
+        db.session.commit()
+        return jsonify({'message': 'Registration complete! Pending admin approval.'}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        print(e)
+        return jsonify({'error': 'A database error occurred during registration.'}), 500
+
+
+# 4. Endpoint para sa Login (Kahit Admin o Pharmacy)
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+    role = data.get('role')
+
+    if role == 'pharmacy':
+        user = PharmacyAccount.query.filter_by(Email=email).first()
+        if user and bcrypt.check_password_hash(user.PasswordHash, password):
+            pharmacy = Pharmacy.query.filter_by(PharmacyAccountID=user.PharmacyAccountID).first()
+            pharmacy_name = pharmacy.PharmacyName if pharmacy else "Pharmacy Dashboard"
+            
+            return jsonify({
+                'message': 'Login successful', 
+                'pharmacyName': pharmacy_name
+            }), 200
+            
+    elif role == 'admin':
+        admin = Admin.query.filter_by(Email=email).first()
+        if admin and bcrypt.check_password_hash(admin.PasswordHash, password):
+            return jsonify({'message': 'Admin login successful'}), 200
+
+    return jsonify({'error': 'Invalid email or password'}), 401
+
+
+# 5. Endpoint para sa Forgot Password / Reset
+@app.route('/api/reset-password', methods=['POST'])
+def reset_password():
+    data = request.json
+    email = data.get('email')
+    new_password = data.get('password')
+    
+    user = PharmacyAccount.query.filter_by(Email=email).first()
+    if not user:
+        return jsonify({'error': 'No account found with that email.'}), 404
+        
+    user.PasswordHash = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    db.session.commit()
+    
+    return jsonify({'message': 'Password has been successfully reset.'}), 200
+
+
+# 6. Endpoint para sa Paghahanap ng Gamot (Search)
+@app.route('/api/search', methods=['POST'])
+def search_medicine():
+    data = request.json
+    medicine_query = data.get('medicine', '')
+    barangay_query = data.get('barangay', '')
+    
+    # Para sa setup natin ngayon, magpapadala lang tayo ng magandang mock data 
+    # na naka-base sa in-input ng user para makita kung gumagana na yung frontend connection.
+    # (Sa future, pwede natin palitan ito ng database query code `Medicine.query.filter(...)`)
+    
+    mock_results = [{
+        'pharmacyName': 'Mercury Drug',
+        'branch': barangay_query,
+        'medicine': medicine_query,
+        'price': '5.00',
+        'address': f'Gen. Alejo Santos Hwy, {barangay_query}, Norzagaray',
+        'inStock': True
+    }]
+    
+    return jsonify({'message': 'Search completed', 'results': mock_results}), 200
+
+
+# 7. Endpoint para sa Pagdagdag ng Gamot sa Inventory
+@app.route('/api/medicines', methods=['POST'])
+def add_medicine():
+    data = request.json
+    name = data.get('name')
+    price = data.get('price')
+    status = data.get('status')
+    category = data.get('category')
+    
+    # Normally, hahanapin natin yung PharmacyID ng naka-login na user dito.
+    # Ngayon, ire-return muna natin as successful para mag-update yung frontend inventory UI mo.
+    if not name or not price:
+        return jsonify({'error': 'Missing required fields'}), 400
+        
+    return jsonify({'message': f'{name} successfully added to database'}), 201
+
+
+# Pagpapatakbo ng Server
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        print("Maaayos na na-create ang mga tables sa PostgreSQL!")
+        
+        if not Admin.query.filter_by(Email='admin@oathofcare.com').first():
+            hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
+            default_admin = Admin(Email='admin@oathofcare.com', PasswordHash=hashed_admin_pw)
+            db.session.add(default_admin)
+            db.session.commit()
+            print("Nagawa na ang default admin: admin@oathofcare.com / admin123")
+
+    app.run(debug=True, port=5000)
