@@ -1,33 +1,29 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_mail import Mail, Message
 from flask_bcrypt import Bcrypt
 from datetime import datetime
 import random
 import string
+import requests # <--- BAGO: Ito ang gagamitin natin para kumausap sa Brevo API
 
 app = Flask(__name__)
 # Pinapayagan nito ang HTML frontend natin na kumonekta sa backend na ito
 CORS(app)
 
 # ==========================================
-# KONPIGURASYON NG DATABASE AT EMAIL
+# KONPIGURASYON NG DATABASE
 # ==========================================
 
 # PALITAN ANG 'YOUR_DB_PASSWORD' NG TOTOO MONG POSTGRESQL PASSWORD
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6Nswf@ep-wild-resonance-a1xpry7g.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Konpigurasyon para sa Gmail na binigay mo
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'oathofcare@gmail.com'
-app.config['MAIL_PASSWORD'] = 'johj tkey phul kvlx'
+# BREVO API CONFIGURATION
+BREVO_API_KEY = 'xsmtpsib-0bd7b3245903a6e6b40c4e572c7916fdc0029190c6686a2c534b1c799e9764ec-efGRI3gapj6iHEDV'
+SENDER_EMAIL = 'oathofcare@gmail.com' # Siguraduhing ito yung email na ginamit mo sa Brevo
 
 db = SQLAlchemy(app)
-mail = Mail(app)
 bcrypt = Bcrypt(app)
 
 # Pansamantalang imbakan para sa mga verification codes (Sa production, ilagay ito sa Redis o Database)
@@ -124,7 +120,7 @@ class SearchLog(db.Model):
 # MGA API ROUTES PARA SA FRONTEND
 # ==========================================
 
-# 1. Endpoint para magpadala ng Verification Code
+# 1. Endpoint para magpadala ng Verification Code gamit ang Brevo API
 @app.route('/api/send-verification', methods=['POST'])
 def send_verification():
     data = request.json
@@ -140,16 +136,38 @@ def send_verification():
     verification_codes[email] = code
     
     try:
-        # Ipadala ang email
-        msg = Message('Oath of Care - Verification Code',
-                      sender=app.config['MAIL_USERNAME'],
-                      recipients=[email])
-        msg.body = f'Ang iyong 6-digit verification code para sa Oath of Care ay: {code}'
-        mail.send(msg)
-        return jsonify({'message': 'Verification code sent successfully'})
+        # Paggamit ng Brevo API para mag-send ng email (Bypass Render SMTP Block)
+        url = "https://api.brevo.com/v3/smtp/email"
+        headers = {
+            "accept": "application/json",
+            "api-key": BREVO_API_KEY,
+            "content-type": "application/json"
+        }
+        payload = {
+            "sender": {
+                "name": "Oath of Care",
+                "email": SENDER_EMAIL
+            },
+            "to": [
+                {
+                    "email": email
+                }
+            ],
+            "subject": "Oath of Care - Verification Code",
+            "htmlContent": f"<html><body><h2>Pharmacy Portal Registration</h2><p>Ang iyong 6-digit verification code para sa Oath of Care ay: <strong><span style='font-size:24px;'>{code}</span></strong></p></body></html>"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+        
+        if response.status_code in [200, 201, 202]:
+            return jsonify({'message': 'Verification code sent successfully'})
+        else:
+            print(f"Brevo API Error: {response.text}")
+            return jsonify({'error': 'Failed to send email via API.'}), 500
+
     except Exception as e:
         print(e)
-        return jsonify({'error': 'Failed to send email. Please check credentials.'}), 500
+        return jsonify({'error': 'System error while sending email.'}), 500
 
 
 # 2. Endpoint para i-verify ang Code
@@ -279,10 +297,6 @@ def search_medicine():
     medicine_query = data.get('medicine', '')
     barangay_query = data.get('barangay', '')
     
-    # Para sa setup natin ngayon, magpapadala lang tayo ng magandang mock data 
-    # na naka-base sa in-input ng user para makita kung gumagana na yung frontend connection.
-    # (Sa future, pwede natin palitan ito ng database query code `Medicine.query.filter(...)`)
-    
     mock_results = [{
         'pharmacyName': 'Mercury Drug',
         'branch': barangay_query,
@@ -304,8 +318,6 @@ def add_medicine():
     status = data.get('status')
     category = data.get('category')
     
-    # Normally, hahanapin natin yung PharmacyID ng naka-login na user dito.
-    # Ngayon, ire-return muna natin as successful para mag-update yung frontend inventory UI mo.
     if not name or not price:
         return jsonify({'error': 'Missing required fields'}), 400
         
