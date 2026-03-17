@@ -24,13 +24,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # ==========================================
 # BAGO: We chop the key in half so GitHub's security bot can't read it and delete it.
 # Replace these with your actual NEW Brevo API key halves.
-KEY_PART_1 = "xsmtpsib-0bd7b3245903a6e6b40c4e572c7916fdc0029190c6686a2c534b1c799e9764ec-"
-KEY_PART_2 = "f0MZlebICTu9ORI2"
+import os
 
-# The code glues it back together right here automatically.
-BREVO_API_KEY = KEY_PART_1 + KEY_PART_2
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 SENDER_EMAIL = 'oathofcare@gmail.com'
-
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
