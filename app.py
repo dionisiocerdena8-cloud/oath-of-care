@@ -23,7 +23,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # BREVO API CONFIGURATION (Nakabaon na ang sikreto!)
 # ==========================================
 # Kukunin na niya yung key sa loob ng Render Environment, hindi na hardcoded!
-BREVO_API_KEY = os.environ.get('xsmtpsib-0bd7b3245903a6e6b40c4e572c7916fdc0029190c6686a2c534b1c799e9764ec-znuQRUGC9X97gPev')
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 SENDER_EMAIL = 'oathofcare@gmail.com'
 
 db = SQLAlchemy(app)
