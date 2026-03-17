@@ -5,7 +5,8 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 import random
 import string
-import requests # <--- ITO ANG MAGPAPABILIS (Brevo API)
+import requests
+import os # <--- BAGO: Ito ang kukuha ng sikreto mula sa Render
 
 app = Flask(__name__)
 # Pinapayagan nito ang HTML frontend natin na kumonekta sa backend na ito
@@ -19,9 +20,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6N
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # ==========================================
-# BREVO API (Pamalit sa Gmail SMTP na naka-block)
+# BREVO API CONFIGURATION (Nakabaon na ang sikreto!)
 # ==========================================
-BREVO_API_KEY = 'xsmtpsib-0bd7b3245903a6e6b40c4e572c7916fdc0029190c6686a2c534b1c799e9764ec-efGRI3gapj6iHEDV'
+# Kukunin na niya yung key sa loob ng Render Environment, hindi na hardcoded!
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 SENDER_EMAIL = 'oathofcare@gmail.com'
 
 db = SQLAlchemy(app)
@@ -126,7 +128,6 @@ def send_verification():
     verification_codes[email] = code
     
     try:
-        # TOTOONG BREVO API PANG-SEND (Hindi mabablock ng Render)
         url = "https://api.brevo.com/v3/smtp/email"
         headers = {
             "accept": "application/json",
