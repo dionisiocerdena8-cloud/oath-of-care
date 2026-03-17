@@ -5,8 +5,10 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 import random
 import string
-import requests
-import os # <--- BAGO: Ito ang kukuha ng sikreto mula sa Render
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os
 
 app = Flask(__name__)
 # Pinapayagan nito ang HTML frontend natin na kumonekta sa backend na ito
@@ -20,14 +22,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6N
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # ==========================================
-# BREVO API CONFIGURATION (Split-String Hack)
+# GMAIL SMTP CONFIGURATION (Paalam Brevo!)
 # ==========================================
-# BAGO: We chop the key in half so GitHub's security bot can't read it and delete it.
-# Replace these with your actual NEW Brevo API key halves.
-import os
-
-BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
+# Kukunin na niya yung 16-letter Google App Password sa loob ng Render Environment
+GMAIL_APP_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD')
 SENDER_EMAIL = 'oathofcare@gmail.com'
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
@@ -117,7 +117,7 @@ class SearchLog(db.Model):
 # MGA API ROUTES PARA SA FRONTEND
 # ==========================================
 
-# 1. Endpoint para magpadala ng Verification Code
+# 1. Endpoint para magpadala ng Verification Code (GMAIL VERSION)
 @app.route('/api/send-verification', methods=['POST'])
 def send_verification():
     data = request.json
@@ -130,33 +130,27 @@ def send_verification():
     verification_codes[email] = code
     
     try:
-        url = "https://api.brevo.com/v3/smtp/email"
-        headers = {
-            "accept": "application/json",
-            "api-key": BREVO_API_KEY,
-            "content-type": "application/json"
-        }
-        payload = {
-            "sender": {"name": "Medical Locator Network", "email": SENDER_EMAIL},
-            "to": [{"email": email}],
-            "subject": "Pharmacy Portal - Verification Code",
-            "htmlContent": f"<html><body><h3>Pharmacy Registration</h3><p>Ang iyong 6-digit verification code ay: <strong><span style='font-size:24px; color:#024b33;'>{code}</span></strong></p></body></html>"
-        }
-
-        # DEBUGGING TOOL: Print the first 15 characters to the Render Logs to ensure the new key is loaded.
-        safe_key_display = BREVO_API_KEY[:15] + "..." if BREVO_API_KEY else "NO_KEY_FOUND"
-        print(f"\n[DEBUG] Attempting to send email using key starting with: {safe_key_display}\n")
-
-        response = requests.post(url, json=payload, headers=headers)
+        # Paggawa ng mismong Email Message
+        msg = MIMEMultipart()
+        msg['From'] = f"Medical Locator Network <{SENDER_EMAIL}>"
+        msg['To'] = email
+        msg['Subject'] = "Pharmacy Portal - Verification Code"
         
-        if response.status_code in [200, 201, 202]:
-            return jsonify({'message': 'Verification code sent successfully'})
-        else:
-            print(f"Brevo API Error: {response.text}")
-            return jsonify({'error': 'Failed to send email. Check logs.'}), 500
+        html_content = f"<html><body><h3>Pharmacy Registration</h3><p>Ang iyong 6-digit verification code ay: <strong><span style='font-size:24px; color:#024b33;'>{code}</span></strong></p></body></html>"
+        msg.attach(MIMEText(html_content, 'html'))
+        
+        # Pag-connect sa server ng Google
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls() # Secure connection
+        server.login(SENDER_EMAIL, GMAIL_APP_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"\n[DEBUG] Email successfully sent to {email} via Gmail!\n")
+        return jsonify({'message': 'Verification code sent successfully'})
 
     except Exception as e:
-        print(f"System Crash Error: {str(e)}")
+        print(f"Gmail SMTP Error: {str(e)}")
         return jsonify({'error': 'System error while sending email.'}), 500
 
 
