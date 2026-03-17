@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 import random
 import string
-import requests  # Binalik natin para kay Brevo
+import requests
 import os
 
 app = Flask(__name__)
@@ -15,15 +15,14 @@ CORS(app)
 # ==========================================
 # KONPIGURASYON NG DATABASE
 # ==========================================
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6Nswf@ep-wild-resonance-a1xpry7g.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # ==========================================
-# BREVO API CONFIGURATION
+# ELASTIC EMAIL API CONFIGURATION
 # ==========================================
-# Kukunin na niya yung API Key sa loob ng Render Environment Vault
-BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
+# Kukunin na niya yung API Key / Password sa loob ng Render Environment Vault
+ELASTIC_API_KEY = os.environ.get('ELASTIC_API_KEY')
 SENDER_EMAIL = 'oathofcare@gmail.com'
 
 db = SQLAlchemy(app)
@@ -115,7 +114,7 @@ class SearchLog(db.Model):
 # MGA API ROUTES PARA SA FRONTEND
 # ==========================================
 
-# 1. Endpoint para magpadala ng Verification Code (DIAGNOSTIC ALARM VERSION)
+# 1. Endpoint para magpadala ng Verification Code (ELASTIC EMAIL API VERSION)
 @app.route('/api/send-verification', methods=['POST'])
 def send_verification():
     data = request.json
@@ -128,41 +127,34 @@ def send_verification():
     verification_codes[email] = code
     
     try:
-        # --- DIAGNOSTIC ALARM START ---
-        api_key_check = os.environ.get('BREVO_API_KEY')
-        
-        print("\n" + "="*50)
-        if not api_key_check:
-            print("[CRITICAL ERROR] BLANGKO ANG API KEY!")
-            print("Hindi mabasa ng Python ang 'BREVO_API_KEY' sa Render Vault.")
-            print("Paki-check kung may typo sa variable name sa Render.")
-        else:
-            print(f"[DEBUG] NAKUHA ANG KEY MULA SA RENDER!")
-            print(f"Haba ng key: {len(api_key_check)} characters")
-            print(f"Umpisa ng key: {api_key_check[:12]}...")
-        print("="*50 + "\n")
-        # --- DIAGNOSTIC ALARM END ---
+        if not ELASTIC_API_KEY:
+            print("[CRITICAL ERROR] ELASTIC_API_KEY is missing in Render Environment!")
+            return jsonify({'error': 'Server misconfiguration.'}), 500
 
-        url = "https://api.brevo.com/v3/smtp/email"
-        headers = {
-            "accept": "application/json",
-            "api-key": api_key_check,
-            "content-type": "application/json"
-        }
+        url = "https://api.elasticemail.com/v2/email/send"
+        
+        # Ang Elastic Email v2 API ay gumagamit ng normal na form data (hindi json payload na may headers)
         payload = {
-            "sender": {"name": "Medical Locator Network", "email": SENDER_EMAIL},
-            "to": [{"email": email}],
+            "apikey": ELASTIC_API_KEY,
             "subject": "Pharmacy Portal - Verification Code",
-            "htmlContent": f"<html><body><h3>Pharmacy Registration</h3><p>Ang iyong 6-digit verification code ay: <strong><span style='font-size:24px; color:#024b33;'>{code}</span></strong></p></body></html>"
+            "from": SENDER_EMAIL,
+            "fromName": "Medical Locator Network",
+            "to": email,
+            "bodyHtml": f"<html><body><h3>Pharmacy Registration</h3><p>Ang iyong 6-digit verification code ay: <strong><span style='font-size:24px; color:#024b33;'>{code}</span></strong></p></body></html>",
+            "isTransactional": True
         }
 
-        response = requests.post(url, json=payload, headers=headers)
+        print(f"\n[DEBUG] Sending email to {email} via Elastic Email API...")
+        response = requests.post(url, data=payload)
         
-        if response.status_code in [200, 201, 202]:
-            print(f"\n[SUCCESS] Email sent to {email}!\n")
+        # Ang Elastic Email ay nagbabalik ng JSON na may 'success': True kung okay
+        res_data = response.json()
+        
+        if res_data.get('success'):
+            print(f"[SUCCESS] Email sent successfully via Elastic Email!\n")
             return jsonify({'message': 'Verification code sent successfully'})
         else:
-            print(f"Brevo API Error: {response.text}")
+            print(f"[ERROR] Elastic Email API failed: {res_data}")
             return jsonify({'error': 'Failed to send email. Check logs.'}), 500
 
     except Exception as e:
@@ -329,6 +321,6 @@ if __name__ == '__main__':
             db.session.commit()
             print("Nagawa na ang default admin: admin@oathofcare.com / admin123")
 
-    # BAGO: Binuksan natin ang pinto (0.0.0.0) para makita ni Render ang server mo!
+    # Inayos natin ang host="0.0.0.0" para makita ni Render at hindi siya mag-"No open HTTP ports"
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port, debug=False)
