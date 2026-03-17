@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 import random
 import string
-import requests # <--- BAGO: Ito ang gagamitin natin para kumausap sa Brevo API
+import requests # <--- ITO ANG MAGPAPABILIS (Brevo API)
 
 app = Flask(__name__)
 # Pinapayagan nito ang HTML frontend natin na kumonekta sa backend na ito
@@ -15,22 +15,22 @@ CORS(app)
 # KONPIGURASYON NG DATABASE
 # ==========================================
 
-# PALITAN ANG 'YOUR_DB_PASSWORD' NG TOTOO MONG POSTGRESQL PASSWORD
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6Nswf@ep-wild-resonance-a1xpry7g.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# BREVO API CONFIGURATION
+# ==========================================
+# BREVO API (Pamalit sa Gmail SMTP na naka-block)
+# ==========================================
 BREVO_API_KEY = 'xsmtpsib-0bd7b3245903a6e6b40c4e572c7916fdc0029190c6686a2c534b1c799e9764ec-efGRI3gapj6iHEDV'
-SENDER_EMAIL = 'oathofcare@gmail.com' # Siguraduhing ito yung email na ginamit mo sa Brevo
+SENDER_EMAIL = 'oathofcare@gmail.com'
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-# Pansamantalang imbakan para sa mga verification codes (Sa production, ilagay ito sa Redis o Database)
 verification_codes = {}
 
 # ==========================================
-# MGA DATABASE MODELS (Galing mismo sa ERD mo)
+# MGA DATABASE MODELS
 # ==========================================
 
 class Admin(db.Model):
@@ -56,8 +56,6 @@ class PharmacyAccount(db.Model):
     PasswordHash = db.Column(db.String(255), nullable=False)
     LastName = db.Column(db.String(100), nullable=True)
     FirstName = db.Column(db.String(100), nullable=True)
-    
-    # Relasyon papunta sa Pharmacy
     pharmacies = db.relationship('Pharmacy', backref='account', lazy=True)
 
 class Barangay(db.Model):
@@ -73,15 +71,11 @@ class Pharmacy(db.Model):
     FullAddress = db.Column(db.Text, nullable=False)
     GoogleMapLink = db.Column(db.Text, nullable=True)
     PermitPhotoPath = db.Column(db.String(255), nullable=True)
-    IsActive = db.Column(db.Boolean, default=False) # Naka-false muna hangga't di ina-approve ng admin
+    IsActive = db.Column(db.Boolean, default=False)
     OpenTime = db.Column(db.String(50), nullable=True)
     CloseTime = db.Column(db.String(50), nullable=True)
-    
-    # Foreign Keys
     BarangayID = db.Column(db.Integer, db.ForeignKey('barangay.BarangayID'), nullable=False)
     PharmacyAccountID = db.Column(db.Integer, db.ForeignKey('pharmacy_account.PharmacyAccountID'), nullable=False)
-    
-    # Mga relasyon
     medicines = db.relationship('Medicine', backref='pharmacy', lazy=True)
     statuses = db.relationship('PharmacyStatus', backref='pharmacy', lazy=True)
 
@@ -90,7 +84,7 @@ class PharmacyStatus(db.Model):
     StatusID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
     AdminID = db.Column(db.Integer, db.ForeignKey('admin.AdminID'), nullable=True)
-    AccountStatus = db.Column(db.String(50), default='Pending') # Pending, Approved, Rejected
+    AccountStatus = db.Column(db.String(50), default='Pending')
     LastLogin = db.Column(db.DateTime, nullable=True)
     IsDeactivated = db.Column(db.Boolean, default=False)
     IsArchived = db.Column(db.Boolean, default=False)
@@ -103,7 +97,6 @@ class Medicine(db.Model):
     Price = db.Column(db.Numeric(10, 2), nullable=False)
     IsPrescriptionRequired = db.Column(db.Boolean, default=False)
     InStock = db.Column(db.Boolean, default=True)
-    
     PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
 
 class SearchLog(db.Model):
@@ -120,7 +113,7 @@ class SearchLog(db.Model):
 # MGA API ROUTES PARA SA FRONTEND
 # ==========================================
 
-# 1. Endpoint para magpadala ng Verification Code gamit ang Brevo API
+# 1. Endpoint para magpadala ng Verification Code
 @app.route('/api/send-verification', methods=['POST'])
 def send_verification():
     data = request.json
@@ -129,14 +122,11 @@ def send_verification():
     if not email:
         return jsonify({'error': 'Email is required'}), 400
         
-    # Gumawa ng random na 6-digit code
     code = ''.join(random.choices(string.digits, k=6))
-    
-    # I-save sa memory natin ang code na nauugnay sa email na ito
     verification_codes[email] = code
     
     try:
-        # Paggamit ng Brevo API para mag-send ng email (Bypass Render SMTP Block)
+        # TOTOONG BREVO API PANG-SEND (Hindi mabablock ng Render)
         url = "https://api.brevo.com/v3/smtp/email"
         headers = {
             "accept": "application/json",
@@ -144,17 +134,10 @@ def send_verification():
             "content-type": "application/json"
         }
         payload = {
-            "sender": {
-                "name": "Oath of Care",
-                "email": SENDER_EMAIL
-            },
-            "to": [
-                {
-                    "email": email
-                }
-            ],
-            "subject": "Oath of Care - Verification Code",
-            "htmlContent": f"<html><body><h2>Pharmacy Portal Registration</h2><p>Ang iyong 6-digit verification code para sa Oath of Care ay: <strong><span style='font-size:24px;'>{code}</span></strong></p></body></html>"
+            "sender": {"name": "Medical Locator Network", "email": SENDER_EMAIL},
+            "to": [{"email": email}],
+            "subject": "Pharmacy Portal - Verification Code",
+            "htmlContent": f"<html><body><h3>Pharmacy Registration</h3><p>Ang iyong 6-digit verification code ay: <strong><span style='font-size:24px; color:#024b33;'>{code}</span></strong></p></body></html>"
         }
 
         response = requests.post(url, json=payload, headers=headers)
@@ -163,7 +146,7 @@ def send_verification():
             return jsonify({'message': 'Verification code sent successfully'})
         else:
             print(f"Brevo API Error: {response.text}")
-            return jsonify({'error': 'Failed to send email via API.'}), 500
+            return jsonify({'error': 'Failed to send email. Check logs.'}), 500
 
     except Exception as e:
         print(e)
@@ -177,7 +160,6 @@ def verify_code():
     email = data.get('email')
     code = data.get('code')
     
-    # Suriin kung tama ang code na naipadala
     if verification_codes.get(email) == code:
         return jsonify({'message': 'Code verified successfully'})
     else:
@@ -196,28 +178,23 @@ def register():
     address = data.get('address')
     map_link = data.get('mapLink')
 
-    # Suriin kung umiiral na ang email
     existing_user = PharmacyAccount.query.filter_by(Email=email).first()
     if existing_user:
         return jsonify({'error': 'Email is already registered'}), 400
 
-    # I-hash ang password bago i-save para secure
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     try:
-        # Step 1: Gawin ang PharmacyAccount
         new_account = PharmacyAccount(Email=email, PasswordHash=hashed_password)
         db.session.add(new_account)
-        db.session.flush() # Para makuha agad natin ang bagong PharmacyAccountID
+        db.session.flush()
 
-        # Step 2: Hanapin o gawin ang Barangay
         barangay = Barangay.query.filter_by(BarangayName=barangay_name).first()
         if not barangay:
             barangay = Barangay(BarangayName=barangay_name)
             db.session.add(barangay)
-            db.session.flush() # Para makuha agad ang BarangayID
+            db.session.flush()
 
-        # Step 3: Gawin ang record ng Pharmacy
         new_pharmacy = Pharmacy(
             PharmacyName=pharmacy_name,
             ContactNumber=contact,
@@ -229,14 +206,12 @@ def register():
         db.session.add(new_pharmacy)
         db.session.flush()
 
-        # Step 4: Gawin ang status na 'Pending' para ma-review ng Admin
         new_status = PharmacyStatus(
             PharmacyID=new_pharmacy.PharmacyID,
             AccountStatus='Pending'
         )
         db.session.add(new_status)
 
-        # I-commit ang lahat sa database
         db.session.commit()
         return jsonify({'message': 'Registration complete! Pending admin approval.'}), 201
 
