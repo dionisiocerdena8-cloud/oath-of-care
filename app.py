@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 import random
 import string
-import requests
+import requests  # Binalik natin para kay Brevo
 import os
 
 app = Flask(__name__)
@@ -15,13 +15,14 @@ CORS(app)
 # ==========================================
 # KONPIGURASYON NG DATABASE
 # ==========================================
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6Nswf@ep-wild-resonance-a1xpry7g.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # ==========================================
 # BREVO API CONFIGURATION
 # ==========================================
-# Kinukuha natin ito sa Render Environment Vault
+# Kukunin na niya yung API Key sa loob ng Render Environment Vault
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 SENDER_EMAIL = 'oathofcare@gmail.com'
 
@@ -114,7 +115,7 @@ class SearchLog(db.Model):
 # MGA API ROUTES PARA SA FRONTEND
 # ==========================================
 
-# 1. Endpoint para magpadala ng Verification Code (BREVO API VERSION)
+# 1. Endpoint para magpadala ng Verification Code (DIAGNOSTIC ALARM VERSION)
 @app.route('/api/send-verification', methods=['POST'])
 def send_verification():
     data = request.json
@@ -127,10 +128,25 @@ def send_verification():
     verification_codes[email] = code
     
     try:
+        # --- DIAGNOSTIC ALARM START ---
+        api_key_check = os.environ.get('BREVO_API_KEY')
+        
+        print("\n" + "="*50)
+        if not api_key_check:
+            print("[CRITICAL ERROR] BLANGKO ANG API KEY!")
+            print("Hindi mabasa ng Python ang 'BREVO_API_KEY' sa Render Vault.")
+            print("Paki-check kung may typo sa variable name sa Render.")
+        else:
+            print(f"[DEBUG] NAKUHA ANG KEY MULA SA RENDER!")
+            print(f"Haba ng key: {len(api_key_check)} characters")
+            print(f"Umpisa ng key: {api_key_check[:12]}...")
+        print("="*50 + "\n")
+        # --- DIAGNOSTIC ALARM END ---
+
         url = "https://api.brevo.com/v3/smtp/email"
         headers = {
             "accept": "application/json",
-            "api-key": BREVO_API_KEY,
+            "api-key": api_key_check,
             "content-type": "application/json"
         }
         payload = {
@@ -143,7 +159,7 @@ def send_verification():
         response = requests.post(url, json=payload, headers=headers)
         
         if response.status_code in [200, 201, 202]:
-            print(f"\n[DEBUG] Email sent to {email} via Brevo API!\n")
+            print(f"\n[SUCCESS] Email sent to {email}!\n")
             return jsonify({'message': 'Verification code sent successfully'})
         else:
             print(f"Brevo API Error: {response.text}")
