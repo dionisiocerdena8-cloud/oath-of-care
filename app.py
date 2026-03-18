@@ -19,10 +19,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6N
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # ==========================================
-# ELASTIC EMAIL API CONFIGURATION
+# BREVO API CONFIGURATION (FINAL!)
 # ==========================================
-# Kukunin na niya yung API Key / Password sa loob ng Render Environment Vault
-ELASTIC_API_KEY = os.environ.get('BREVO_API_KEY')
+# Kukunin na niya yung API Key sa loob ng Render Environment Vault
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
+
+# Ito yung VERIFIED sender mo sa Brevo Dashboard
 SENDER_EMAIL = 'oathofcareofficial@gmail.com'
 
 db = SQLAlchemy(app)
@@ -114,7 +116,7 @@ class SearchLog(db.Model):
 # MGA API ROUTES PARA SA FRONTEND
 # ==========================================
 
-# 1. Endpoint para magpadala ng Verification Code (ELASTIC EMAIL API VERSION)
+# 1. Endpoint para magpadala ng Verification Code (BREVO API VERSION)
 @app.route('/api/send-verification', methods=['POST'])
 def send_verification():
     data = request.json
@@ -127,34 +129,35 @@ def send_verification():
     verification_codes[email] = code
     
     try:
-        if not ELASTIC_API_KEY:
-            print("[CRITICAL ERROR] ELASTIC_API_KEY is missing in Render Environment!")
+        if not BREVO_API_KEY:
+            print("[CRITICAL ERROR] BREVO_API_KEY is missing in Render Environment!")
             return jsonify({'error': 'Server misconfiguration.'}), 500
 
-        url = "https://api.elasticemail.com/v2/email/send"
+        # Ibinalik natin kay Brevo ang URL
+        url = "https://api.brevo.com/v3/smtp/email"
         
-        # Ang Elastic Email v2 API ay gumagamit ng normal na form data (hindi json payload na may headers)
+        headers = {
+            "accept": "application/json",
+            "api-key": BREVO_API_KEY,
+            "content-type": "application/json"
+        }
+        
+        # Brevo JSON payload format
         payload = {
-            "apikey": ELASTIC_API_KEY,
+            "sender": {"name": "Medical Locator Network", "email": SENDER_EMAIL},
+            "to": [{"email": email}],
             "subject": "Pharmacy Portal - Verification Code",
-            "from": SENDER_EMAIL,
-            "fromName": "Medical Locator Network",
-            "to": email,
-            "bodyHtml": f"<html><body><h3>Pharmacy Registration</h3><p>Ang iyong 6-digit verification code ay: <strong><span style='font-size:24px; color:#024b33;'>{code}</span></strong></p></body></html>",
-            "isTransactional": True
+            "htmlContent": f"<html><body><h3>Pharmacy Registration</h3><p>Ang iyong 6-digit verification code ay: <strong><span style='font-size:24px; color:#024b33;'>{code}</span></strong></p></body></html>"
         }
 
-        print(f"\n[DEBUG] Sending email to {email} via Elastic Email API...")
-        response = requests.post(url, data=payload)
+        print(f"\n[DEBUG] Sending email to {email} via Brevo API...")
+        response = requests.post(url, json=payload, headers=headers)
         
-        # Ang Elastic Email ay nagbabalik ng JSON na may 'success': True kung okay
-        res_data = response.json()
-        
-        if res_data.get('success'):
-            print(f"[SUCCESS] Email sent successfully via Elastic Email!\n")
+        if response.status_code in [200, 201, 202]:
+            print(f"[SUCCESS] Email sent successfully via Brevo!\n")
             return jsonify({'message': 'Verification code sent successfully'})
         else:
-            print(f"[ERROR] Elastic Email API failed: {res_data}")
+            print(f"[ERROR] Brevo API failed: {response.text}")
             return jsonify({'error': 'Failed to send email. Check logs.'}), 500
 
     except Exception as e:
