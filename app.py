@@ -22,8 +22,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # ELASTIC EMAIL API CONFIGURATION
 # ==========================================
 # Kukunin na niya yung API Key / Password sa loob ng Render Environment Vault
-ELASTIC_API_KEY = os.environ.get('ELASTIC_API_KEY')
-SENDER_EMAIL = 'oathofcare@gmail.com'
+ELASTIC_API_KEY = os.environ.get('BREVO_API_KEY')
+SENDER_EMAIL = 'oathofcareofficial@gmail.com'
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
