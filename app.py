@@ -147,17 +147,18 @@ def send_verification():
         <!DOCTYPE html>
         <html>
         <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
-                body {{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f3ef; margin: 0; padding: 40px 20px; }}
-                .container {{ max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; padding: 50px 40px; box-shadow: 0 10px 30px rgba(2, 75, 51, 0.08); text-align: center; border: 1px solid #e8dacc; }}
-                .logo {{ color: #a3c936; font-size: 32px; font-weight: 800; letter-spacing: 3px; margin-bottom: 30px; display: block; font-family: 'Georgia', serif; text-transform: uppercase; }}
+                body {{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f3ef; margin: 0; padding: 20px 10px; }}
+                .container {{ max-width: 450px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; padding: 30px 20px; box-shadow: 0 4px 15px rgba(2, 75, 51, 0.08); text-align: center; border: 1px solid #e8dacc; width: 100%; box-sizing: border-box; }}
+                .logo {{ color: #a3c936; font-size: 24px; font-weight: 800; letter-spacing: 2px; margin-bottom: 20px; display: block; font-family: 'Georgia', serif; text-transform: uppercase; }}
                 .logo span {{ color: #024b33; }}
-                .title {{ color: #0a0a0a; font-size: 28px; font-weight: bold; margin-bottom: 15px; }}
-                .subtitle {{ color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 40px; padding: 0 20px; }}
-                .code-box {{ background-color: #fcfcfa; border: 2px dashed #024b33; border-radius: 12px; padding: 25px; margin: 0 auto 40px auto; max-width: 320px; }}
-                .code {{ font-size: 42px; font-weight: 900; color: #024b33; letter-spacing: 12px; margin: 0; padding-left: 12px; }}
-                .warning {{ color: #9ca3af; font-size: 14px; margin-bottom: 40px; }}
-                .footer {{ color: #9ca3af; font-size: 12px; margin-top: 40px; border-top: 1px solid #e8dacc; padding-top: 30px; line-height: 1.5; }}
+                .title {{ color: #0a0a0a; font-size: 22px; font-weight: bold; margin-bottom: 10px; }}
+                .subtitle {{ color: #4b5563; font-size: 14px; line-height: 1.5; margin-bottom: 25px; padding: 0 10px; }}
+                .code-box {{ background-color: #fcfcfa; border: 2px dashed #024b33; border-radius: 8px; padding: 15px; margin: 0 auto 25px auto; max-width: 200px; }}
+                .code {{ font-size: 28px; font-weight: 900; color: #024b33; letter-spacing: 8px; margin: 0; text-align: center; }}
+                .warning {{ color: #9ca3af; font-size: 12px; margin-bottom: 25px; }}
+                .footer {{ color: #9ca3af; font-size: 11px; margin-top: 30px; border-top: 1px solid #e8dacc; padding-top: 20px; line-height: 1.5; }}
             </style>
         </head>
         <body>
@@ -173,8 +174,7 @@ def send_verification():
                 <div class="warning">If you did not request this code, you can safely ignore this email.</div>
                 
                 <div class="footer">
-                    &copy; {datetime.utcnow().year} Medical Locator Network. All rights reserved.<br>
-                    Angeles, Central Luzon, Philippines.
+                    &copy; {datetime.utcnow().year} Medical Locator Network. All rights reserved.
                 </div>
             </div>
         </body>
