@@ -114,7 +114,7 @@
                     </div>
                 </div>
                 
-                <!-- Desktop Navigation Links (Cleaned based on user request) -->
+                <!-- Desktop Navigation Links -->
                 <div class="hidden md:flex space-x-8 lg:space-x-12 items-center">
                     <a href="#" onclick="checkAuthAndNavigate('pharmacy')" id="navPharmacyBtn" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">PHARMACY</a>
                     <a href="#" onclick="checkAuthAndNavigate('admin')" id="navAdminBtn" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">ADMIN</a>
@@ -435,12 +435,17 @@
             <!-- User Login Form -->
             <div id="userLoginFormWrapper" class="block">
                 <div class="text-center mb-8">
-                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2">Welcome Back</h3>
-                    <p class="text-smoke text-sm">Please log in to access the search portal.</p>
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2">Welcome to Oath of Care</h3>
+                    <p class="text-smoke text-sm">Pharmacy and Medicine Locator. Please log in to access.</p>
                 </div>
                 <form onsubmit="handleUserLoginSubmit(event)" class="space-y-6">
                     <input type="email" id="userLoginEmail" required placeholder="Email Address" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm">
-                    <input type="password" id="userLoginPassword" required placeholder="Password" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm tracking-widest">
+                    <div class="relative">
+                        <input type="password" id="userLoginPassword" required placeholder="Password" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm tracking-widest pr-12">
+                        <button type="button" onclick="togglePassword('userLoginPassword', 'eyeIconUserLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
+                            <i class="fa-solid fa-eye text-lg" id="eyeIconUserLogin"></i>
+                        </button>
+                    </div>
                     <button type="submit" id="btnUserLogin" class="w-full bg-[#024b33] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-2">Sign In</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
@@ -451,8 +456,8 @@
             <!-- User Registration Form -->
             <div id="userSignupFormWrapper" class="hidden">
                 <div class="text-center mb-8">
-                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2">Create Account</h3>
-                    <p class="text-smoke text-sm">Join to start locating medicines near you.</p>
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2">Welcome to Oath of Care</h3>
+                    <p class="text-smoke text-sm">Pharmacy and Medicine Locator. Join to start searching.</p>
                 </div>
                 <form onsubmit="handleUserSignupSubmit(event)" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
@@ -463,7 +468,12 @@
                         <input type="number" id="userRegAge" required placeholder="Age" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold col-span-1">
                         <input type="email" id="userRegEmail" required placeholder="Email Address" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold col-span-2">
                     </div>
-                    <input type="password" id="userRegPass" required placeholder="Password" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold tracking-widest">
+                    <div class="relative">
+                        <input type="password" id="userRegPass" required placeholder="Password" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold tracking-widest pr-12">
+                        <button type="button" onclick="togglePassword('userRegPass', 'eyeIconUserReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
+                            <i class="fa-solid fa-eye text-lg" id="eyeIconUserReg"></i>
+                        </button>
+                    </div>
                     <button type="submit" id="btnUserSignup" class="w-full bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Register</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
@@ -518,7 +528,12 @@
                 <h3 class="text-3xl font-serif font-bold text-velvet mb-6 text-center">Pharmacy Sign Up</h3>
                 <form onsubmit="handlePharmSignupStep1(event)" class="space-y-6">
                     <input type="email" required id="signupPharmEmail" placeholder="Business Email" class="w-full px-6 py-5 rounded-2xl border border-silk shadow-3d-input outline-none font-bold">
-                    <input type="password" required id="signupPharmPassword" placeholder="Password" class="w-full px-6 py-5 rounded-2xl border border-silk shadow-3d-input outline-none font-bold tracking-widest">
+                    <div class="relative">
+                        <input type="password" required id="signupPharmPassword" placeholder="Password" class="w-full px-6 py-5 rounded-2xl border border-silk shadow-3d-input outline-none font-bold tracking-widest pr-14">
+                        <button type="button" onclick="togglePassword('signupPharmPassword', 'eyeIconPharmReg')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
+                            <i class="fa-solid fa-eye text-xl" id="eyeIconPharmReg"></i>
+                        </button>
+                    </div>
                     <button type="submit" id="btnPharmReg1" class="w-full bg-[#024b33] text-white py-5 rounded-2xl font-bold uppercase shadow-3d-btn btn-luxury">Next Step</button>
                 </form>
             </div>
@@ -578,8 +593,8 @@
     <script>
         const API_URL = 'https://oath-of-care.onrender.com';
         
-        // Global Authentication State Mechanism
-        let authState = JSON.parse(sessionStorage.getItem('ooc_user')) || { id: null, role: null, name: null };
+        // Global Authentication State Mechanism (Switched to localStorage for permanent login)
+        let authState = JSON.parse(localStorage.getItem('ooc_user')) || { id: null, role: null, name: null };
         let tempPharmEmail = ''; 
         let resendTimer = null;
         let analyticsChartInstance = null;
@@ -615,7 +630,7 @@
         }
 
         function handleLogoutGlobal() {
-            sessionStorage.removeItem('ooc_user');
+            localStorage.removeItem('ooc_user');
             authState = { id: null, role: null, name: null };
             updateNavBasedOnAuth();
             navigateTo('home');
@@ -697,7 +712,7 @@
                 if (response.ok) {
                     showToast('Successfully logged in!');
                     authState = { id: result.id, role: result.role, name: result.name };
-                    sessionStorage.setItem('ooc_user', JSON.stringify(authState));
+                    localStorage.setItem('ooc_user', JSON.stringify(authState));
                     updateNavBasedOnAuth();
                     closeUserAuthModal();
                     navigateTo('home');
@@ -863,7 +878,7 @@
                 if (response.ok) {
                     showToast('Login successful!');
                     authState = { id: result.id, role: result.role, name: result.pharmacyName || "Admin" };
-                    sessionStorage.setItem('ooc_user', JSON.stringify(authState));
+                    localStorage.setItem('ooc_user', JSON.stringify(authState));
                     updateNavBasedOnAuth();
                     
                     if(loginRole === 'pharmacy') { navigateTo('pharmacy'); fetchPharmacyData(); } 
@@ -1020,7 +1035,7 @@
                 if(res.ok) { 
                     showToast('Profile updated successfully!'); 
                     authState.name = document.getElementById('updName').value; 
-                    sessionStorage.setItem('ooc_user', JSON.stringify(authState)); 
+                    localStorage.setItem('ooc_user', JSON.stringify(authState)); 
                     document.getElementById('dashboardPharmName').innerText = authState.name;
                 }
             } catch(e) { showToast('Update error', 'error'); } finally { unlock(); }
