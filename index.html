@@ -195,7 +195,7 @@
                 <!-- NEW BRAND LOGO: Matches the uploaded image perfectly -->
                 <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="navigateTo('home')">
                     <!-- Layered Icons (Hand + Pin) -->
-                    <div class="relative w-12 h-14 mr-3 md:mr-4 transform group-hover:scale-110 transition-transform duration-500 text-luxuryGreen">
+                    <div class="relative w-12 h-14 mr-3 md:mr-4 transform group-hover:scale-110 transition-transform duration-500 text-brandLime">
                         <!-- The Map Pin (Top) -->
                         <div class="absolute top-0 left-1/2 transform -translate-x-1/2 flex justify-center w-full">
                             <i class="fa-solid fa-location-dot text-3xl drop-shadow-sm"></i>
@@ -207,8 +207,8 @@
                     </div>
                     <!-- Typography -->
                     <div class="flex flex-col justify-center">
-                        <span class="font-serif text-2xl md:text-3xl lg:text-[2rem] font-semibold text-luxuryGreen tracking-widest uppercase leading-none drop-shadow-sm">Oath of Care</span>
-                        <span class="font-sans text-[10px] md:text-xs text-luxuryGreen tracking-wide mt-1 font-medium drop-shadow-sm">Pharmacy & Medicine Locator</span>
+                        <span class="font-serif text-2xl md:text-3xl lg:text-[2rem] font-semibold text-brandLime tracking-widest uppercase leading-none drop-shadow-sm">Oath of Care</span>
+                        <span class="font-sans text-[10px] md:text-xs text-brandLime tracking-wide mt-1 font-medium drop-shadow-sm">Pharmacy & Medicine Locator</span>
                     </div>
                 </div>
                 
@@ -687,6 +687,9 @@
                     </div>
                     <button type="submit" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-4">Verify Account</button>
                 </form>
+                <div class="mt-6 text-center text-xs md:text-sm text-smoke font-medium text-shadow-sm">
+                    Didn't receive the code? <button type="button" id="signupResendBtn" onclick="handleResendCode('signup')" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">Resend Code</button>
+                </div>
             </div>
 
             <!-- Step 3: Pharmacy Details -->
@@ -838,8 +841,8 @@
                         <input type="text" required maxlength="6" id="forgotVerificationCode" placeholder="XXXXXX" class="w-full px-6 py-6 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-center text-2xl md:text-3xl tracking-[0.6em] font-bold text-velvet uppercase bg-white outline-none shadow-3d-input">
                     </div>
                     <button type="submit" class="w-full bg-[#0d4d3a] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-4">Verify Code</button>
-                    <div class="mt-6 text-center text-xs text-smoke font-medium text-shadow-sm">
-                        Didn't receive the code? <a href="#" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm">Resend Code</a>
+                    <div class="mt-6 text-center text-xs md:text-sm text-smoke font-medium text-shadow-sm">
+                        Didn't receive the code? <button type="button" id="forgotResendBtn" onclick="handleResendCode('forgot')" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">Resend Code</button>
                     </div>
                 </form>
             </div>
@@ -885,6 +888,12 @@
         let currentRole = 'pharmacy';
         let tempSignupEmail = ''; // Hold email globally during steps
         let tempForgotEmail = ''; // Hold email globally during steps
+        
+        // Timer variables for the resend function
+        let resendTimers = {
+            signup: null,
+            forgot: null
+        };
 
         // --- Rotating 3D Background ---
         const bgImages = [
@@ -1202,6 +1211,59 @@
             }
         }
 
+        // --- START OF RESEND CODE LOGIC ---
+        async function handleResendCode(flowType) {
+            const btnId = flowType === 'signup' ? 'signupResendBtn' : 'forgotResendBtn';
+            const email = flowType === 'signup' ? tempSignupEmail : tempForgotEmail;
+            const btn = document.getElementById(btnId);
+
+            if (btn.disabled) return; 
+
+            btn.disabled = true;
+            btn.innerText = 'SENDING...';
+
+            try {
+                const response = await fetch(`${API_URL}/api/send-verification`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+
+                if (response.ok) {
+                    showToast('New code sent to your email!');
+                    startResendCooldown(btnId, flowType);
+                } else {
+                    showToast('Failed to resend code', 'error');
+                    btn.disabled = false;
+                    btn.innerText = 'RESEND CODE';
+                }
+            } catch (error) {
+                showToast('Backend offline', 'error');
+                btn.disabled = false;
+                btn.innerText = 'RESEND CODE';
+            }
+        }
+
+        function startResendCooldown(btnId, flowType) {
+            const btn = document.getElementById(btnId);
+            let timeLeft = 60;
+            btn.innerText = `RESEND IN ${timeLeft}S`;
+
+            if (resendTimers[flowType]) clearInterval(resendTimers[flowType]);
+
+            resendTimers[flowType] = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(resendTimers[flowType]);
+                    btn.disabled = false;
+                    btn.innerText = 'RESEND CODE';
+                } else {
+                    btn.innerText = `RESEND IN ${timeLeft}S`;
+                }
+            }, 1000);
+        }
+        // --- END OF RESEND CODE LOGIC ---
+
         // --- REAL REGISTRATION & SIGN UP FLOW ---
         function openSignupModal() {
             document.getElementById('signupModal').classList.remove('hidden');
@@ -1214,7 +1276,10 @@
         async function handleSignupStep1(e) {
             e.preventDefault();
             tempSignupEmail = document.getElementById('signupEmail').value;
-            showToast('Sending Verification Email...');
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "SENDING...";
 
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
@@ -1226,12 +1291,16 @@
                     document.getElementById('signupStep1').classList.add('hidden');
                     document.getElementById('signupStep2').classList.remove('hidden');
                     showToast('Code successfully sent!');
+                    startResendCooldown('signupResendBtn', 'signup'); // Start the cooldown immediately on step 2
                 } else {
                     const res = await response.json();
                     showToast(res.error || 'Failed to send', 'error');
                 }
             } catch (error) {
                 showToast('Could not reach backend', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "SIGN UP";
             }
         }
 
@@ -1250,6 +1319,7 @@
                     showToast('Code verified successfully!');
                     document.getElementById('signupStep2').classList.add('hidden');
                     document.getElementById('signupStep3').classList.remove('hidden');
+                    if (resendTimers.signup) clearInterval(resendTimers.signup); // clear timer
                 } else {
                     showToast('Invalid verification code', 'error');
                 }
@@ -1306,7 +1376,10 @@
         async function handleForgotStep1(e) {
             e.preventDefault();
             tempForgotEmail = document.getElementById('forgotEmail').value;
-            showToast('Requesting Reset Code...');
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "SENDING...";
             
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
@@ -1318,11 +1391,15 @@
                     document.getElementById('forgotStep1').classList.add('hidden');
                     document.getElementById('forgotStep2').classList.remove('hidden');
                     showToast('Code sent to your email.');
+                    startResendCooldown('forgotResendBtn', 'forgot'); // Start cooldown immediately
                 } else {
                     showToast('Failed to send code', 'error');
                 }
             } catch (err) {
                 showToast('Backend offline', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "SEND RESET CODE";
             }
         }
 
@@ -1340,6 +1417,7 @@
                     showToast('Code matched!');
                     document.getElementById('forgotStep2').classList.add('hidden');
                     document.getElementById('forgotStep3').classList.remove('hidden');
+                    if (resendTimers.forgot) clearInterval(resendTimers.forgot); // clear timer
                 } else {
                     showToast('Invalid Code', 'error');
                 }
