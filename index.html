@@ -30,6 +30,7 @@
                         chiffon: '#f4f1eb',    
                         luxuryGreen: '#024b33', 
                         luxuryGreenLight: '#036c4a',
+                        brandLime: '#a3c936', /* Added the new vibrant logo color */
                         goldAccent: '#d4af37',
                         badgeGreen: '#10b981'
                     },
@@ -176,50 +177,6 @@
         input:focus, select:focus, textarea:focus {
             outline: none;
         }
-
-        /* Custom Logo CSS (3D enhanced) */
-        .nav-logo-scene { 
-            position: relative; 
-            width: 75px; 
-            height: 75px; 
-            background: radial-gradient(circle at top left, #ffffff 0%, #e8f1ed 60%, #d1fae5 100%); 
-            border-radius: 50%;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15), inset 0 3px 6px rgba(255,255,255,0.9), inset 0 -2px 4px rgba(0,0,0,0.05);
-            border: 2px solid rgba(2, 75, 51, 0.15); 
-        }
-        .nav-logo-building { 
-            position: absolute; 
-            font-size: 38px; 
-            color: #024b33; 
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -35%);
-            z-index: 1; 
-            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        .nav-logo-pin { 
-            position: absolute; 
-            top: 9px; 
-            right: 15px; 
-            z-index: 10; 
-            width: 22px; 
-            height: 22px; 
-            border-radius: 50% 50% 50% 0; 
-            transform: rotate(-45deg); 
-            background: linear-gradient(135deg, #34d399, #10b981, #024b33); 
-            box-shadow: 3px 5px 8px rgba(0, 0, 0, 0.35), inset 1px 2px 3px rgba(255,255,255,0.7);
-        }
-        .nav-logo-pin::after { 
-            content: ''; 
-            position: absolute; 
-            top: 7px;
-            left: 7px;
-            width: 8px; 
-            height: 8px; 
-            background: #ffffff; 
-            border-radius: 50%; 
-            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.5); 
-        }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen">
@@ -234,13 +191,25 @@
     <nav class="fixed w-full z-50 transition-all duration-500 bg-transparent h-24 md:h-28 flex items-center" id="navbar">
         <div class="w-full max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12">
             <div class="flex justify-between items-center w-full">
-                <!-- Logo Updated with Custom CSS Logo -->
+                
+                <!-- NEW BRAND LOGO: Matches the uploaded image perfectly -->
                 <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="navigateTo('home')">
-                    <div class="nav-logo-scene mr-3 md:mr-4 transform group-hover:scale-110 transition-transform duration-500">
-                        <div class="nav-logo-pin"></div>
-                        <div class="nav-logo-building"><i class="fa-solid fa-store"></i></div>
+                    <!-- Layered Icons (Hand + Pin) -->
+                    <div class="relative w-12 h-14 mr-3 md:mr-4 transform group-hover:scale-110 transition-transform duration-500 text-luxuryGreen">
+                        <!-- The Map Pin (Top) -->
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 flex justify-center w-full">
+                            <i class="fa-solid fa-location-dot text-3xl drop-shadow-sm"></i>
+                            <!-- White inner circle of the pin -->
+                            <div class="absolute top-[7px] w-2.5 h-2.5 bg-white rounded-full"></div>
+                        </div>
+                        <!-- The Hand (Bottom) -->
+                        <i class="fa-solid fa-hand-holding text-4xl absolute bottom-0 left-1/2 transform -translate-x-1/2 drop-shadow-md"></i>
                     </div>
-                    <span class="font-serif text-2xl md:text-3xl lg:text-[2rem] font-bold text-luxuryGreen tracking-widest uppercase text-shadow-3d">Oath of Care</span>
+                    <!-- Typography -->
+                    <div class="flex flex-col justify-center">
+                        <span class="font-serif text-2xl md:text-3xl lg:text-[2rem] font-semibold text-luxuryGreen tracking-widest uppercase leading-none drop-shadow-sm">Oath of Care</span>
+                        <span class="font-sans text-[10px] md:text-xs text-luxuryGreen tracking-wide mt-1 font-medium drop-shadow-sm">Pharmacy & Medicine Locator</span>
+                    </div>
                 </div>
                 
                 <!-- Desktop Menu -->
@@ -295,7 +264,7 @@
                 </h1>
                 
                 <p class="relative z-10 text-sm sm:text-base md:text-xl text-smoke mb-10 md:mb-14 font-medium max-w-3xl leading-relaxed px-4 text-shadow-sm">
-                    Locate essential medicines across our exclusive network of verified, high-end pharmacies with precision and ease.
+                    Locate essential medicines across our exclusive network of verified pharmacies with precision and ease.
                 </p>
                 
                 <div class="relative z-10 glass-panel p-3 md:p-5 rounded-[1.5rem] md:rounded-[2rem] shadow-3d-panel w-full max-w-5xl mx-auto">
@@ -1457,7 +1426,6 @@
                 nav.classList.add('bg-transparent');
             }
         });
-        <!--helo-->
     </script>
 </body>
 </html>
