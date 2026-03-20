@@ -142,15 +142,54 @@ def send_verification():
             "content-type": "application/json"
         }
         
+        # Professional Canva-Style Email Template
+        professional_html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f3ef; margin: 0; padding: 40px 20px; }}
+                .container {{ max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; padding: 50px 40px; box-shadow: 0 10px 30px rgba(2, 75, 51, 0.08); text-align: center; border: 1px solid #e8dacc; }}
+                .logo {{ color: #a3c936; font-size: 32px; font-weight: 800; letter-spacing: 3px; margin-bottom: 30px; display: block; font-family: 'Georgia', serif; text-transform: uppercase; }}
+                .logo span {{ color: #024b33; }}
+                .title {{ color: #0a0a0a; font-size: 28px; font-weight: bold; margin-bottom: 15px; }}
+                .subtitle {{ color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 40px; padding: 0 20px; }}
+                .code-box {{ background-color: #fcfcfa; border: 2px dashed #024b33; border-radius: 12px; padding: 25px; margin: 0 auto 40px auto; max-width: 320px; }}
+                .code {{ font-size: 42px; font-weight: 900; color: #024b33; letter-spacing: 12px; margin: 0; padding-left: 12px; }}
+                .warning {{ color: #9ca3af; font-size: 14px; margin-bottom: 40px; }}
+                .footer {{ color: #9ca3af; font-size: 12px; margin-top: 40px; border-top: 1px solid #e8dacc; padding-top: 30px; line-height: 1.5; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="logo"><span>Oath of</span> Care</div>
+                <div class="title">Welcome to Oath of Care!</div>
+                <div class="subtitle">You are almost there. Please use the verification code below to authenticate your account and access the Pharmacy Portal.</div>
+                
+                <div class="code-box">
+                    <p class="code">{code}</p>
+                </div>
+                
+                <div class="warning">If you did not request this code, you can safely ignore this email.</div>
+                
+                <div class="footer">
+                    &copy; {datetime.utcnow().year} Medical Locator Network. All rights reserved.<br>
+                    Angeles, Central Luzon, Philippines.
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
         # Brevo JSON payload format
         payload = {
-            "sender": {"name": "Medical Locator Network", "email": SENDER_EMAIL},
+            "sender": {"name": "Oath of Care Support", "email": SENDER_EMAIL},
             "to": [{"email": email}],
-            "subject": "Pharmacy Portal - Verification Code",
-            "htmlContent": f"<html><body><h3>Pharmacy Registration</h3><p>Ang iyong 6-digit verification code ay: <strong><span style='font-size:24px; color:#024b33;'>{code}</span></strong></p></body></html>"
+            "subject": f"{code} is your Oath of Care verification code",
+            "htmlContent": professional_html_content
         }
 
-        print(f"\n[DEBUG] Sending email to {email} via Brevo API...")
+        print(f"\n[DEBUG] Sending professional email to {email} via Brevo API...")
         response = requests.post(url, json=payload, headers=headers)
         
         if response.status_code in [200, 201, 202]:
