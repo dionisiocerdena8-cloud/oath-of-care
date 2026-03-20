@@ -317,12 +317,12 @@ if __name__ == '__main__':
         db.create_all()
         print("Maaayos na na-create ang mga tables sa PostgreSQL!")
         
-        if not Admin.query.filter_by(Email='admin@oathofcare.com').first():
+        if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
             default_admin = Admin(Email='admin@oathofcare.com', PasswordHash=hashed_admin_pw)
             db.session.add(default_admin)
             db.session.commit()
-            print("Nagawa na ang default admin: admin@oathofcare.com / admin123")
+            print("Nagawa na ang default admin: oathofcare@gmail.com / admin123")
 
     # Inayos natin ang host="0.0.0.0" para makita ni Render at hindi siya mag-"No open HTTP ports"
     port = int(os.environ.get("PORT", 10000))
