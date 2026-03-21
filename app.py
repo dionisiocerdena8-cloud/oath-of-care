@@ -582,12 +582,12 @@ if __name__ == '__main__':
         print("PostgreSQL tables successfully initialized.")
         
         # Generate default admin account to prevent blank databases
-        if not Admin.query.filter_by(Email='admin@oathofcare.com').first():
+        if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
-            default_admin = Admin(Email='admin@oathofcare.com', PasswordHash=hashed_admin_pw)
+            default_admin = Admin(Email='oathofcare@gmail.com', PasswordHash=hashed_admin_pw)
             db.session.add(default_admin)
             db.session.commit()
-            print("Default admin created: admin@oathofcare.com / admin123")
+            print("Default admin created: oathofcare@gmail.com / admin123")
 
     # Dynamic Port allocation for Render hosting deployment
     port = int(os.environ.get("PORT", 10000))
