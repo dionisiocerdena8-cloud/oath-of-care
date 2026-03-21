@@ -494,20 +494,26 @@ def search_medicine():
 @app.route('/api/admin/pending', methods=['GET'])
 def get_pending_pharmacies():
     try:
-        # Fetch actual pending pharmacy requests from database
-        pending = db.session.query(Pharmacy, PharmacyStatus, Barangay).join(
+        # Fetch actual pending pharmacy requests from database, joining Accounts to get the email
+        pending = db.session.query(Pharmacy, PharmacyStatus, Barangay, PharmacyAccount).join(
             PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID
         ).join(
             Barangay, Pharmacy.BarangayID == Barangay.BarangayID
+        ).join(
+            PharmacyAccount, Pharmacy.PharmacyAccountID == PharmacyAccount.PharmacyAccountID
         ).filter(PharmacyStatus.AccountStatus == 'Pending').all()
         
         results = []
-        for pharm, status, brgy in pending:
+        for pharm, status, brgy, account in pending:
             results.append({
                 'id': pharm.PharmacyID,
                 'name': pharm.PharmacyName,
                 'branch': brgy.BarangayName,
-                'status': status.AccountStatus
+                'status': status.AccountStatus,
+                'email': account.Email,
+                'contact': pharm.ContactNumber,
+                'address': pharm.FullAddress,
+                'mapLink': pharm.GoogleMapLink
             })
             
         return jsonify(results), 200
