@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oath of Care | Pharmacy and Medicine Locator</title>
     
-    <!-- External Dependencies -->
+    <!-- Google Fonts: Playfair Display for Luxury, Inter for clean text -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for professional Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js for Admin Analytics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
-        // System UI Configuration
+        // Color and Design Configuration
         tailwind.config = {
             theme: {
                 extend: {
@@ -27,7 +33,7 @@
                         chiffon: '#f4f1eb',    
                         luxuryGreen: '#024b33', 
                         luxuryGreenLight: '#036c4a',
-                        brandLime: '#a3c936', 
+                        brandLime: '#a3c936',
                         goldAccent: '#d4af37',
                         badgeGreen: '#10b981'
                     },
@@ -36,6 +42,7 @@
                         sans: ['"Inter"', 'sans-serif'],
                     },
                     boxShadow: {
+                        /* 3D Shadows for Objects */
                         '3d-panel': '0 30px 60px -10px rgba(2, 75, 51, 0.15), 0 15px 25px -10px rgba(0, 0, 0, 0.1), inset 0 2px 5px rgba(255, 255, 255, 0.8)',
                         '3d-input': 'inset 0 3px 6px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.05), inset 0 -1px 2px rgba(255,255,255,1)',
                         '3d-btn': '0 10px 20px -4px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2)',
@@ -47,25 +54,101 @@
     </script>
 
     <style>
-        body { background-color: #f4f3ef; color: #0a0a0a; overflow-x: hidden; }
-        .text-shadow-3d { text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1); }
-        .text-shadow-sm { text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.08); }
-        .bg-3d-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; overflow: hidden; background-color: #f4f3ef; }
-        .hero-image-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 3s ease-in-out; z-index: -1; }
-        .hero-image-bg.active-bg { opacity: 0.45; }
-        .glass-panel { background: rgba(255, 255, 255, 1); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: var(--tw-shadow-3d-panel); }
-        
-        .view-section { display: none; opacity: 0; }
-        .view-section.active { display: flex; flex-direction: column; animation: premiumGlideIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-        
-        @keyframes premiumGlideIn {
-            from { opacity: 0; transform: scale(0.98) translateY(30px); filter: blur(8px); }
-            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        body {
+            background-color: #f4f3ef;
+            color: #0a0a0a;
+            overflow-x: hidden;
         }
 
-        .btn-luxury { transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1); position: relative; overflow: hidden; z-index: 1; }
-        .btn-luxury:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
-        .btn-luxury::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.7s ease; z-index: -1; }
+        .text-shadow-3d {
+            text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .text-shadow-sm {
+            text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .bg-3d-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+            background-color: #f4f3ef;
+        }
+
+        .hero-image-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+            z-index: -1;
+        }
+
+        .hero-image-bg.active-bg {
+            opacity: 0.45; 
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 1);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: var(--tw-shadow-3d-panel);
+        }
+
+        .view-section {
+            display: none;
+            opacity: 0;
+        }
+
+        .view-section.active {
+            display: flex; 
+            flex-direction: column;
+            animation: premiumGlideIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes premiumGlideIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.98) translateY(30px); 
+                filter: blur(8px);
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1) translateY(0); 
+                filter: blur(0);
+            }
+        }
+
+        .btn-luxury {
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-luxury:disabled { 
+            opacity: 0.7; 
+            cursor: not-allowed; 
+            transform: none !important; 
+            box-shadow: none !important; 
+        }
+
+        .btn-luxury::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.7s ease;
+            z-index: -1;
+        }
+
         .btn-luxury:not(:disabled):hover::before { left: 100%; }
         .btn-luxury:not(:disabled):hover { transform: translateY(-4px); box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.5); }
         .btn-luxury:not(:disabled):active { transform: translateY(1px); box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0,0,0,0.2); }
@@ -74,17 +157,31 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #064e3b; border-radius: 10px; }
 
-        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; }
-        .toast { background: #0a0a0a; color: #f4f1eb; padding: 14px 20px; border-left: 4px solid #064e3b; border-radius: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif; font-size: 0.8rem; }
-        @media (min-width: 768px) { .toast { padding: 18px 28px; font-size: 0.9rem; } }
+        #toast-container {
+            position: fixed; bottom: 30px; right: 30px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        .toast {
+            background: #0a0a0a; color: #f4f1eb; padding: 14px 20px;
+            border-left: 4px solid #064e3b; border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+        }
+        @media (min-width: 768px) {
+            .toast { padding: 18px 28px; font-size: 0.9rem; }
+        }
         .toast.show { transform: translateX(0); }
         
-        input:focus, select:focus, textarea:focus { outline: none; }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+        }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen">
 
-    <!-- Background Layer -->
+    <!-- Background Images -->
     <div class="bg-3d-container">
         <div id="bg-layer-1" class="hero-image-bg active-bg" style="background-image: url('https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1920&auto=format&fit=crop');"></div>
         <div id="bg-layer-2" class="hero-image-bg"></div>
@@ -95,7 +192,7 @@
         <div class="w-full max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12">
             <div class="flex justify-between items-center w-full">
                 
-                <!-- Brand Identity -->
+                <!-- NEW BRAND LOGO -->
                 <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="navigateTo('home')">
                     <div class="relative w-12 h-14 mr-3 md:mr-4 transform group-hover:scale-110 transition-transform duration-500 text-luxuryGreen">
                         <div class="absolute top-0 left-1/2 transform -translate-x-1/2 flex justify-center w-full">
@@ -110,10 +207,10 @@
                     </div>
                 </div>
                 
-                <!-- Desktop Menu -->
+                <!-- Desktop Menu (Home Button Removed completely) -->
                 <div class="hidden md:flex space-x-8 lg:space-x-12 items-center">
-                    <a href="#" onclick="checkAuthAndNavigate('pharmacy')" id="navPharmacyBtn" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">Pharmacy</a>
-                    <a href="#" onclick="checkAuthAndNavigate('admin')" id="navAdminBtn" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">Admin</a>
+                    <a href="#" onclick="navigateTo('login', 'pharmacy')" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">Pharmacy</a>
+                    <a href="#" onclick="navigateTo('login', 'admin')" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">Admin</a>
                     <button onclick="handleLogoutGlobal()" id="navLogoutBtn" class="hidden text-rose hover:text-red-700 font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">Log Out</button>
                     <button onclick="handleFindMedicineClick()" class="bg-luxuryGreen text-white px-8 py-3.5 lg:px-10 lg:py-4 rounded-full font-bold btn-luxury text-[10px] lg:text-xs uppercase tracking-widest shadow-3d-btn">
                         Find Medicine
@@ -132,8 +229,8 @@
         <!-- Mobile Menu Dropdown -->
         <div id="mobileMenu" class="hidden md:hidden glass-panel absolute top-24 left-0 w-full border-t border-silk shadow-3d-panel">
             <div class="px-6 pt-4 pb-8 space-y-3 flex flex-col text-center">
-                <a href="#" onclick="checkAuthAndNavigate('pharmacy'); toggleMobileMenu()" class="block px-4 py-4 text-velvet font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">Pharmacy</a>
-                <a href="#" onclick="checkAuthAndNavigate('admin'); toggleMobileMenu()" class="block px-4 py-4 text-velvet font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">Admin</a>
+                <a href="#" onclick="navigateTo('login', 'pharmacy'); toggleMobileMenu()" class="block px-4 py-4 text-velvet font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">Pharmacy Portal</a>
+                <a href="#" onclick="navigateTo('login', 'admin'); toggleMobileMenu()" class="block px-4 py-4 text-velvet font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">Admin Portal</a>
                 <button onclick="handleLogoutGlobal(); toggleMobileMenu()" id="navLogoutBtnMobile" class="hidden block px-4 py-4 text-rose font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">Log Out</button>
                 <button onclick="handleFindMedicineClick(); toggleMobileMenu()" class="mt-6 w-full bg-luxuryGreen text-white px-8 py-4 rounded-2xl font-bold btn-luxury text-[11px] uppercase tracking-[0.15em] shadow-3d-btn">
                     Find Medicine
@@ -149,6 +246,7 @@
         <section id="view-home" class="view-section active flex-grow justify-center pb-16 md:pb-24 relative z-10">
             <div class="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8 md:py-14 flex flex-col items-center justify-center text-center relative">
                 
+                <!-- SCROLLING SMOKE/GLOW EFFECT -->
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[110%] max-w-[700px] h-[140%] max-h-[400px] pointer-events-none z-0 flex items-center justify-center opacity-75">
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#f4f3ef_30%,transparent_70%)]"></div>
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(2,75,51,0.2)_10%,transparent_60%)] blur-[15px]"></div>
@@ -161,7 +259,7 @@
                 </h1>
                 
                 <p class="relative z-10 text-sm sm:text-base md:text-xl text-smoke mb-10 md:mb-14 font-medium max-w-3xl leading-relaxed px-4 text-shadow-sm">
-                    Locate essential medicines across our exclusive network of verified pharmacies with precision and ease.
+                    Locate essential medicines across our exclusive network of verified pharmacies with precision and ease. <span class="font-bold text-velvet">Requires a verified account.</span>
                 </p>
                 
                 <div class="relative z-10 glass-panel p-3 md:p-5 rounded-[1.5rem] md:rounded-[2rem] shadow-3d-panel w-full max-w-5xl mx-auto">
@@ -197,7 +295,7 @@
                 </div>
             </div>
 
-            <!-- Search Results Component -->
+            <!-- Search Results Display -->
             <div id="searchResults" class="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-12 py-10 md:py-16 hidden w-full relative z-10">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 border-b border-silk pb-6 gap-4 relative">
                     <div class="absolute -top-10 -left-10 w-[300px] h-[150px] bg-[radial-gradient(ellipse_at_center,#f4f3ef_40%,transparent_70%)] pointer-events-none z-[-1] opacity-90"></div>
@@ -212,25 +310,29 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 relative z-10" id="resultsGrid">
-                    <!-- Real Search Results Rendered via JS -->
+                    <!-- Results will be added here via JS -->
                 </div>
             </div>
         </section>
 
-        <!-- ================= BUSINESS LOGIN VIEW ================= -->
+
+        <!-- ================= BUSINESS LOGIN VIEW (Pharmacy & Admin) ================= -->
         <section id="view-login" class="view-section flex-grow justify-center items-center py-10 md:py-16 px-6 relative z-10">
+            
             <div class="bg-white p-10 sm:p-12 md:p-14 rounded-[2rem] shadow-3d-panel w-full max-w-[500px] relative border border-silk/50">
+                
                 <div class="text-center mb-10 pt-2">
-                    <h2 class="text-4xl md:text-[2.75rem] font-serif font-bold text-velvet tracking-tight mb-3 text-shadow-3d" id="loginTitle">Business Portal</h2>
+                    <h2 class="text-4xl md:text-[2.75rem] font-serif font-bold text-velvet tracking-tight mb-3 text-shadow-3d" id="loginTitle">Pharmacy Portal</h2>
                     <p class="text-smoke text-base font-medium text-shadow-sm" id="loginSubtitle">Enter credentials to access the system.</p>
                 </div>
 
+                <!-- Side-by-Side Role Toggles -->
                 <div class="flex justify-center mb-10 bg-[#f5f1ea] p-2 rounded-2xl shadow-3d-input border border-silk/50">
                     <button onclick="switchLoginRole('pharmacy')" id="btnRolePharmacy" class="flex-1 py-4 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all bg-velvet text-white shadow-3d-btn">Pharmacy</button>
-                    <button onclick="switchLoginRole('admin')" id="btnRoleAdmin" class="flex-1 py-4 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all text-smoke hover:text-velvet drop-shadow-sm">Admin</button>
+                    <button onclick="switchLoginRole('admin')" id="btnRoleAdmin" class="flex-1 py-4 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all text-smoke hover:text-velvet drop-shadow-sm">Administrator</button>
                 </div>
 
-                <form id="loginForm" onsubmit="handleBusinessLogin(event)" class="space-y-6 md:space-y-8">
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6 md:space-y-8">
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.15em] mb-3 text-shadow-sm">Email Address</label>
                         <input type="email" id="loginEmail" autocomplete="off" required placeholder="business@example.com" class="w-full px-6 py-4 md:py-5 rounded-2xl border-2 border-[#f1eada] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet placeholder-[#94a3b8] outline-none shadow-3d-input">
@@ -244,7 +346,6 @@
                                 <i class="fa-solid fa-eye text-xl" id="eyeIconLogin"></i>
                             </button>
                         </div>
-                        
                         <div class="flex justify-end mt-4">
                             <a href="#" onclick="openForgotModal()" class="text-[11px] md:text-xs text-luxuryGreen hover:text-velvet font-bold uppercase tracking-[0.15em] transition-colors text-shadow-sm">Forgot Password?</a>
                         </div>
@@ -267,6 +368,7 @@
         <section id="view-pharmacy" class="view-section flex-grow relative z-10">
             <div class="flex flex-col md:flex-row h-full md:min-h-[calc(100vh-10rem)] max-w-[1600px] mx-auto w-full px-6 sm:px-10 pb-12 pt-6 gap-8 md:gap-12 items-start">
                 
+                <!-- Mobile Navigation Tabs -->
                 <div class="md:hidden w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-3d-panel border border-white flex p-2 gap-2 mb-4">
                     <button onclick="switchPharmTab('update')" id="mTab-p-update" class="flex-1 py-3.5 rounded-xl bg-velvet text-white font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 shadow-3d-btn">
                         <i class="fa-solid fa-address-card drop-shadow-md"></i> Profile
@@ -276,6 +378,7 @@
                     </button>
                 </div>
 
+                <!-- Sidebar (Desktop only) -->
                 <div class="w-80 bg-white/95 backdrop-blur-xl rounded-[2.5rem] flex-col hidden md:flex overflow-hidden border border-white shadow-3d-panel sticky top-32 h-[calc(100vh-12rem)] shrink-0">
                     <div class="p-10 bg-white/50 border-b border-silk/60 text-center flex flex-col items-center">
                         <div class="w-20 h-20 bg-[#064e3b] rounded-[24px] flex items-center justify-center text-white text-3xl mb-5 shadow-3d-card relative">
@@ -305,10 +408,11 @@
                     </div>
                 </div>
 
+                <!-- Main Content Area -->
                 <div class="flex-grow w-full bg-white/95 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-white shadow-3d-panel h-full md:min-h-[calc(100vh-12rem)]">
                     <div class="p-8 sm:p-12 md:p-16">
                         
-                        <!-- Pharmacy Profile Tab -->
+                        <!-- Profile Tab -->
                         <div id="pContent-update" class="block">
                             <div class="mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8">
                                 <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet text-shadow-3d">Store Profile</h2>
@@ -425,7 +529,6 @@
                 <div class="flex-grow w-full bg-white/95 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-white shadow-3d-panel h-full md:min-h-[calc(100vh-12rem)]">
                     <div class="p-8 sm:p-12 md:p-16">
                         
-                        <!-- Admin Application Requests Tab -->
                         <div id="aContent-requests" class="block">
                             <div class="mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8">
                                 <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet text-shadow-3d">Pending Applications</h2>
@@ -484,9 +587,9 @@
 
     </main>
 
-    <!-- ================= CANVA-STYLE USER AUTHENTICATION MODAL ================= -->
+    <!-- ================= USER AUTHENTICATION MODAL ================= -->
     <div id="userAuthModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-[450px] relative border border-silk/50 mx-2" style="animation: premiumGlideIn 0.4s forwards;">
+        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-[450px] relative border border-silk/50 mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.4s forwards;">
             <button onclick="closeUserAuthModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb] transition-colors"><i class="fa-solid fa-times text-base"></i></button>
 
             <!-- User Login Form -->
@@ -506,17 +609,17 @@
                     <button type="submit" id="btnUserLogin" class="w-full bg-[#024b33] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-2">Sign In</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
-                    No account yet? <button type="button" onclick="toggleUserAuthForms('signup')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Create Account</button>
+                    No account yet? <button type="button" onclick="toggleUserAuthForms('signup1')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Create Account</button>
                 </div>
             </div>
 
-            <!-- User Registration Form -->
+            <!-- User Registration: Step 1 (Details) -->
             <div id="userSignupFormWrapper" class="hidden">
                 <div class="text-center mb-8">
                     <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">WELCOME</h3>
                     <p class="text-smoke text-sm">to Oath of Care Pharmacy and Medicine Locator.</p>
                 </div>
-                <form id="patientSignupForm" onsubmit="handleUserSignupSubmit(event)" class="space-y-4">
+                <form id="patientSignupForm1" onsubmit="handleUserSignupStep1(event)" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
                         <input type="text" id="userRegFname" autocomplete="off" required placeholder="First Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
                         <input type="text" id="userRegLname" autocomplete="off" required placeholder="Last Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
@@ -528,12 +631,28 @@
                             <i class="fa-solid fa-eye text-lg" id="eyeIconUserReg"></i>
                         </button>
                     </div>
-                    <button type="submit" id="btnUserSignup" class="w-full bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Register</button>
+                    <button type="submit" id="btnUserSignup1" class="w-full bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Next Step</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
                     Already registered? <button type="button" onclick="toggleUserAuthForms('login')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Sign In</button>
                 </div>
             </div>
+
+            <!-- User Registration: Step 2 (Verify Code) -->
+            <div id="userVerifyFormWrapper" class="hidden">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">Verify Email</h3>
+                    <p class="text-smoke text-sm">Please enter the 6-digit code sent to your email.</p>
+                </div>
+                <form id="patientSignupForm2" onsubmit="handleUserSignupStep2(event)" class="space-y-4">
+                    <input type="text" id="userVerifyCode" autocomplete="off" required maxlength="6" placeholder="XXXXXX" class="w-full px-5 py-6 rounded-xl border border-silk shadow-3d-input outline-none text-2xl tracking-[0.6em] font-bold text-center uppercase transition-all">
+                    <button type="submit" id="btnUserSignup2" class="w-full bg-luxuryGreen text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Create Account</button>
+                </form>
+                <div class="mt-6 text-center text-xs font-bold text-smoke">
+                    <button type="button" id="userResendBtn" onclick="handleResendCode('user')" class="text-smoke uppercase tracking-widest hover:text-velvet">Resend Code</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -614,6 +733,9 @@
                         </div>
                     </div>
                     <button type="submit" id="btnPharmReg1" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Next Step</button>
+                    <div class="mt-8 text-center text-xs md:text-sm text-smoke font-medium text-shadow-sm">
+                        Already have an account? <button type="button" onclick="closePharmacyRegistration()" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm">Log In</button>
+                    </div>
                 </form>
             </div>
 
@@ -686,12 +808,12 @@
                     </div>
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Pharmacy Logo / Shop Photo</label>
-                        <input type="file" required accept="image/png, image/jpeg, image/jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
+                        <input type="file" id="regStorePhoto" required accept=".png, .jpeg, .jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
                     </div>
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-1 ml-1 text-shadow-sm">Business Permit Photo</label>
-                        <p class="text-[10px] text-smoke mb-2 ml-1">* Must be a valid, readable permit image.</p>
-                        <input type="file" required accept="image/png, image/jpeg, image/jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
+                        <p class="text-[10px] text-smoke mb-2 ml-1">* Must be a valid, readable permit image or PDF.</p>
+                        <input type="file" id="regPermitPhoto" required accept=".png, .jpeg, .jpg, .pdf" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
                     </div>
                     <button type="submit" id="btnPharmReg3" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Submit Registration</button>
                 </form>
@@ -699,7 +821,7 @@
         </div>
     </div>
 
-    <!-- Admin Review Modal (Secure Application Review) -->
+    <!-- Admin Review Modal (Secure Application Review with Real Images) -->
     <div id="adminReviewModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[110] p-4 transition-opacity duration-500">
         <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-4xl relative border border-silk/50 mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.4s forwards;">
             <button onclick="closeAdminReview()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb] transition-colors"><i class="fa-solid fa-times text-base"></i></button>
@@ -734,25 +856,26 @@
                     </div>
                 </div>
                 
-                <!-- Image Validation Display Placeholders -->
+                <!-- Secure Base64 Rendered Images from Database -->
                 <div class="space-y-6">
                     <div>
                         <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Store Photo</p>
-                        <div class="w-full h-32 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner">
-                            <i class="fa-solid fa-image text-3xl mb-2 drop-shadow-md"></i> 
-                            <span class="text-xs font-bold uppercase tracking-widest">Image Verified</span>
+                        <div class="w-full h-40 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner overflow-hidden">
+                            <img id="revStorePhotoImg" src="" alt="Store Photo" class="w-full h-full object-cover hidden">
+                            <span id="revStorePhotoText" class="text-xs font-bold uppercase tracking-widest hidden">No Image</span>
                         </div>
                     </div>
                     <div>
                         <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Business Permit</p>
-                        <div class="w-full h-40 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner">
-                            <i class="fa-solid fa-file-contract text-4xl mb-2 drop-shadow-md"></i> 
-                            <span class="text-xs font-bold uppercase tracking-widest">Document Verified</span>
+                        <div class="w-full h-48 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner overflow-hidden relative">
+                            <img id="revPermitPhotoImg" src="" alt="Business Permit" class="w-full h-full object-cover hidden">
+                            <span id="revPermitPhotoText" class="text-xs font-bold uppercase tracking-widest hidden">No Permit Uploaded</span>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Secure Action Dispatchers -->
             <div class="flex gap-4 border-t border-silk pt-6">
                 <button id="btnRevApprove" class="flex-1 bg-[#024b33] hover:bg-velvet text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn transition-colors">Approve Application</button>
                 <button id="btnRevReject" class="flex-1 bg-white text-rose border border-rose/30 px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-rose hover:text-white transition-colors shadow-3d-card">Reject Application</button>
@@ -916,6 +1039,9 @@
         let tempSignupEmail = ''; 
         let tempForgotEmail = ''; 
         let tempPharmEmail = '';
+        let tempStorePhotoBase64 = null;
+        let tempPermitPhotoBase64 = null;
+
         let resendTimers = { signup: null, forgot: null, pharm: null };
         let analyticsChartInstance = null;
         let globalPendingApplications = []; // Secure cache for admin review modal
@@ -944,6 +1070,16 @@
             updateNavBasedOnAuth();
             navigateTo('home');
             showToast('Logged out successfully.');
+        }
+
+        // --- Base64 Conversion Utility for Secure Image Storage ---
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
         }
 
         // --- Rotating 3D Background ---
@@ -1060,16 +1196,21 @@
         function closeUserAuthModal() {
             document.getElementById('userAuthModal').classList.add('hidden');
             document.getElementById('patientLoginForm').reset();
-            document.getElementById('patientSignupForm').reset();
+            document.getElementById('patientSignupForm1').reset();
+            document.getElementById('patientSignupForm2').reset();
+            document.getElementById('userSignupFormWrapper').classList.remove('hidden');
+            document.getElementById('userVerifyFormWrapper').classList.add('hidden');
         }
 
         function toggleUserAuthForms(view) {
             if(view === 'login') {
                 document.getElementById('userLoginFormWrapper').classList.remove('hidden');
                 document.getElementById('userSignupFormWrapper').classList.add('hidden');
+                document.getElementById('userVerifyFormWrapper').classList.add('hidden');
             } else {
                 document.getElementById('userLoginFormWrapper').classList.add('hidden');
                 document.getElementById('userSignupFormWrapper').classList.remove('hidden');
+                document.getElementById('userVerifyFormWrapper').classList.add('hidden');
             }
         }
 
@@ -1104,32 +1245,74 @@
             } finally { unlock(); }
         }
 
-        async function handleUserSignupSubmit(e) {
+        // Patient Multi-Step Registration
+        async function handleUserSignupStep1(e) {
             e.preventDefault();
-            const unlock = lockButton('btnUserSignup');
-            const passInput = document.getElementById('userRegPass');
-            const data = {
-                fname: document.getElementById('userRegFname').value,
-                lname: document.getElementById('userRegLname').value,
-                email: document.getElementById('userRegEmail').value,
-                password: passInput.value
-            };
+            tempSignupEmail = document.getElementById('userRegEmail').value;
+            const unlock = lockButton('btnUserSignup1');
+
             try {
-                const response = await fetch(`${API_URL}/register-patient`, {
-                    method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+                const response = await fetch(`${API_URL}/api/send-verification`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: tempSignupEmail })
                 });
-                const result = await response.json();
-                if(response.ok){ 
-                    showToast(result.message); 
-                    e.target.reset();
-                    toggleUserAuthForms('login'); 
-                } else { 
-                    showToast(result.error, 'error'); 
-                    passInput.value = ''; // Clean field on error
+                if(response.ok) {
+                    document.getElementById('userSignupFormWrapper').classList.add('hidden');
+                    document.getElementById('userVerifyFormWrapper').classList.remove('hidden');
+                    showToast('Verification code sent to email!');
+                    startResendCooldown('userResendBtn', 'signup'); 
+                } else {
+                    const res = await response.json();
+                    showToast(res.error || 'Failed to send', 'error');
                 }
-            } catch(err) { showToast('Network Error', 'error'); } finally { unlock(); }
+            } catch (error) {
+                showToast('Could not reach backend', 'error');
+            } finally { unlock(); }
         }
 
+        async function handleUserSignupStep2(e) {
+            e.preventDefault();
+            const code = document.getElementById('userVerifyCode').value;
+            const unlock = lockButton('btnUserSignup2');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/verify-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: tempSignupEmail, code: code })
+                });
+                
+                if(response.ok) {
+                    // Code verified! Now register the actual user.
+                    if (resendTimers.signup) clearInterval(resendTimers.signup);
+                    
+                    const data = {
+                        fname: document.getElementById('userRegFname').value,
+                        lname: document.getElementById('userRegLname').value,
+                        email: document.getElementById('userRegEmail').value,
+                        password: document.getElementById('userRegPass').value
+                    };
+                    
+                    const regResponse = await fetch(`${API_URL}/register-patient`, {
+                        method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+                    });
+                    
+                    const regResult = await regResponse.json();
+                    if(regResponse.ok){ 
+                        showToast(regResult.message); 
+                        closeUserAuthModal();
+                        toggleUserAuthForms('login'); 
+                    } else { 
+                        showToast(regResult.error, 'error'); 
+                    }
+                } else {
+                    showToast('Invalid verification code', 'error');
+                }
+            } catch(error) {
+                showToast('Could not reach backend', 'error');
+            } finally { unlock(); }
+        }
 
         // --- BUSINESS LOGIN (Pharmacy & Admin) ---
         async function handleLogin(e) {
@@ -1211,10 +1394,8 @@
                 } else if (response.ok && data.results.length > 0) {
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
-                        let shopImage = 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
-                        if (brgy === 'Minuyan') shopImage = 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80';
-                        else if (brgy === 'San Mateo') shopImage = 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&q=80';
-                        else if (brgy === 'Bigte') shopImage = 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&q=80'; 
+                        // Use real image if exists, else fallback
+                        let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
 
                         grid.innerHTML += `
                             <div class="bg-white rounded-[24px] shadow-3d-card hover:shadow-[0_25px_50px_-12px_rgba(2,75,51,0.25)] transition-all duration-500 overflow-hidden flex flex-col group border border-silk/50 relative z-10">
@@ -1276,6 +1457,7 @@
             // Standard static embed view first
             mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
             
+            // In-app Waze Routing feature
             navBtn.onclick = () => {
                 showToast('Requesting GPS location for live routing...', 'success');
                 if (navigator.geolocation) {
@@ -1283,7 +1465,8 @@
                         (position) => {
                             const origin = `${position.coords.latitude},${position.coords.longitude}`;
                             // Update iframe strictly to Waze/Maps direction interface inside the app
-                            mapFrame.src = `https://maps.google.com/maps?saddr=${origin}&daddr=${encodedDest}&output=embed`;
+                            mapFrame.src = `https://www.google.com/maps/embed/v1/directions?origin=${origin}&destination=${encodedDest}&mode=driving`;
+                            navBtn.classList.add('hidden');
                         },
                         (error) => {
                             showToast('GPS access denied. Cannot generate live route.', 'error');
@@ -1527,6 +1710,29 @@
             document.getElementById('revMap').href = appData.mapLink;
             document.getElementById('revMap').innerText = appData.mapLink;
             
+            // Set the Base64 Images for visual verification
+            const storeImg = document.getElementById('revStorePhotoImg');
+            const storeText = document.getElementById('revStorePhotoText');
+            if(appData.storePhoto) {
+                storeImg.src = appData.storePhoto;
+                storeImg.classList.remove('hidden');
+                storeText.classList.add('hidden');
+            } else {
+                storeImg.classList.add('hidden');
+                storeText.classList.remove('hidden');
+            }
+
+            const permitImg = document.getElementById('revPermitPhotoImg');
+            const permitText = document.getElementById('revPermitPhotoText');
+            if(appData.permitPhoto) {
+                permitImg.src = appData.permitPhoto;
+                permitImg.classList.remove('hidden');
+                permitText.classList.add('hidden');
+            } else {
+                permitImg.classList.add('hidden');
+                permitText.classList.remove('hidden');
+            }
+
             document.getElementById('adminReviewModal').classList.remove('hidden');
         }
 
@@ -1621,7 +1827,21 @@
             document.getElementById('pharmSignupForm1').reset();
             document.getElementById('pharmSignupForm2').reset();
             document.getElementById('pharmSignupForm3').reset();
+            tempStorePhotoBase64 = null;
+            tempPermitPhotoBase64 = null;
         }
+
+        // Attach listeners to file inputs to cache the base64 conversions securely
+        document.getElementById('regStorePhoto').addEventListener('change', async function() {
+            if(this.files && this.files[0]) {
+                tempStorePhotoBase64 = await fileToBase64(this.files[0]);
+            }
+        });
+        document.getElementById('regPermitPhoto').addEventListener('change', async function() {
+            if(this.files && this.files[0]) {
+                tempPermitPhotoBase64 = await fileToBase64(this.files[0]);
+            }
+        });
 
         async function handlePharmSignupStep1(e) {
             e.preventDefault();
@@ -1677,6 +1897,12 @@
             e.preventDefault();
             const unlock = lockButton('btnPharmReg3');
             
+            if (!tempStorePhotoBase64 || !tempPermitPhotoBase64) {
+                showToast('Please upload both the Store Photo and Business Permit.', 'error');
+                unlock();
+                return;
+            }
+
             const signupData = {
                 email: tempPharmEmail,
                 password: document.getElementById('signupPharmPassword').value,
@@ -1684,7 +1910,9 @@
                 barangay: document.getElementById('regBarangay').value,
                 contactNumber: document.getElementById('regContact').value,
                 address: document.getElementById('regAddress').value,
-                mapLink: document.getElementById('regMapLink').value
+                mapLink: document.getElementById('regMapLink').value,
+                storePhoto: tempStorePhotoBase64,
+                permitPhoto: tempPermitPhotoBase64
             };
 
             try {
@@ -1799,27 +2027,6 @@
             } catch(err) {
                 showToast('Backend offline', 'error');
             } finally { unlock(); }
-        }
-
-        // Floating Toast Message Alert
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            let iconClass = 'fa-circle-check text-luxuryGreen';
-            let borderClass = 'border-luxuryGreen';
-            if(type === 'error') { iconClass = 'fa-circle-xmark text-rose'; borderClass = 'border-rose'; }
-
-            toast.className = `toast border-l-4 ${borderClass}`;
-            toast.innerHTML = `<i class="fa-solid ${iconClass} text-xl drop-shadow-md"></i> <span class="font-bold tracking-wide text-shadow-sm">${message}</span>`;
-            
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 500); 
-            }, 3000);
         }
 
         // Mobile Nav Trigger Menu
