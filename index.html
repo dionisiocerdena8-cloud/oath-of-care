@@ -209,15 +209,15 @@
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8 lg:space-x-12 items-center">
-                    <a href="#" onclick="navigateTo('login', 'pharmacy')" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">Pharmacy</a>
-                    <a href="#" onclick="navigateTo('login', 'admin')" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">Admin</a>
-                    <button onclick="handleLogoutGlobal()" id="navLogoutBtn" class="hidden text-rose hover:text-red-700 font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">Log Out</button>
+                    <a href="#" onclick="checkAuthAndNavigate('pharmacy')" id="navPharmacyBtn" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">PHARMACY</a>
+                    <a href="#" onclick="checkAuthAndNavigate('admin')" id="navAdminBtn" class="text-velvet hover:text-luxuryGreen font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">ADMIN</a>
+                    <button onclick="handleLogoutGlobal()" id="navLogoutBtn" class="hidden text-rose hover:text-red-700 font-bold transition-colors text-[10px] lg:text-xs uppercase tracking-[0.15em] text-shadow-sm">LOG OUT</button>
                     <button onclick="handleFindMedicineClick()" class="bg-luxuryGreen text-white px-8 py-3.5 lg:px-10 lg:py-4 rounded-full font-bold btn-luxury text-[10px] lg:text-xs uppercase tracking-widest shadow-3d-btn">
-                        Find Medicine
+                        FIND MEDICINE
                     </button>
                 </div>
 
-                <!-- Mobile Menu Button -->
+                <!-- Mobile Menu Trigger -->
                 <div class="md:hidden flex items-center">
                     <button class="text-luxuryGreen text-3xl focus:outline-none p-2 drop-shadow-md" onclick="toggleMobileMenu()">
                         <i class="fa-solid fa-bars" id="mobileIcon"></i>
@@ -226,27 +226,26 @@
             </div>
         </div>
 
-        <!-- Mobile Menu Dropdown -->
+        <!-- Mobile View Navigation -->
         <div id="mobileMenu" class="hidden md:hidden glass-panel absolute top-24 left-0 w-full border-t border-silk shadow-3d-panel">
             <div class="px-6 pt-4 pb-8 space-y-3 flex flex-col text-center">
-                <a href="#" onclick="navigateTo('login', 'pharmacy'); toggleMobileMenu()" class="block px-4 py-4 text-velvet font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">Pharmacy Portal</a>
-                <a href="#" onclick="navigateTo('login', 'admin'); toggleMobileMenu()" class="block px-4 py-4 text-velvet font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">Admin Portal</a>
-                <button onclick="handleLogoutGlobal(); toggleMobileMenu()" id="navLogoutBtnMobile" class="hidden block px-4 py-4 text-rose font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">Log Out</button>
+                <a href="#" onclick="checkAuthAndNavigate('pharmacy'); toggleMobileMenu()" class="block px-4 py-4 text-velvet font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">PHARMACY</a>
+                <a href="#" onclick="checkAuthAndNavigate('admin'); toggleMobileMenu()" class="block px-4 py-4 text-velvet font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">ADMIN</a>
+                <button onclick="handleLogoutGlobal(); toggleMobileMenu()" id="navLogoutBtnMobile" class="hidden block px-4 py-4 text-rose font-bold text-[11px] uppercase tracking-[0.15em] border-b border-silk/50 text-shadow-sm">LOG OUT</button>
                 <button onclick="handleFindMedicineClick(); toggleMobileMenu()" class="mt-6 w-full bg-luxuryGreen text-white px-8 py-4 rounded-2xl font-bold btn-luxury text-[11px] uppercase tracking-[0.15em] shadow-3d-btn">
-                    Find Medicine
+                    FIND MEDICINE
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main App Area -->
+    <!-- Main View Routing Area -->
     <main class="flex-grow pt-24 md:pt-32 flex flex-col relative z-10">
 
         <!-- ================= HOME / SEARCH VIEW ================= -->
         <section id="view-home" class="view-section active flex-grow justify-center pb-16 md:pb-24 relative z-10">
             <div class="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8 md:py-14 flex flex-col items-center justify-center text-center relative">
                 
-                <!-- SCROLLING SMOKE/GLOW EFFECT -->
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[110%] max-w-[700px] h-[140%] max-h-[400px] pointer-events-none z-0 flex items-center justify-center opacity-75">
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#f4f3ef_30%,transparent_70%)]"></div>
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(2,75,51,0.2)_10%,transparent_60%)] blur-[15px]"></div>
@@ -262,6 +261,7 @@
                     Locate essential medicines across our exclusive network of verified pharmacies with precision and ease. <span class="font-bold text-velvet">Requires a verified account.</span>
                 </p>
                 
+                <!-- Main Search Input Panel -->
                 <div class="relative z-10 glass-panel p-3 md:p-5 rounded-[1.5rem] md:rounded-[2rem] shadow-3d-panel w-full max-w-5xl mx-auto">
                     <form onsubmit="handleSearch(event)" class="flex flex-col md:flex-row gap-3 md:gap-4 items-center">
                         <div class="flex-grow relative w-full">
@@ -272,10 +272,19 @@
                             <div class="absolute left-5 md:left-6 top-1/2 transform -translate-y-1/2 text-smoke/70 text-base md:text-lg drop-shadow-md"><i class="fa-solid fa-location-crosshairs"></i></div>
                             <select id="searchBarangay" required class="w-full pl-12 md:pl-14 pr-10 md:pr-12 py-4 md:py-5 rounded-xl md:rounded-2xl border border-transparent bg-white focus:bg-[#fcfcfa] focus:border-luxuryGreen/50 transition-all text-velvet font-bold appearance-none text-sm md:text-base cursor-pointer outline-none shadow-3d-input text-shadow-sm">
                                 <option value="" disabled selected>Select Area...</option>
-                                <option value="Poblacion">Poblacion</option>
-                                <option value="Minuyan">Minuyan</option>
-                                <option value="San Mateo">San Mateo</option>
+                                <option value="Bangkal">Bangkal</option>
+                                <option value="Baraka">Baraka</option>
                                 <option value="Bigte">Bigte</option>
+                                <option value="Bitungol">Bitungol</option>
+                                <option value="Friendship Village Resources">Friendship Village Resources</option>
+                                <option value="Matictic">Matictic</option>
+                                <option value="Minuyan">Minuyan</option>
+                                <option value="Partida">Partida</option>
+                                <option value="Pinagtulayan">Pinagtulayan</option>
+                                <option value="Poblacion">Poblacion</option>
+                                <option value="San Lorenzo">San Lorenzo</option>
+                                <option value="San Mateo">San Mateo</option>
+                                <option value="Tigbe">Tigbe</option>
                             </select>
                             <div class="absolute right-5 md:right-6 top-1/2 transform -translate-y-1/2 text-smoke pointer-events-none drop-shadow-sm"><i class="fa-solid fa-chevron-down text-sm"></i></div>
                         </div>
@@ -286,7 +295,7 @@
                 </div>
             </div>
 
-            <!-- Search Results Display -->
+            <!-- Dynamic Search Results Grid -->
             <div id="searchResults" class="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-12 py-10 md:py-16 hidden w-full relative z-10">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 border-b border-silk pb-6 gap-4 relative">
                     <div class="absolute -top-10 -left-10 w-[300px] h-[150px] bg-[radial-gradient(ellipse_at_center,#f4f3ef_40%,transparent_70%)] pointer-events-none z-[-1] opacity-90"></div>
@@ -301,78 +310,61 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 relative z-10" id="resultsGrid">
-                    <!-- Results will be added here via JS -->
+                    <!-- Data populated via backend API request -->
                 </div>
             </div>
         </section>
 
-
-        <!-- ================= LOGIN / SIGNUP VIEW ================= -->
+        <!-- ================= BUSINESS LOGIN VIEW (Pharmacy & Admin Only) ================= -->
         <section id="view-login" class="view-section flex-grow justify-center items-center py-10 md:py-16 px-6 relative z-10">
-            
             <div class="bg-white p-10 sm:p-12 md:p-14 rounded-[2rem] shadow-3d-panel w-full max-w-[500px] relative border border-silk/50">
-                
-                <div class="text-center mb-10 pt-2">
-                    <h2 class="text-4xl md:text-[2.75rem] font-serif font-bold text-velvet tracking-tight mb-3 text-shadow-3d" id="loginTitle">Pharmacy Portal</h2>
-                    <p class="text-smoke text-base font-medium text-shadow-sm" id="loginSubtitle">Enter credentials to access the system.</p>
+                <div class="text-center mb-8 pt-2">
+                    <h2 class="text-4xl md:text-[2.75rem] font-serif font-bold text-velvet tracking-tight mb-3 text-shadow-3d" id="loginTitle">Business Portal</h2>
+                    <p class="text-smoke text-sm md:text-base font-medium text-shadow-sm" id="loginSubtitle">Enter authorized credentials to access.</p>
                 </div>
 
-                <!-- Side-by-Side Role Toggles -->
-                <div class="flex justify-center mb-10 bg-[#f5f1ea] p-2 rounded-2xl shadow-3d-input border border-silk/50">
-                    <button onclick="switchLoginRole('pharmacy')" id="btnRolePharmacy" class="flex-1 py-4 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all bg-velvet text-white shadow-3d-btn">Pharmacy</button>
-                    <button onclick="switchLoginRole('admin')" id="btnRoleAdmin" class="flex-1 py-4 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all text-smoke hover:text-velvet drop-shadow-sm">Administrator</button>
+                <!-- Roles: Strictly Pharmacy & Admin -->
+                <div class="flex justify-center mb-8 bg-[#f5f1ea] p-2 rounded-2xl shadow-3d-input border border-silk/50 overflow-x-auto no-scrollbar">
+                    <button onclick="switchLoginRole('pharmacy')" id="btnRolePharmacy" class="whitespace-nowrap flex-1 py-3 px-2 rounded-xl font-bold text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all bg-velvet text-white shadow-3d-btn">Pharmacy</button>
+                    <button onclick="switchLoginRole('admin')" id="btnRoleAdmin" class="whitespace-nowrap flex-1 py-3 px-2 rounded-xl font-bold text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all text-smoke hover:text-velvet drop-shadow-sm">Admin</button>
                 </div>
 
-                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6 md:space-y-8">
+                <form id="loginForm" onsubmit="handleBusinessLogin(event)" class="space-y-6">
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.15em] mb-3 text-shadow-sm">Email Address</label>
-                        <input type="email" id="loginEmail" autocomplete="off" required placeholder="example@gmail.com" class="w-full px-6 py-4 md:py-5 rounded-2xl border-2 border-[#f1eada] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet placeholder-[#94a3b8] outline-none shadow-3d-input">
+                        <input type="email" id="loginEmail" autocomplete="off" required placeholder="business@example.com" class="w-full px-6 py-4 rounded-2xl border-2 border-[#f1eada] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet outline-none shadow-3d-input">
                     </div>
-                    
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.15em] mb-3 text-shadow-sm">Password</label>
                         <div class="relative">
-                            <input type="password" id="loginPassword" autocomplete="new-password" required placeholder="••••••••" class="w-full px-6 py-4 md:py-5 rounded-2xl border-2 border-[#f1eada] focus:border-luxuryGreen transition-all text-base font-bold text-velvet placeholder-[#94a3b8] pr-14 outline-none tracking-widest shadow-3d-input">
-                            
-                            <!-- Show/Hide Password -->
-                            <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-[#64748b] hover:text-luxuryGreen transition-colors focus:outline-none drop-shadow-md">
+                            <input type="password" id="loginPassword" autocomplete="new-password" required placeholder="••••••••" class="w-full px-6 py-4 rounded-2xl border-2 border-[#f1eada] focus:border-luxuryGreen transition-all text-base font-bold text-velvet pr-14 outline-none shadow-3d-input">
+                            <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
                                 <i class="fa-solid fa-eye text-xl" id="eyeIconLogin"></i>
                             </button>
                         </div>
-                        
                         <div class="flex justify-end mt-4">
-                            <a href="#" onclick="openForgotModal()" class="text-[11px] md:text-xs text-luxuryGreen hover:text-velvet font-bold uppercase tracking-[0.15em] transition-colors text-shadow-sm">Forgot Password?</a>
+                            <a href="#" onclick="openForgotModal()" class="text-[11px] text-luxuryGreen font-bold uppercase tracking-[0.15em]">Forgot Password?</a>
                         </div>
                     </div>
-                    
-                    <button type="submit" id="btnSubmitLogin" class="w-full bg-velvet hover:bg-black text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[12px] md:text-sm shadow-3d-btn btn-luxury mt-4">
-                        Sign In
+                    <button type="submit" id="btnSubmitLogin" class="w-full bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[12px] shadow-3d-btn btn-luxury mt-4">
+                        Secure Sign In
                     </button>
                 </form>
                 
-                <div class="mt-10 text-center text-[12px] md:text-sm text-smoke font-medium text-shadow-sm" id="signupPrompt" style="display:none;">
-                    Don't have an account? <br/>
-                    <a href="#" onclick="openSignupModal()" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline mt-3 inline-block drop-shadow-sm">Sign Up</a>
+                <div class="mt-8 text-center text-xs text-smoke font-medium" id="signupPrompt">
+                    New Pharmacy? <button type="button" onclick="openPharmacyRegistration()" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-1">Apply Here</button>
                 </div>
             </div>
         </section>
-
 
         <!-- ================= PHARMACY DASHBOARD VIEW ================= -->
         <section id="view-pharmacy" class="view-section flex-grow relative z-10">
             <div class="flex flex-col md:flex-row h-full md:min-h-[calc(100vh-10rem)] max-w-[1600px] mx-auto w-full px-6 sm:px-10 pb-12 pt-6 gap-8 md:gap-12 items-start">
-                
-                <!-- Mobile Navigation Tabs -->
                 <div class="md:hidden w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-3d-panel border border-white flex p-2 gap-2 mb-4">
-                    <button onclick="switchPharmTab('update')" id="mTab-p-update" class="flex-1 py-3.5 rounded-xl bg-velvet text-white font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 shadow-3d-btn">
-                        <i class="fa-solid fa-address-card drop-shadow-md"></i> Profile
-                    </button>
-                    <button onclick="switchPharmTab('manage')" id="mTab-p-manage" class="flex-1 py-3.5 rounded-xl text-smoke font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 hover:bg-silk/40 drop-shadow-sm">
-                        <i class="fa-solid fa-boxes-stacked"></i> Inventory
-                    </button>
+                    <button onclick="switchPharmTab('update')" id="mTab-p-update" class="flex-1 py-3.5 rounded-xl bg-velvet text-white font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 shadow-3d-btn">Profile</button>
+                    <button onclick="switchPharmTab('manage')" id="mTab-p-manage" class="flex-1 py-3.5 rounded-xl text-smoke font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 hover:bg-silk/40 drop-shadow-sm">Inventory</button>
                 </div>
 
-                <!-- Sidebar (Desktop only) -->
                 <div class="w-80 bg-white/95 backdrop-blur-xl rounded-[2.5rem] flex-col hidden md:flex overflow-hidden border border-white shadow-3d-panel sticky top-32 h-[calc(100vh-12rem)] shrink-0">
                     <div class="p-10 bg-white/50 border-b border-silk/60 text-center flex flex-col items-center">
                         <div class="w-20 h-20 bg-[#064e3b] rounded-[24px] flex items-center justify-center text-white text-3xl mb-5 shadow-3d-card relative">
@@ -380,20 +372,11 @@
                             <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-badgeGreen border-2 border-white rounded-full shadow-md"></div>
                         </div>
                         <h3 class="font-serif font-bold text-xl text-velvet leading-tight text-shadow-3d" id="dashboardPharmName">Pharmacy</h3>
-                        <div class="flex items-center gap-2 mt-2">
-                            <p class="text-[10px] font-bold text-smoke uppercase tracking-[0.2em] text-shadow-sm">Dashboard</p>
-                            <i class="fa-solid fa-chevron-down text-[10px] text-smoke cursor-pointer hover:text-velvet drop-shadow-sm"></i>
-                        </div>
+                        <p class="text-[10px] font-bold text-smoke uppercase tracking-[0.2em] mt-2">Dashboard</p>
                     </div>
                     <nav class="space-y-4 flex-grow p-8 overflow-y-auto">
-                        <button onclick="switchPharmTab('update')" id="pTab-update" class="w-full text-left px-6 py-4 rounded-2xl bg-velvet text-white font-bold text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 shadow-3d-btn">
-                            <div class="bg-luxuryGreen/20 p-2 rounded-lg shadow-inner"><i class="fa-solid fa-address-card w-5 text-center text-luxuryGreenLight text-lg drop-shadow-md"></i></div>
-                            Store Profile
-                        </button>
-                        <button onclick="switchPharmTab('manage')" id="pTab-manage" class="w-full text-left px-6 py-4 rounded-2xl text-smoke hover:bg-silk/40 hover:text-velvet font-bold text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 drop-shadow-sm">
-                            <div class="bg-transparent p-2 rounded-lg"><i class="fa-solid fa-boxes-stacked w-5 text-center text-lg"></i></div>
-                            Inventory
-                        </button>
+                        <button onclick="switchPharmTab('update')" id="pTab-update" class="w-full text-left px-6 py-4 rounded-2xl bg-velvet text-white font-bold text-xs uppercase tracking-[0.15em] shadow-3d-btn">Store Profile</button>
+                        <button onclick="switchPharmTab('manage')" id="pTab-manage" class="w-full text-left px-6 py-4 rounded-2xl text-smoke hover:bg-silk/40 hover:text-velvet font-bold text-xs uppercase tracking-[0.15em]">Inventory</button>
                     </nav>
                     <div class="p-8 border-t border-silk/60 bg-white/50">
                         <button onclick="handleLogoutGlobal()" class="w-full px-5 py-4 rounded-2xl text-smoke hover:text-rose hover:bg-rose/10 font-bold text-xs uppercase tracking-[0.15em] transition-all flex items-center justify-center gap-3 drop-shadow-sm">
@@ -402,80 +385,65 @@
                     </div>
                 </div>
 
-                <!-- Main Content Area -->
                 <div class="flex-grow w-full bg-white/95 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-white shadow-3d-panel h-full md:min-h-[calc(100vh-12rem)]">
                     <div class="p-8 sm:p-12 md:p-16">
                         
-                        <!-- Profile Tab -->
+                        <!-- Pharmacy Profile Update -->
                         <div id="pContent-update" class="block">
                             <div class="mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8">
                                 <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet text-shadow-3d">Store Profile</h2>
-                                <p class="text-smoke text-sm md:text-base mt-2 text-shadow-sm">Manage your pharmacy's professional details.</p>
                             </div>
                             
                             <div class="border border-silk/80 rounded-[24px] p-8 md:p-12 mt-8 bg-white shadow-3d-card">
-                                <form id="profileUpdateForm" onsubmit="handleUpdateProfile(event)" class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+                                <form onsubmit="handleUpdateProfile(event)" class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
                                     <div class="md:col-span-2">
-                                        <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Pharmacy Name</label>
-                                        <input type="text" id="updName" value="Mercury Drug - Poblacion" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                        <label class="block text-[10px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Pharmacy Name</label>
+                                        <input type="text" id="updName" required class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold shadow-3d-input outline-none">
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Location</label>
-                                        <div class="relative">
-                                            <select class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base appearance-none transition-colors cursor-pointer shadow-3d-input outline-none pr-12">
-                                                <option selected>Poblacion</option>
-                                                <option>Minuyan</option>
-                                                <option>San Mateo</option>
-                                                <option>Bigte</option>
-                                            </select>
-                                            <div class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke pointer-events-none drop-shadow-sm"><i class="fa-solid fa-chevron-down text-sm"></i></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Contact Number</label>
-                                        <input type="text" id="updContact" value="+63 912 345 6789" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                        <label class="block text-[10px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1">Contact Number</label>
+                                        <input type="text" id="updContact" required class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold shadow-3d-input outline-none">
                                     </div>
                                     <div class="md:col-span-2">
-                                        <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Full Address</label>
-                                        <input type="text" id="updAddress" value="Gen. Alejo Santos Hwy, Poblacion, Norzagaray" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                        <label class="block text-[10px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1">Full Address</label>
+                                        <input type="text" id="updAddress" required class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold shadow-3d-input outline-none">
                                     </div>
                                     <div class="md:col-span-2">
-                                        <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Google Map Link</label>
-                                        <input type="url" id="updMap" required placeholder="https://maps.google.com/..." class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                        <label class="block text-[10px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1">Google Map Link</label>
+                                        <input type="url" id="updMap" required placeholder="https://maps.google.com/..." class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold shadow-3d-input outline-none">
                                     </div>
                                     <div class="md:col-span-2 mt-6 flex justify-end">
-                                        <button type="submit" id="btnUpdateProfile" class="bg-[#024b33] hover:bg-velvet text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs btn-luxury shadow-3d-btn w-full md:w-auto">Save Changes</button>
+                                        <button type="submit" id="btnUpdateProfile" class="bg-[#024b33] text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs btn-luxury shadow-3d-btn w-full md:w-auto">Save Changes</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
 
-                        <!-- Inventory Tab -->
+                        <!-- Pharmacy Inventory Control -->
                         <div id="pContent-manage" class="hidden">
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8 gap-6">
                                 <div>
-                                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet text-shadow-3d">Inventory Control</h2>
-                                    <p class="text-smoke text-sm md:text-base mt-2 text-shadow-sm">Keep your medical stock accurate and up-to-date.</p>
+                                    <h2 class="text-3xl font-serif font-bold text-velvet">Inventory Control</h2>
                                 </div>
-                                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-[#024b33] w-full md:w-auto text-white px-8 py-4.5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs btn-luxury flex justify-center items-center gap-3 shadow-3d-btn">
-                                    <i class="fa-solid fa-plus text-lg drop-shadow-md"></i> Add Item
+                                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-[#024b33] w-full md:w-auto text-white px-8 py-4.5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs btn-luxury shadow-3d-btn">
+                                    <i class="fa-solid fa-plus drop-shadow-md"></i> Add Item
                                 </button>
                             </div>
                             
-                            <div class="bg-white rounded-2xl md:rounded-[24px] shadow-3d-card border border-silk/80 overflow-hidden mt-6">
+                            <div class="bg-white rounded-[24px] shadow-3d-card border border-silk/80 overflow-hidden mt-6">
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse min-w-[800px]">
                                         <thead>
-                                            <tr class="bg-[#f8f9fa] text-velvet text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] border-b border-silk/80 shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
-                                                <th class="p-6 md:p-8">Medicine Info</th>
-                                                <th class="p-6 md:p-8">Type</th>
-                                                <th class="p-6 md:p-8">Unit Price</th>
-                                                <th class="p-6 md:p-8">Availability</th>
-                                                <th class="p-6 md:p-8 text-right">Actions</th>
+                                            <tr class="bg-[#f8f9fa] text-velvet text-[10px] font-bold uppercase tracking-[0.2em] border-b border-silk/80 shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+                                                <th class="p-6">Medicine Info</th>
+                                                <th class="p-6">Type</th>
+                                                <th class="p-6">Unit Price</th>
+                                                <th class="p-6">Availability</th>
+                                                <th class="p-6 text-right">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody id="inventoryTable">
-                                            <!-- Javascript Populated -->
+                                            <!-- Dynamically populated real inventory from DB -->
                                         </tbody>
                                     </table>
                                 </div>
@@ -490,40 +458,23 @@
         <section id="view-admin" class="view-section flex-grow relative z-10">
             <div class="flex flex-col md:flex-row h-full md:min-h-[calc(100vh-10rem)] max-w-[1600px] mx-auto w-full px-6 sm:px-10 pb-12 pt-6 gap-8 md:gap-12 items-start">
                 
-                <div class="md:hidden w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-3d-panel border border-white flex p-2 gap-2 mb-4 overflow-x-auto no-scrollbar">
-                    <button onclick="switchAdminTab('requests')" id="mTab-a-requests" class="whitespace-nowrap flex-1 py-3.5 px-4 rounded-xl bg-velvet text-white font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 shadow-3d-btn">
-                        <i class="fa-solid fa-file-signature drop-shadow-md"></i> Applications
-                    </button>
-                    <button onclick="switchAdminTab('analytics')" id="mTab-a-analytics" class="whitespace-nowrap flex-1 py-3.5 px-4 rounded-xl text-smoke font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 hover:bg-silk/40 drop-shadow-sm">
-                        <i class="fa-solid fa-chart-pie"></i> Analytics
-                    </button>
-                    <button onclick="switchAdminTab('logs')" id="mTab-a-logs" class="whitespace-nowrap flex-1 py-3.5 px-4 rounded-xl text-smoke font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 hover:bg-silk/40 drop-shadow-sm">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Logs
-                    </button>
+                <div class="md:hidden w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-3d-panel border border-white flex p-2 gap-2 mb-4 overflow-x-auto">
+                    <button onclick="switchAdminTab('requests')" id="mTab-a-requests" class="flex-1 py-3.5 px-4 rounded-xl bg-velvet text-white font-bold text-[10px] uppercase shadow-3d-btn">Applications</button>
+                    <button onclick="switchAdminTab('analytics')" id="mTab-a-analytics" class="flex-1 py-3.5 px-4 rounded-xl text-smoke font-bold text-[10px] uppercase hover:bg-silk/40">Analytics</button>
+                    <button onclick="switchAdminTab('logs')" id="mTab-a-logs" class="flex-1 py-3.5 px-4 rounded-xl text-smoke font-bold text-[10px] uppercase hover:bg-silk/40">Logs</button>
                 </div>
 
-                <div class="w-80 bg-white/95 backdrop-blur-xl rounded-[2.5rem] flex-col hidden md:flex overflow-hidden border border-white shadow-3d-panel sticky top-32 h-[calc(100vh-12rem)] shrink-0">
+                <div class="w-80 bg-white/95 backdrop-blur-xl rounded-[2.5rem] flex-col hidden md:flex overflow-hidden shadow-3d-panel sticky top-32 h-[calc(100vh-12rem)] shrink-0">
                     <div class="p-10 bg-white/50 border-b border-silk/60 text-center flex flex-col items-center">
                         <div class="w-20 h-20 bg-velvet rounded-[24px] flex items-center justify-center text-white text-3xl mb-5 shadow-3d-card relative">
-                            <i class="fa-solid fa-shield-halved drop-shadow-lg"></i>
-                            <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-goldAccent border-2 border-white rounded-full shadow-md"></div>
+                            <i class="fa-solid fa-shield-halved"></i>
                         </div>
-                        <h3 class="font-serif font-bold text-xl text-velvet leading-tight text-shadow-3d">System Admin</h3>
-                        <div class="flex items-center gap-2 mt-2">
-                            <p class="text-[10px] font-bold text-smoke uppercase tracking-[0.2em] text-shadow-sm">Master Control</p>
-                            <i class="fa-solid fa-chevron-down text-[10px] text-smoke cursor-pointer hover:text-velvet drop-shadow-sm"></i>
-                        </div>
+                        <h3 class="font-serif font-bold text-xl text-velvet leading-tight">System Admin</h3>
                     </div>
                     <nav class="space-y-4 flex-grow p-8 overflow-y-auto">
-                        <button onclick="switchAdminTab('requests')" id="aTab-requests" class="w-full text-left px-6 py-4 rounded-2xl bg-velvet text-white font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 shadow-3d-btn">
-                            <div class="bg-luxuryGreen/20 p-2 rounded-lg shadow-inner"><i class="fa-solid fa-file-signature w-5 text-center text-luxuryGreenLight text-lg drop-shadow-md"></i></div> Applications
-                        </button>
-                        <button onclick="switchAdminTab('analytics')" id="aTab-analytics" class="w-full text-left px-6 py-4 rounded-2xl text-smoke hover:bg-silk/40 hover:text-velvet font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 drop-shadow-sm">
-                            <div class="bg-transparent p-2 rounded-lg"><i class="fa-solid fa-chart-pie w-5 text-center text-lg"></i></div> Analytics
-                        </button>
-                        <button onclick="switchAdminTab('logs')" id="aTab-logs" class="w-full text-left px-6 py-4 rounded-2xl text-smoke hover:bg-silk/40 hover:text-velvet font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 drop-shadow-sm">
-                            <div class="bg-transparent p-2 rounded-lg"><i class="fa-solid fa-clock-rotate-left w-5 text-center text-lg"></i></div> Audit Log
-                        </button>
+                        <button onclick="switchAdminTab('requests')" id="aTab-requests" class="w-full text-left px-6 py-4 rounded-2xl bg-velvet text-white font-bold text-xs uppercase shadow-3d-btn">Applications</button>
+                        <button onclick="switchAdminTab('analytics')" id="aTab-analytics" class="w-full text-left px-6 py-4 rounded-2xl text-smoke hover:bg-silk/40 hover:text-velvet font-bold text-xs uppercase">Analytics</button>
+                        <button onclick="switchAdminTab('logs')" id="aTab-logs" class="w-full text-left px-6 py-4 rounded-2xl text-smoke hover:bg-silk/40 hover:text-velvet font-bold text-xs uppercase">Audit Log</button>
                     </nav>
                     <div class="p-8 border-t border-silk/60 bg-white/50">
                         <button onclick="handleLogoutGlobal()" class="w-full px-5 py-4 rounded-2xl text-smoke hover:text-rose hover:bg-rose/10 font-bold text-xs uppercase tracking-[0.15em] transition-all flex items-center justify-center gap-3 drop-shadow-sm">
@@ -534,18 +485,16 @@
 
                 <div class="flex-grow w-full bg-white/95 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-white shadow-3d-panel h-full md:min-h-[calc(100vh-12rem)]">
                     <div class="p-8 sm:p-12 md:p-16">
+                        
                         <div id="aContent-requests" class="block">
-                            <div class="mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8">
-                                <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet text-shadow-3d">Pending Applications</h2>
-                                <p class="text-smoke text-sm md:text-base mt-2 text-shadow-sm">Review and verify new pharmacy partnership requests.</p>
-                            </div>
+                            <h2 class="text-3xl font-serif font-bold text-velvet mb-8 border-b border-silk pb-6">Pending Applications</h2>
                             <div id="adminRequestsContainer" class="space-y-6">
-                                <!-- Javascript Populated -->
+                                <!-- Dynamically populated requests -->
                             </div>
                         </div>
+
                         <div id="aContent-analytics" class="hidden">
-                            <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8 text-shadow-3d">System Intelligence</h2>
-                            <p class="text-smoke text-sm md:text-base text-shadow-sm">Real-time statistics from the database.</p>
+                            <h2 class="text-3xl font-serif font-bold text-velvet mb-8 border-b border-silk pb-6">System Intelligence</h2>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                                 <div class="bg-white p-6 rounded-2xl shadow-3d-card border border-silk text-center">
                                     <p class="text-xs text-smoke font-bold uppercase tracking-widest">Total Pharmacies</p>
@@ -564,20 +513,21 @@
                                 <canvas id="analyticsChart"></canvas>
                             </div>
                         </div>
+
                         <div id="aContent-logs" class="hidden">
-                            <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8 text-shadow-3d">Activity Log</h2>
+                            <h2 class="text-3xl font-serif font-bold text-velvet mb-8 border-b border-silk pb-6">Activity Audit Log</h2>
                             <div class="bg-white rounded-[24px] shadow-3d-card border border-silk overflow-hidden mt-6">
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse min-w-[800px]">
                                         <thead>
-                                            <tr class="bg-[#f8f9fa] text-velvet text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] border-b border-silk/80 shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
-                                                <th class="p-6 md:p-8">Timestamp</th>
-                                                <th class="p-6 md:p-8">User Name</th>
-                                                <th class="p-6 md:p-8">Search Result</th>
+                                            <tr class="bg-[#f8f9fa] text-velvet text-[10px] font-bold uppercase border-b border-silk/80">
+                                                <th class="p-6">Timestamp</th>
+                                                <th class="p-6">Patient Name</th>
+                                                <th class="p-6">Search Result</th>
                                             </tr>
                                         </thead>
                                         <tbody id="auditLogsTable">
-                                            <!-- Javascript Populated -->
+                                            <!-- Real Logs Here -->
                                         </tbody>
                                     </table>
                                 </div>
@@ -587,117 +537,205 @@
                 </div>
             </div>
         </section>
-
     </main>
 
-    <!-- ================= CANVA-STYLE USER AUTHENTICATION MODAL ================= -->
-    <div id="userAuthModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
+    <!-- ================= PATIENT AUTHENTICATION MODAL ================= -->
+    <div id="userAuthModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[100] p-4 transition-opacity">
         <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-[450px] relative border border-silk/50 mx-2" style="animation: premiumGlideIn 0.4s forwards;">
-            <button onclick="closeUserAuthModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb] transition-colors"><i class="fa-solid fa-times text-base"></i></button>
+            <button onclick="closeUserAuthModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb]"><i class="fa-solid fa-times"></i></button>
 
             <!-- User Login Form -->
             <div id="userLoginFormWrapper" class="block">
                 <div class="text-center mb-8">
-                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">WELCOME</h3>
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2">WELCOME</h3>
                     <p class="text-smoke text-sm">Your Trusted Pharmacy Locator Network.</p>
                 </div>
                 <form id="patientLoginForm" onsubmit="handleUserLoginSubmit(event)" class="space-y-6">
-                    <input type="email" id="userLoginEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm transition-all">
+                    <input type="email" id="userLoginEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm">
                     <div class="relative">
-                        <input type="password" id="userLoginPassword" autocomplete="new-password" required placeholder="Password" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm tracking-widest pr-12 transition-all">
-                        <button type="button" onclick="togglePassword('userLoginPassword', 'eyeIconUserLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
+                        <input type="password" id="userLoginPassword" autocomplete="new-password" required placeholder="Password" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm tracking-widest pr-12">
+                        <button type="button" onclick="togglePassword('userLoginPassword', 'eyeIconUserLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen focus:outline-none">
                             <i class="fa-solid fa-eye text-lg" id="eyeIconUserLogin"></i>
                         </button>
                     </div>
-                    <button type="submit" id="btnUserLogin" class="w-full bg-[#024b33] hover:bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-2">Sign In</button>
+                    <button type="submit" id="btnUserLogin" class="w-full bg-[#024b33] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-2">Sign In</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
                     No account yet? <button type="button" onclick="toggleUserAuthForms('signup')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Create Account</button>
                 </div>
             </div>
 
-            <!-- User Registration Form -->
+            <!-- Patient Registration: Step 1 (Details) -->
             <div id="userSignupFormWrapper" class="hidden">
                 <div class="text-center mb-8">
-                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">WELCOME</h3>
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2">WELCOME</h3>
                     <p class="text-smoke text-sm">Your Trusted Pharmacy Locator Network.</p>
                 </div>
-                <form id="patientSignupForm" onsubmit="handleUserSignupSubmit(event)" class="space-y-4">
+                <form id="patientSignupForm1" onsubmit="handleUserSignupStep1(event)" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="userRegFname" autocomplete="off" required placeholder="First Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
-                        <input type="text" id="userRegLname" autocomplete="off" required placeholder="Last Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
+                        <input type="text" id="userRegFname" autocomplete="off" required placeholder="First Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold">
+                        <input type="text" id="userRegLname" autocomplete="off" required placeholder="Last Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold">
                     </div>
-                    <div class="grid grid-cols-3 gap-4">
-                        <input type="number" id="userRegAge" autocomplete="off" required placeholder="Age" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold col-span-1 transition-all">
-                        <input type="email" id="userRegEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold col-span-2 transition-all">
-                    </div>
+                    <input type="email" id="userRegEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold">
                     <div class="relative">
-                        <input type="password" id="userRegPass" autocomplete="new-password" required placeholder="Password" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold tracking-widest pr-12 transition-all">
-                        <button type="button" onclick="togglePassword('userRegPass', 'eyeIconUserReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
+                        <input type="password" id="userRegPass" autocomplete="new-password" required placeholder="Password" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold tracking-widest pr-12">
+                        <button type="button" onclick="togglePassword('userRegPass', 'eyeIconUserReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen focus:outline-none">
                             <i class="fa-solid fa-eye text-lg" id="eyeIconUserReg"></i>
                         </button>
                     </div>
-                    <button type="submit" id="btnUserSignup" class="w-full bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Register</button>
+                    <button type="submit" id="btnUserSignup1" class="w-full bg-[#024b33] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Next Step</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
                     Already registered? <button type="button" onclick="toggleUserAuthForms('login')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Sign In</button>
                 </div>
             </div>
+
+            <!-- Patient Registration: Step 2 (Verify Code) -->
+            <div id="userVerifyFormWrapper" class="hidden">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2">Verify Email</h3>
+                    <p class="text-smoke text-sm">Please enter the 6-digit code sent to your email.</p>
+                </div>
+                <form id="patientSignupForm2" onsubmit="handleUserSignupStep2(event)" class="space-y-4">
+                    <input type="text" id="userVerifyCode" autocomplete="off" required maxlength="6" placeholder="XXXXXX" class="w-full px-5 py-6 rounded-xl border border-silk shadow-3d-input outline-none text-2xl tracking-[0.6em] font-bold text-center uppercase">
+                    <button type="submit" id="btnUserSignup2" class="w-full bg-[#024b33] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Create Account</button>
+                </form>
+                <div class="mt-6 text-center text-xs font-bold text-smoke">
+                    <button type="button" id="userResendBtn" onclick="handleResendCode('user')" class="text-luxuryGreen uppercase tracking-widest hover:underline font-bold">Resend Code</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Admin Review Modal (New Component for Secure Application Review) -->
-    <div id="adminReviewModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[110] p-4 transition-opacity duration-500">
+    <!-- Modal for Adding Medicine -->
+    <div id="addModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity">
+        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-2xl relative border border-silk/50 mx-2" style="animation: premiumGlideIn 0.4s forwards;">
+            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-[#f4f1eb] flex items-center justify-center hover:text-rose shadow-3d-card"><i class="fa-solid fa-times"></i></button>
+            <h3 class="text-3xl font-serif font-bold text-velvet mb-10">Add Medicine</h3>
+            <form onsubmit="submitAddMedicine(event)" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3">Medicine Name</label>
+                    <input type="text" required id="newMedName" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen shadow-3d-input outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <label class="block text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3">Price (₱)</label>
+                        <input type="number" step="0.01" required id="newMedPrice" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen shadow-3d-input outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3">Status</label>
+                        <select id="newMedStatus" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen shadow-3d-input outline-none appearance-none">
+                            <option>In Stock</option><option>Out of Stock</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3">Category</label>
+                    <select id="newMedCategory" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen shadow-3d-input outline-none appearance-none">
+                        <option>Over the Counter (OTC)</option><option>Prescription</option>
+                    </select>
+                </div>
+                <div class="pt-6">
+                    <button type="submit" id="btnAddMed" class="w-full bg-[#024b33] text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs btn-luxury shadow-3d-btn">Confirm Addition</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pharmacy Registration Modal -->
+    <div id="pharmacyRegModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity">
+        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-2xl relative mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.4s forwards;">
+            <button onclick="closePharmacyRegistration()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card"><i class="fa-solid fa-times"></i></button>
+
+            <!-- Pharmacy Step 1: Account Creation -->
+            <div id="pharmSignupStep1" class="block">
+                <h3 class="text-3xl font-serif font-bold text-velvet mb-6 text-center">Pharmacy Sign Up</h3>
+                <form id="pharmSignupForm1" onsubmit="handlePharmSignupStep1(event)" class="space-y-6">
+                    <input type="email" required id="signupPharmEmail" autocomplete="off" placeholder="Business Email" class="w-full px-6 py-5 rounded-2xl border border-silk shadow-3d-input outline-none font-bold">
+                    <div class="relative">
+                        <input type="password" required id="signupPharmPassword" autocomplete="new-password" placeholder="Password" class="w-full px-6 py-5 rounded-2xl border border-silk shadow-3d-input outline-none font-bold tracking-widest pr-14">
+                        <button type="button" onclick="togglePassword('signupPharmPassword', 'eyeIconPharmReg')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen focus:outline-none">
+                            <i class="fa-solid fa-eye text-xl" id="eyeIconPharmReg"></i>
+                        </button>
+                    </div>
+                    <button type="submit" id="btnPharmReg1" class="w-full bg-[#024b33] text-white py-5 rounded-2xl font-bold uppercase shadow-3d-btn btn-luxury">Next Step</button>
+                </form>
+            </div>
+
+            <!-- Step 2: Verification Code -->
+            <div id="pharmSignupStep2" class="hidden">
+                <div class="text-center mb-10"><h3 class="text-3xl font-serif font-bold">Verify Email</h3></div>
+                <form id="pharmSignupForm2" onsubmit="handlePharmSignupStep2(event)" class="space-y-8">
+                    <input type="text" required maxlength="6" id="signupPharmCode" autocomplete="off" placeholder="XXXXXX" class="w-full px-6 py-6 rounded-2xl border border-silk text-center text-3xl tracking-[0.6em] font-bold shadow-3d-input outline-none uppercase">
+                    <button type="submit" id="btnPharmReg2" class="w-full bg-[#024b33] text-white py-5 rounded-2xl font-bold uppercase shadow-3d-btn btn-luxury">Verify Account</button>
+                </form>
+                <div class="mt-6 text-center text-xs font-medium">
+                    <button type="button" id="pharmSignupResendBtn" onclick="handleResendCode('pharm')" class="text-luxuryGreen font-bold uppercase disabled:opacity-50 btn-luxury">Resend Code</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Pharmacy Details -->
+            <div id="pharmSignupStep3" class="hidden">
+                <div class="text-center mb-8"><h3 class="text-3xl font-serif font-bold">Pharmacy Details</h3></div>
+                <form id="pharmSignupForm3" onsubmit="handlePharmSignupStep3(event)" class="space-y-6">
+                    <input type="text" id="regPharmName" autocomplete="off" required placeholder="Pharmacy Name" class="w-full px-6 py-4 rounded-xl border border-silk shadow-3d-input outline-none font-bold">
+                    <div class="grid grid-cols-2 gap-4">
+                        <select id="regBarangay" required class="w-full px-6 py-4 rounded-xl border border-silk shadow-3d-input appearance-none outline-none font-bold cursor-pointer">
+                            <option value="" disabled selected>Select Area...</option>
+                            <option value="Bangkal">Bangkal</option><option value="Baraka">Baraka</option><option value="Bigte">Bigte</option><option value="Bitungol">Bitungol</option><option value="Friendship Village Resources">Friendship Village Resources</option><option value="Matictic">Matictic</option><option value="Minuyan">Minuyan</option><option value="Partida">Partida</option><option value="Pinagtulayan">Pinagtulayan</option><option value="Poblacion">Poblacion</option><option value="San Lorenzo">San Lorenzo</option><option value="San Mateo">San Mateo</option><option value="Tigbe">Tigbe</option>
+                        </select>
+                        <input type="text" id="regContact" autocomplete="off" required placeholder="Contact Number" class="w-full px-6 py-4 rounded-xl border border-silk shadow-3d-input outline-none font-bold">
+                    </div>
+                    <input type="text" id="regAddress" autocomplete="off" required placeholder="Full Address" class="w-full px-6 py-4 rounded-xl border border-silk shadow-3d-input outline-none font-bold">
+                    <input type="url" id="regMapLink" autocomplete="off" required placeholder="Google Map Link" class="w-full px-6 py-4 rounded-xl border border-silk shadow-3d-input outline-none font-bold">
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-1 ml-1 text-shadow-sm">Pharmacy Logo / Store Photo</label>
+                        <input type="file" id="regStorePhoto" required accept=".png, .jpeg, .jpg" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-1 ml-1 text-shadow-sm">Business Permit</label>
+                        <p class="text-[10px] text-smoke mb-2 ml-1">* Must be a valid, readable permit image or PDF.</p>
+                        <input type="file" id="regPermitPhoto" required accept=".png, .jpeg, .jpg, .pdf" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
+                    </div>
+                    
+                    <button type="submit" id="btnPharmReg3" class="w-full bg-[#024b33] text-white py-5 rounded-xl font-bold uppercase shadow-3d-btn btn-luxury">Submit Registration</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Review Modal (Secure Application Review) -->
+    <div id="adminReviewModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[110] p-4 transition-opacity">
         <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-4xl relative border border-silk/50 mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.4s forwards;">
-            <button onclick="closeAdminReview()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb] transition-colors"><i class="fa-solid fa-times text-base"></i></button>
-            <h3 class="text-3xl font-serif font-bold text-velvet mb-6 text-shadow-3d">Review Application</h3>
+            <button onclick="closeAdminReview()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb]"><i class="fa-solid fa-times"></i></button>
+            <h3 class="text-3xl font-serif font-bold text-velvet mb-6">Review Application</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <!-- Verified Information Display -->
                 <div class="space-y-4">
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Pharmacy Name</p>
-                        <p class="font-bold text-lg text-velvet" id="revName">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Email Address</p>
-                        <p class="font-bold text-base text-velvet" id="revEmail">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Contact Number</p>
-                        <p class="font-bold text-base text-velvet" id="revContact">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Branch / Barangay</p>
-                        <p class="font-bold text-base text-velvet" id="revBranch">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Full Address</p>
-                        <p class="font-bold text-base text-velvet" id="revAddress">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Google Maps Link</p>
-                        <a href="#" id="revMap" target="_blank" class="font-bold text-sm text-luxuryGreen hover:underline break-all">-</a>
-                    </div>
+                    <div><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Pharmacy Name</p><p class="font-bold text-lg text-velvet" id="revName">-</p></div>
+                    <div><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Email Address</p><p class="font-bold text-base text-velvet" id="revEmail">-</p></div>
+                    <div><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Contact Number</p><p class="font-bold text-base text-velvet" id="revContact">-</p></div>
+                    <div><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Branch / Barangay</p><p class="font-bold text-base text-velvet" id="revBranch">-</p></div>
+                    <div><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Full Address</p><p class="font-bold text-base text-velvet" id="revAddress">-</p></div>
+                    <div><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Google Maps Link</p><a href="#" id="revMap" target="_blank" class="font-bold text-sm text-luxuryGreen hover:underline break-all">-</a></div>
                 </div>
                 
-                <!-- 
-                  Image Validation Display 
-                  (Renders securely as verified placeholders until a cloud storage bucket is configured) 
-                -->
+                <!-- Display Uploaded Images via Base64 -->
                 <div class="space-y-6">
                     <div>
                         <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Store Photo</p>
-                        <div class="w-full h-32 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner">
-                            <i class="fa-solid fa-image text-3xl mb-2 drop-shadow-md"></i> 
-                            <span class="text-xs font-bold uppercase tracking-widest">Image Verified</span>
+                        <div class="w-full h-40 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner overflow-hidden">
+                            <img id="revStorePhotoImg" src="" alt="Store Photo" class="w-full h-full object-cover hidden">
+                            <span id="revStorePhotoText" class="text-xs font-bold uppercase tracking-widest hidden">No Image</span>
                         </div>
                     </div>
                     <div>
                         <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Business Permit</p>
-                        <div class="w-full h-40 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner">
-                            <i class="fa-solid fa-file-contract text-4xl mb-2 drop-shadow-md"></i> 
-                            <span class="text-xs font-bold uppercase tracking-widest">Document Verified</span>
+                        <div class="w-full h-48 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner overflow-hidden relative">
+                            <img id="revPermitPhotoImg" src="" alt="Business Permit" class="w-full h-full object-cover hidden">
+                            <span id="revPermitPhotoText" class="text-xs font-bold uppercase tracking-widest hidden">No Permit Uploaded</span>
                         </div>
                     </div>
                 </div>
@@ -711,231 +749,72 @@
         </div>
     </div>
 
-    <!-- Modal for Adding Medicine -->
-    <div id="addModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-2xl relative border border-silk/50 mx-2" style="animation: premiumGlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;">
-            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-[#f4f1eb] flex items-center justify-center text-smoke hover:text-rose transition-colors shadow-3d-card border border-silk/50">
-                <i class="fa-solid fa-times text-base"></i>
-            </button>
-            <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-10 tracking-tight text-shadow-3d">Add Medicine Record</h3>
-            <form id="addMedForm" onsubmit="submitAddMedicine(event)" class="space-y-8">
-                <div>
-                    <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Medicine Name</label>
-                    <input type="text" required id="newMedName" placeholder="e.g. Ibuprofen" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-white text-velvet font-bold text-base transition-colors outline-none shadow-3d-input">
-                </div>
-                <div class="grid grid-cols-2 gap-8">
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Price (₱)</label>
-                        <input type="number" step="0.01" required id="newMedPrice" placeholder="0.00" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-white text-velvet font-bold text-base transition-colors outline-none shadow-3d-input">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Status</label>
-                        <div class="relative">
-                            <select id="newMedStatus" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-white text-velvet font-bold text-base appearance-none cursor-pointer transition-colors outline-none shadow-3d-input pr-12">
-                                <option value="In Stock">In Stock</option>
-                                <option value="Out of Stock">Out of Stock</option>
-                            </select>
-                            <div class="absolute right-5 top-1/2 transform -translate-y-1/2 pointer-events-none text-smoke drop-shadow-sm">
-                                <i class="fa-solid fa-chevron-down text-sm"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Category</label>
-                    <div class="relative">
-                        <select id="newMedCategory" class="w-full px-6 py-5 rounded-2xl border border-luxuryGreen focus:border-luxuryGreen bg-white text-velvet font-bold text-base appearance-none cursor-pointer transition-colors outline-none shadow-3d-input pr-12">
-                            <option value="Over the Counter (OTC)">Over the Counter (OTC)</option>
-                            <option value="Prescription">Prescription</option>
-                        </select>
-                        <div class="absolute right-5 top-1/2 transform -translate-y-1/2 pointer-events-none text-luxuryGreen drop-shadow-sm">
-                            <i class="fa-solid fa-chevron-down text-sm"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="pt-6">
-                    <button type="submit" id="btnAddMed" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 md:py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs md:text-sm btn-luxury transition-colors shadow-3d-btn">Confirm Addition</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Sign Up / Registration Modal -->
-    <div id="signupModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-2xl relative border border-white mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;">
-            <button onclick="closeSignupModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-chiffon flex items-center justify-center text-smoke hover:text-rose hover:bg-rose/10 transition-colors z-10 border border-silk/50 shadow-3d-card">
-                <i class="fa-solid fa-times text-base"></i>
-            </button>
-
-            <!-- Step 1: Account Creation -->
-            <div id="signupStep1" class="block">
-                <div class="text-center mb-10">
-                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Sign Up</h3>
-                    <p class="text-smoke text-sm md:text-base text-shadow-sm">Create your pharmacy account.</p>
-                </div>
-                <form id="pharmSignupForm1" onsubmit="handleSignupStep1(event)" class="space-y-6 md:space-y-8">
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Email Address</label>
-                        <input type="email" autocomplete="off" required id="signupEmail" placeholder="example@gmail.com" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet bg-white outline-none shadow-3d-input">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Password</label>
-                        <div class="relative">
-                            <input type="password" autocomplete="new-password" required id="signupPassword" placeholder="••••••••" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet pr-14 bg-white outline-none tracking-widest shadow-3d-input">
-                            <button type="button" onclick="togglePassword('signupPassword', 'eyeIconSignup')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none drop-shadow-md">
-                                <i class="fa-solid fa-eye text-xl" id="eyeIconSignup"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button type="submit" id="btnPharmReg1" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Sign Up</button>
-                    <div class="mt-8 text-center text-xs md:text-sm text-smoke font-medium text-shadow-sm">
-                        Already have an account? <a href="#" onclick="closeSignupModal()" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm">Log In</a>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Step 2: Verification Code -->
-            <div id="signupStep2" class="hidden">
-                <div class="text-center mb-10">
-                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Verify Email</h3>
-                    <p class="text-smoke text-sm md:text-base leading-relaxed px-4 text-shadow-sm">We have sent a 6-digit verification code to your email address. Please enter the code below.</p>
-                </div>
-                <form id="pharmSignupForm2" onsubmit="handleSignupStep2(event)" class="space-y-8">
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-4 text-center text-shadow-sm">6-Digit Code</label>
-                        <input type="text" autocomplete="off" required maxlength="6" id="signupVerificationCode" placeholder="XXXXXX" class="w-full px-6 py-6 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-center text-2xl md:text-3xl tracking-[0.6em] font-bold text-velvet uppercase bg-white outline-none shadow-3d-input">
-                    </div>
-                    <button type="submit" id="btnPharmReg2" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-4">Verify Account</button>
-                </form>
-                <div class="mt-6 text-center text-xs md:text-sm text-smoke font-medium text-shadow-sm">
-                    Didn't receive the code? <button type="button" id="signupResendBtn" onclick="handleResendCode('signup')" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">Resend Code</button>
-                </div>
-            </div>
-
-            <!-- Step 3: Pharmacy Details -->
-            <div id="signupStep3" class="hidden">
-                <div class="text-center mb-10">
-                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Pharmacy Details</h3>
-                    <p class="text-smoke text-sm md:text-base text-shadow-sm">Complete your registration profile.</p>
-                </div>
-                <form id="pharmSignupForm3" onsubmit="handleSignupStep3(event)" class="space-y-6 md:space-y-8">
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Pharmacy Name</label>
-                        <input type="text" id="regPharmName" required placeholder="e.g. Mercury Drug" class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen bg-[#f8f9fa] text-base font-bold transition-colors text-velvet outline-none shadow-3d-input">
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Barangay</label>
-                            <div class="relative">
-                                <select id="regBarangay" required class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen bg-[#f8f9fa] text-base font-bold cursor-pointer transition-colors text-velvet appearance-none outline-none pr-12 shadow-3d-input">
-                                    <option value="" disabled selected>Select Area...</option>
-                                    <option>Poblacion</option>
-                                    <option>Minuyan</option>
-                                    <option>San Mateo</option>
-                                    <option>Bigte</option>
-                                </select>
-                                <div class="absolute right-5 top-1/2 transform -translate-y-1/2 pointer-events-none text-smoke drop-shadow-sm">
-                                    <i class="fa-solid fa-chevron-down text-sm"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Contact Number</label>
-                            <input type="text" id="regContact" required placeholder="09XX XXX XXXX" class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen bg-[#f8f9fa] text-base font-bold transition-colors text-velvet outline-none shadow-3d-input">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Full Address</label>
-                        <input type="text" id="regAddress" required placeholder="Complete street address" class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen bg-[#f8f9fa] text-base font-bold transition-colors text-velvet outline-none shadow-3d-input">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Google Map Location Link</label>
-                        <input type="url" id="regMapLink" required placeholder="https://maps.google.com/..." class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen bg-[#f8f9fa] text-base font-bold transition-colors text-velvet outline-none shadow-3d-input">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Pharmacy Logo / Shop Photo</label>
-                        <input type="file" required accept="image/png, image/jpeg, image/jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-1 ml-1 text-shadow-sm">Business Permit Photo</label>
-                        <p class="text-[10px] text-smoke mb-2 ml-1">* Must be a valid, readable permit image.</p>
-                        <input type="file" required accept="image/png, image/jpeg, image/jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
-                    </div>
-                    <button type="submit" id="btnPharmReg3" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Submit Registration</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Pharmacy Details Modal -->
-    <div id="pharmacyDetailsModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-lg relative border border-white mx-2" style="animation: premiumGlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;">
-            <button onclick="closePharmacyDetails()" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-chiffon flex items-center justify-center text-smoke hover:text-rose hover:bg-rose/10 transition-colors z-10 border border-silk/50 shadow-3d-card">
-                <i class="fa-solid fa-times text-base"></i>
-            </button>
-            <div class="flex items-center gap-6 mb-8 border-b border-silk pb-8">
-                <div class="w-20 h-20 rounded-[24px] bg-luxuryGreen/10 flex items-center justify-center text-luxuryGreen text-3xl border border-luxuryGreen/20 shadow-inner">
-                    <i class="fa-solid fa-store drop-shadow-md"></i>
-                </div>
+    <div id="pharmacyDetailsModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity">
+        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-lg relative border border-white mx-2" style="animation: premiumGlideIn 0.4s forwards;">
+            <button onclick="closePharmacyDetails()" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-chiffon flex items-center justify-center hover:text-rose shadow-3d-card"><i class="fa-solid fa-times"></i></button>
+            
+            <div class="w-full h-40 mb-6 rounded-[20px] overflow-hidden shadow-inner relative border border-silk">
+                <span class="absolute top-3 right-3 z-20 bg-[#e8f1ed] text-luxuryGreen border border-luxuryGreen/20 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-3d-card"><i class="fa-solid fa-check mr-1.5"></i> Verified</span>
+                <img id="detailPharmImage" src="" alt="Pharmacy Store" class="w-full h-full object-cover">
+            </div>
+
+            <div class="flex items-center gap-6 mb-6 border-b border-silk pb-6">
                 <div>
-                    <h3 class="text-3xl font-serif font-bold text-velvet tracking-tight text-shadow-3d" id="detailPharmName">Pharmacy Name</h3>
-                    <p class="text-smoke text-[11px] md:text-xs font-bold uppercase tracking-[0.2em] mt-2 drop-shadow-sm" id="detailPharmBranch">Branch Location</p>
+                    <h3 class="text-3xl font-serif font-bold text-velvet tracking-tight" id="detailPharmName">Pharmacy Name</h3>
+                    <p class="text-smoke text-[11px] font-bold uppercase tracking-[0.2em] mt-2" id="detailPharmBranch">Branch Location</p>
                 </div>
             </div>
-            <div class="space-y-8">
+            <div class="space-y-6">
                 <div class="flex items-start gap-5">
                     <i class="fa-solid fa-location-dot text-rose mt-1 text-xl w-8 text-center drop-shadow-md"></i>
                     <div>
-                        <p class="text-[10px] md:text-[11px] text-smoke font-bold uppercase tracking-[0.2em] text-shadow-sm">Full Address</p>
-                        <p class="text-base font-bold text-velvet mt-1.5 text-shadow-sm" id="detailPharmAddress">123 Street Name</p>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Full Address</p>
+                        <p class="text-base font-bold text-velvet mt-1.5" id="detailPharmAddress">123 Street Name</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-5">
                     <i class="fa-solid fa-phone text-luxuryGreen mt-1 text-xl w-8 text-center drop-shadow-md"></i>
                     <div>
-                        <p class="text-[10px] md:text-[11px] text-smoke font-bold uppercase tracking-[0.2em] text-shadow-sm">Contact Number</p>
-                        <p class="text-base font-bold text-velvet mt-1.5 text-shadow-sm">0912 345 6789</p>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Contact Number</p>
+                        <p class="text-base font-bold text-velvet mt-1.5" id="detailPharmContact">0912 345 6789</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-5">
                     <i class="fa-solid fa-clock text-goldAccent mt-1 text-xl w-8 text-center drop-shadow-md"></i>
                     <div>
-                        <p class="text-[10px] md:text-[11px] text-smoke font-bold uppercase tracking-[0.2em] text-shadow-sm">Operating Hours</p>
-                        <p class="text-base font-bold text-velvet mt-1.5 text-shadow-sm">8:00 AM - 10:00 PM</p>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Operating Hours</p>
+                        <p class="text-base font-bold text-velvet mt-1.5">8:00 AM - 10:00 PM</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Map/Directions Modal -->
-    <div id="mapModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-5xl relative border border-white mx-2 h-[75vh] md:h-[85vh] flex flex-col" style="animation: premiumGlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;">
-            <button onclick="closeMapModal()" class="absolute top-8 right-8 w-12 h-12 rounded-full bg-white shadow-3d-card flex items-center justify-center text-smoke hover:text-rose transition-colors z-20 border border-silk/50">
-                <i class="fa-solid fa-times text-xl"></i>
-            </button>
-            <div class="mb-4 pl-4 pr-16 flex justify-between items-center">
+    <!-- WAZE-STYLE MAP & NAVIGATION MODAL -->
+    <div id="mapModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity">
+        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-5xl h-[85vh] flex flex-col relative" style="animation: premiumGlideIn 0.4s forwards;">
+            <button onclick="closeMapModal()" class="absolute top-8 right-8 w-12 h-12 rounded-full bg-white shadow-3d-card flex justify-center items-center z-20 border border-silk hover:text-rose"><i class="fa-solid fa-times"></i></button>
+            <div class="mb-4 px-4 flex justify-between items-center">
                 <div>
-                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet tracking-tight text-shadow-3d">Route and Directions</h3>
-                    <p class="text-smoke text-base md:text-lg mt-2 text-shadow-sm">Navigate to the selected pharmacy location.</p>
+                    <h3 class="text-3xl font-serif font-bold text-velvet">Route & Directions</h3>
+                    <p class="text-smoke text-sm mt-1">Live routing from your current location.</p>
                 </div>
                 <button id="startNavigationBtn" class="hidden bg-[#024b33] text-white px-6 py-3 rounded-xl font-bold uppercase text-[11px] shadow-3d-btn btn-luxury flex items-center gap-2">
                     <i class="fa-solid fa-location-arrow"></i> Start Navigation
                 </button>
             </div>
-            <div class="flex-grow rounded-[24px] overflow-hidden bg-chiffon border border-silk relative shadow-inner">
-                <!-- Embedded Google Map using an iframe -->
-                <iframe id="googleMapFrame" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="flex-grow rounded-[24px] overflow-hidden border border-silk mt-4 relative">
+                <!-- Embedded Google Map using an iframe for in-app directions -->
+                <iframe id="googleMapFrame" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
             </div>
         </div>
     </div>
 
     <!-- Forgot Password Modal -->
-    <div id="forgotModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-lg relative border border-white mx-2" style="animation: premiumGlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;">
-            <button onclick="closeForgotModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-chiffon flex items-center justify-center text-smoke hover:text-rose hover:bg-rose/10 transition-colors z-10 border border-silk/50 shadow-3d-card">
-                <i class="fa-solid fa-times text-base"></i>
-            </button>
+    <div id="forgotModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity">
+        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-lg relative border border-white mx-2" style="animation: premiumGlideIn 0.4s forwards;">
+            <button onclick="closeForgotModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb]"><i class="fa-solid fa-times"></i></button>
 
             <!-- Step 1: Request Code -->
             <div id="forgotStep1" class="block">
@@ -943,62 +822,45 @@
                     <div class="inline-flex items-center justify-center w-20 h-20 rounded-[24px] bg-luxuryGreen/10 mb-6 border border-luxuryGreen/20 shadow-inner">
                         <i class="fa-solid fa-unlock-keyhole text-luxuryGreen text-3xl drop-shadow-md"></i>
                     </div>
-                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Forgot Password</h3>
-                    <p class="text-smoke text-sm md:text-base px-2 text-shadow-sm">Enter your registered email address to receive a password reset code.</p>
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-3">Forgot Password</h3>
+                    <p class="text-smoke text-sm">Enter your registered email address to receive a reset code.</p>
                 </div>
-                <form id="forgotForm1" onsubmit="handleForgotStep1(event)" class="space-y-6 md:space-y-8">
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Email Address</label>
-                        <input type="email" autocomplete="off" required id="forgotEmail" placeholder="example@gmail.com" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet bg-white outline-none shadow-3d-input">
-                    </div>
-                    <button type="submit" id="btnForgot1" class="w-full bg-[#0d4d3a] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-4">Send Reset Code</button>
+                <form id="forgotForm1" onsubmit="handleForgotStep1(event)" class="space-y-6">
+                    <input type="email" autocomplete="off" required id="forgotEmail" placeholder="example@gmail.com" class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold">
+                    <button type="submit" id="btnForgot1" class="w-full bg-[#0d4d3a] text-white py-5 rounded-2xl font-bold uppercase text-xs btn-luxury shadow-3d-btn mt-4">Send Reset Code</button>
                 </form>
             </div>
 
             <!-- Step 2: Verify Code -->
             <div id="forgotStep2" class="hidden">
                 <div class="text-center mb-10">
-                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Verify Reset Code</h3>
-                    <p class="text-smoke text-sm md:text-base leading-relaxed px-4 text-shadow-sm">We have sent a 6-digit recovery code to your email. Please enter it below.</p>
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-3">Verify Reset Code</h3>
+                    <p class="text-smoke text-sm">Please enter the 6-digit recovery code sent to your email.</p>
                 </div>
-                <form id="forgotForm2" onsubmit="handleForgotStep2(event)" class="space-y-6 md:space-y-8">
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-4 text-center text-shadow-sm">6-Digit Code</label>
-                        <input type="text" autocomplete="off" required maxlength="6" id="forgotVerificationCode" placeholder="XXXXXX" class="w-full px-6 py-6 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-center text-2xl md:text-3xl tracking-[0.6em] font-bold text-velvet uppercase bg-white outline-none shadow-3d-input">
-                    </div>
-                    <button type="submit" id="btnForgot2" class="w-full bg-[#0d4d3a] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-4">Verify Code</button>
-                    <div class="mt-6 text-center text-xs md:text-sm text-smoke font-medium text-shadow-sm">
-                        Didn't receive the code? <button type="button" id="forgotResendBtn" onclick="handleResendCode('forgot')" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">Resend Code</button>
-                    </div>
+                <form id="forgotForm2" onsubmit="handleForgotStep2(event)" class="space-y-6">
+                    <input type="text" autocomplete="off" required maxlength="6" id="forgotVerificationCode" placeholder="XXXXXX" class="w-full px-6 py-6 rounded-2xl border border-silk text-center text-3xl tracking-[0.6em] font-bold uppercase shadow-3d-input outline-none">
+                    <button type="submit" id="btnForgot2" class="w-full bg-[#0d4d3a] text-white py-5 rounded-2xl font-bold uppercase text-xs btn-luxury shadow-3d-btn mt-4">Verify Code</button>
                 </form>
+                <div class="mt-6 text-center text-xs font-bold text-smoke">
+                    <button type="button" id="forgotResendBtn" onclick="handleResendCode('forgot')" class="text-luxuryGreen uppercase tracking-[0.2em] hover:underline ml-2">Resend Code</button>
+                </div>
             </div>
 
             <!-- Step 3: Create New Password -->
             <div id="forgotStep3" class="hidden">
                 <div class="text-center mb-10">
-                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Create New Password</h3>
-                    <p class="text-smoke text-sm md:text-base text-shadow-sm">Please enter your new password.</p>
+                    <h3 class="text-3xl font-serif font-bold text-velvet mb-3">Create New Password</h3>
                 </div>
-                <form id="forgotForm3" onsubmit="handleForgotStep3(event)" class="space-y-6 md:space-y-8">
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">New Password</label>
-                        <div class="relative">
-                            <input type="password" autocomplete="new-password" required id="forgotNewPass" placeholder="••••••••" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet pr-14 bg-white outline-none shadow-3d-input">
-                            <button type="button" onclick="togglePassword('forgotNewPass', 'eyeIconForgot1')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-[#64748b] hover:text-luxuryGreen transition-colors focus:outline-none drop-shadow-md">
-                                <i class="fa-solid fa-eye text-xl" id="eyeIconForgot1"></i>
-                            </button>
-                        </div>
+                <form id="forgotForm3" onsubmit="handleForgotStep3(event)" class="space-y-6">
+                    <div class="relative">
+                        <input type="password" autocomplete="new-password" required id="forgotNewPass" placeholder="New Password" class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold tracking-widest pr-14">
+                        <button type="button" onclick="togglePassword('forgotNewPass', 'eyeIconForgot1')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen focus:outline-none"><i class="fa-solid fa-eye text-xl" id="eyeIconForgot1"></i></button>
                     </div>
-                    <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Confirm New Password</label>
-                        <div class="relative">
-                            <input type="password" autocomplete="new-password" required id="forgotConfirmPass" placeholder="••••••••" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet pr-14 bg-white outline-none shadow-3d-input">
-                            <button type="button" onclick="togglePassword('forgotConfirmPass', 'eyeIconForgot2')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-[#64748b] hover:text-luxuryGreen transition-colors focus:outline-none drop-shadow-md">
-                                <i class="fa-solid fa-eye text-xl" id="eyeIconForgot2"></i>
-                            </button>
-                        </div>
+                    <div class="relative">
+                        <input type="password" autocomplete="new-password" required id="forgotConfirmPass" placeholder="Confirm Password" class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold tracking-widest pr-14">
+                        <button type="button" onclick="togglePassword('forgotConfirmPass', 'eyeIconForgot2')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen focus:outline-none"><i class="fa-solid fa-eye text-xl" id="eyeIconForgot2"></i></button>
                     </div>
-                    <button type="submit" id="btnForgot3" class="w-full bg-[#0d4d3a] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Update Password</button>
+                    <button type="submit" id="btnForgot3" class="w-full bg-[#0d4d3a] text-white py-5 rounded-2xl font-bold uppercase text-xs btn-luxury shadow-3d-btn mt-6">Update Password</button>
                 </form>
             </div>
         </div>
@@ -1007,9 +869,8 @@
     <!-- Toast Notification Container -->
     <div id="toast-container"></div>
 
-    <!-- Logic and Scripts -->
+    <!-- Application Logic & Scripts -->
     <script>
-        // API Base URL for backend fetching
         const API_URL = 'https://oath-of-care.onrender.com';
         
         // Permanent User Session Storage
@@ -1017,20 +878,30 @@
         
         let currentRole = 'pharmacy';
         let tempSignupEmail = ''; 
+        let tempUserSignupEmail = '';
         let tempForgotEmail = ''; 
-        let resendTimers = { signup: null, forgot: null };
-        let analyticsChartInstance = null;
-        let globalPendingApplications = []; // Secure cache for admin review modal
+        let tempPharmEmail = '';
+        let tempStorePhotoBase64 = null;
+        let tempPermitPhotoBase64 = null;
 
-        // Ensure navigation correctly reflects auth state on load
-        window.onload = () => {
-            updateNavBasedOnAuth();
+        let resendTimers = { signup: null, forgot: null, pharm: null, user: null };
+        let analyticsChartInstance = null;
+        let globalPendingApplications = [];
+
+        // --- Execute exactly on load to clear stray fields ---
+        window.onload = () => { 
+            updateNavBasedOnAuth(); 
+            // Force reset of all login forms to combat browser autofill bugs
+            const loginForms = ['patientLoginForm', 'loginForm', 'patientSignupForm1', 'pharmSignupForm1'];
+            loginForms.forEach(fId => {
+                let f = document.getElementById(fId);
+                if (f) f.reset();
+            });
         };
 
         function updateNavBasedOnAuth() {
             const btnLogout = document.getElementById('navLogoutBtn');
             const btnLogoutMobile = document.getElementById('navLogoutBtnMobile');
-            
             if(authState.role === 'patient' || authState.role === 'pharmacy' || authState.role === 'admin') {
                 if(btnLogout) btnLogout.classList.remove('hidden');
                 if(btnLogoutMobile) btnLogoutMobile.classList.remove('hidden');
@@ -1048,62 +919,47 @@
             showToast('Logged out successfully.');
         }
 
-        // --- Rotating 3D Background ---
+        // --- Base64 Conversion Utility for Secure Image Storage ---
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         const bgImages = [
             'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1920&auto=format&fit=crop', 
             'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?q=80&w=1920&auto=format&fit=crop', 
             'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?q=80&w=1920&auto=format&fit=crop', 
             'https://images.unsplash.com/photo-1628771065518-0d82f1938462?q=80&w=1920&auto=format&fit=crop'  
         ];
-        
-        let bgIndex = 0;
-        let activeLayer = 1;
-
-        function rotateBackground() {
+        let bgIndex = 0, activeLayer = 1;
+        setInterval(() => {
             bgIndex = (bgIndex + 1) % bgImages.length;
             const nextLayer = activeLayer === 1 ? 2 : 1;
             const nextEl = document.getElementById(`bg-layer-${nextLayer}`);
             const currentEl = document.getElementById(`bg-layer-${activeLayer}`);
-            
             nextEl.style.backgroundImage = `url('${bgImages[bgIndex]}')`;
             nextEl.classList.add('active-bg');
             currentEl.classList.remove('active-bg');
-            
             activeLayer = nextLayer;
-        }
+        }, 8000);
 
-        setInterval(rotateBackground, 8000);
-
-        // --- Anti-Spam Button Lock ---
         function lockButton(btnId) {
             const btn = document.getElementById(btnId);
             if(!btn) return () => {};
             const originalHTML = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin drop-shadow-md"></i> <span class="tracking-widest ml-2">Processing...</span>';
-            return () => {
-                btn.disabled = false;
-                btn.innerHTML = originalHTML;
-            };
+            return () => { btn.disabled = false; btn.innerHTML = originalHTML; };
         }
 
-        // --- Navigation ---
         function navigateTo(viewId, param = null) {
-            document.querySelectorAll('.view-section').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            const targetView = document.getElementById(`view-${viewId}`);
-            if(targetView) {
-                targetView.style.animation = 'none';
-                targetView.offsetHeight; 
-                targetView.style.animation = null; 
-                targetView.classList.add('active');
-            }
-
-            if (viewId === 'login' && param) {
-                switchLoginRole(param);
-            }
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            if (viewId === 'login' && param) switchLoginRole(param);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1113,7 +969,6 @@
             const btnAdmin = document.getElementById('btnRoleAdmin');
             const title = document.getElementById('loginTitle');
             const prompt = document.getElementById('signupPrompt');
-
             const inactiveClasses = "flex-1 py-4 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all text-smoke hover:text-velvet drop-shadow-sm";
             const activeClasses = "flex-1 py-4 rounded-xl font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all bg-velvet text-white shadow-3d-btn";
 
@@ -1135,56 +990,67 @@
             const eyeIcon = document.getElementById(iconId);
             if (!passInput || !eyeIcon) return;
             if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
+                passInput.type = 'text'; eyeIcon.classList.remove('fa-eye'); eyeIcon.classList.add('fa-eye-slash');
             } else {
-                passInput.type = 'password';
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
+                passInput.type = 'password'; eyeIcon.classList.remove('fa-eye-slash'); eyeIcon.classList.add('fa-eye');
             }
         }
 
-        // --- USER AUTHENTICATION / FIND MEDICINE ---
+        // =========================================================
+        // USER AUTHENTICATION & SEARCH LOGIC
+        // =========================================================
         function handleFindMedicineClick() {
-            navigateTo('home');
-            setTimeout(() => {
-                const searchInput = document.getElementById('searchMedicine');
-                if(searchInput) searchInput.focus();
-            }, 500);
+            if (authState.role === 'patient') {
+                navigateTo('home');
+                setTimeout(() => { const s = document.getElementById('searchMedicine'); if(s) { s.focus(); s.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }, 500);
+            } else {
+                openUserAuthModal();
+            }
         }
 
         function openUserAuthModal() {
             document.getElementById('userAuthModal').classList.remove('hidden');
+            // Force reset to blank out ghosts
+            document.getElementById('userLoginEmail').value = '';
+            document.getElementById('userLoginPassword').value = '';
             toggleUserAuthForms('login');
         }
 
         function closeUserAuthModal() {
             document.getElementById('userAuthModal').classList.add('hidden');
             document.getElementById('patientLoginForm').reset();
-            document.getElementById('patientSignupForm').reset();
+            document.getElementById('patientSignupForm1').reset();
+            document.getElementById('patientSignupForm2').reset();
         }
 
         function toggleUserAuthForms(view) {
+            const loginWrapper = document.getElementById('userLoginFormWrapper');
+            const signupWrapper = document.getElementById('userSignupFormWrapper');
+            const verifyWrapper = document.getElementById('userVerifyFormWrapper');
+            
+            if(!loginWrapper || !signupWrapper || !verifyWrapper) return;
+
             if(view === 'login') {
-                document.getElementById('userLoginFormWrapper').classList.remove('hidden');
-                document.getElementById('userSignupFormWrapper').classList.add('hidden');
+                loginWrapper.classList.remove('hidden');
+                signupWrapper.classList.add('hidden');
+                verifyWrapper.classList.add('hidden');
             } else {
-                document.getElementById('userLoginFormWrapper').classList.add('hidden');
-                document.getElementById('userSignupFormWrapper').classList.remove('hidden');
+                loginWrapper.classList.add('hidden');
+                signupWrapper.classList.remove('hidden');
+                verifyWrapper.classList.add('hidden');
             }
         }
 
         async function handleUserLoginSubmit(e) {
             e.preventDefault();
             const unlock = lockButton('btnUserLogin');
-            const email = document.getElementById('userLoginEmail').value;
-            const password = document.getElementById('userLoginPassword').value;
+            const emailInput = document.getElementById('userLoginEmail');
+            const passInput = document.getElementById('userLoginPassword');
 
             try {
                 const response = await fetch(`${API_URL}/login`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, role: 'patient' })
+                    body: JSON.stringify({ email: emailInput.value, password: passInput.value, role: 'patient' })
                 });
                 const result = await response.json();
                 
@@ -1197,99 +1063,87 @@
                     closeUserAuthModal();
                     navigateTo('home');
                 } else {
-                    showToast(result.error, 'error');
-                    document.getElementById('userLoginPassword').value = ''; // clear input on error
+                    showToast(result.error || 'Invalid credentials', 'error');
+                    passInput.value = ''; // Clean field on error
+                    emailInput.value = '';
                 }
-            } catch (err) { 
-                showToast('Server offline', 'error'); 
-            } finally { unlock(); }
+            } catch (err) { showToast('Server offline', 'error'); } finally { unlock(); }
         }
 
-        async function handleUserSignupSubmit(e) {
+        // STEP 1: Patient Signup Email Verification
+        async function handleUserSignupStep1(e) {
             e.preventDefault();
-            const unlock = lockButton('btnUserSignup');
-            const data = {
-                fname: document.getElementById('userRegFname').value,
-                lname: document.getElementById('userRegLname').value,
-                age: document.getElementById('userRegAge').value,
-                email: document.getElementById('userRegEmail').value,
-                password: document.getElementById('userRegPass').value
-            };
+            tempUserSignupEmail = document.getElementById('userRegEmail').value;
+            const unlock = lockButton('btnUserSignup1');
+
             try {
-                const response = await fetch(`${API_URL}/register-patient`, {
-                    method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+                const response = await fetch(`${API_URL}/api/send-verification`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: tempUserSignupEmail })
                 });
-                const result = await response.json();
-                if(response.ok){ 
-                    showToast(result.message); 
-                    e.target.reset();
-                    toggleUserAuthForms('login'); 
-                } else { 
-                    showToast(result.error, 'error'); 
-                    document.getElementById('userRegPass').value = ''; // clear input on error
+                if(response.ok) {
+                    document.getElementById('userSignupFormWrapper').classList.add('hidden');
+                    document.getElementById('userVerifyFormWrapper').classList.remove('hidden');
+                    showToast('Code successfully sent to your email!');
+                    startResendCooldown('userResendBtn', 'user'); 
+                } else {
+                    const res = await response.json();
+                    showToast(res.error || 'Failed to send verification email', 'error');
                 }
-            } catch(err) { showToast('Network Error', 'error'); } finally { unlock(); }
+            } catch (error) { showToast('Could not reach backend', 'error'); } finally { unlock(); }
         }
 
-
-        // --- BUSINESS LOGIN (Pharmacy & Admin) ---
-        async function handleLogin(e) {
+        // STEP 2: Verify Patient Code & Create Account
+        async function handleUserSignupStep2(e) {
             e.preventDefault();
-            const unlock = lockButton('btnSubmitLogin');
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            showToast('Verifying your credentials...');
+            const code = document.getElementById('userVerifyCode').value;
+            const unlock = lockButton('btnUserSignup2');
             
             try {
-                const response = await fetch(`${API_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, role: currentRole })
+                const verifyResponse = await fetch(`${API_URL}/api/verify-code`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: tempUserSignupEmail, code: code })
                 });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    showToast(result.message);
-                    authState = { id: result.id, role: result.role, name: result.name || result.pharmacyName };
-                    localStorage.setItem('ooc_user', JSON.stringify(authState));
-                    updateNavBasedOnAuth();
-                    e.target.reset(); // clear form entirely
+                
+                if(verifyResponse.ok) {
+                    // Code verified! Now register the actual user.
+                    if (resendTimers.user) clearInterval(resendTimers.user);
                     
-                    if(currentRole === 'pharmacy') {
-                        if(result.pharmacyName) document.getElementById('dashboardPharmName').innerText = result.pharmacyName;
-                        navigateTo('pharmacy');
-                        fetchPharmacyData();
-                    } else {
-                        navigateTo('admin');
-                        fetchAdminData();
-                    }
-                } else {
-                    showToast('Error: ' + (result.error || 'Invalid credentials'), 'error');
-                    document.getElementById('loginPassword').value = ''; // clean password field on error
-                }
-            } catch (error) {
-                showToast('Server error.', 'error');
-            } finally { unlock(); }
+                    const data = {
+                        fname: document.getElementById('userRegFname').value,
+                        lname: document.getElementById('userRegLname').value,
+                        email: tempUserSignupEmail,
+                        password: document.getElementById('userRegPass').value
+                    };
+                    
+                    const regResponse = await fetch(`${API_URL}/register-patient`, {
+                        method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+                    });
+                    const regResult = await regResponse.json();
+
+                    if(regResponse.ok){ 
+                        showToast("Account created successfully! You can now log in."); 
+                        document.getElementById('patientSignupForm1').reset();
+                        document.getElementById('patientSignupForm2').reset();
+                        toggleUserAuthForms('login'); 
+                    } else { showToast(regResult.error, 'error'); }
+                } else { showToast('Invalid verification code', 'error'); }
+            } catch(error) { showToast('Could not reach backend', 'error'); } finally { unlock(); }
         }
 
-        // --- REAL SEARCH API FETCH ---
         async function handleSearch(e) {
             e.preventDefault();
             
-            if (authState.role !== 'patient') {
-                showToast("Please log in or create a user account to search.", "error");
+            if (!authState || authState.role !== 'patient') {
+                showToast("Please log in or create an account to use the Locator.", "error");
                 openUserAuthModal();
                 return;
             }
-
             const medInput = document.getElementById('searchMedicine').value;
             const brgy = document.getElementById('searchBarangay').value;
             const unlock = lockButton('btnSearch');
             
             document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-luxuryGreen">${medInput}</strong> in <strong class="text-luxuryGreen">${brgy}</strong>`;
-            
             const resultsDiv = document.getElementById('searchResults');
             const grid = document.getElementById('resultsGrid');
             
@@ -1298,11 +1152,9 @@
             
             try {
                 const response = await fetch(`${API_URL}/api/search`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ medicine: medInput, barangay: brgy, patientId: authState.id })
                 });
-                
                 const data = await response.json();
                 
                 if (response.status === 429) {
@@ -1311,11 +1163,7 @@
                 } else if (response.ok && data.results.length > 0) {
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
-                        let shopImage = 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
-                        if (brgy === 'Minuyan') shopImage = 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80';
-                        else if (brgy === 'San Mateo') shopImage = 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&q=80';
-                        else if (brgy === 'Bigte') shopImage = 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&q=80'; 
-
+                        let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
                         grid.innerHTML += `
                             <div class="bg-white rounded-[24px] shadow-3d-card hover:shadow-[0_25px_50px_-12px_rgba(2,75,51,0.25)] transition-all duration-500 overflow-hidden flex flex-col group border border-silk/50 relative z-10">
                                 <div class="h-52 md:h-60 overflow-hidden relative rounded-t-[24px] shadow-inner">
@@ -1336,18 +1184,15 @@
                                             <span class="text-lg md:text-xl font-bold text-luxuryGreen text-shadow-sm">₱${res.price}</span>
                                         </div>
                                     </div>
-
                                     <div class="grid grid-cols-2 gap-4 mt-auto">
-                                        <button onclick="openPharmacyDetails('${res.pharmacyName}', 'Branch in ${res.branch}', '${res.address}')" class="bg-white border border-silk text-velvet py-4 md:py-4.5 rounded-xl font-bold text-[10px] md:text-[11px] uppercase tracking-widest hover:border-velvet hover:bg-chiffon/30 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.05),_inset_0_-2px_4px_rgba(0,0,0,0.05)]">Details</button>
+                                        <button onclick="openPharmacyDetails('${res.pharmacyName}', 'Branch in ${res.branch}', '${res.address}', '${res.contact}', '${shopImage}')" class="bg-white border border-silk text-velvet py-4 md:py-4.5 rounded-xl font-bold text-[10px] md:text-[11px] uppercase tracking-widest hover:border-velvet hover:bg-chiffon/30 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.05),_inset_0_-2px_4px_rgba(0,0,0,0.05)]">Details</button>
                                         <button onclick="openMapModal('${res.address}', '${res.pharmacyName}')" class="bg-velvet text-white py-4 md:py-4.5 rounded-xl font-bold text-[10px] md:text-[11px] uppercase tracking-widest hover:bg-luxuryGreen transition-colors shadow-3d-btn"><i class="fa-solid fa-diamond-turn-right mr-2 drop-shadow-sm"></i> Directions</button>
                                     </div>
                                 </div>
                             </div>
                         `;
                     });
-                } else {
-                    grid.innerHTML = '<div class="col-span-full text-center py-16 text-smoke font-bold">No pharmacies found with this medicine.</div>';
-                }
+                } else { grid.innerHTML = '<div class="col-span-full text-center py-16 text-smoke font-bold">No pharmacies found with this medicine.</div>'; }
                 resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
                 showToast('Server offline. Could not complete search.', 'error');
@@ -1356,10 +1201,12 @@
         }
 
         // Logic for Displaying Modals (Details & Map)
-        function openPharmacyDetails(name, branch, address) {
+        function openPharmacyDetails(name, branch, address, contact, imageUrl) {
             document.getElementById('detailPharmName').innerText = name;
             document.getElementById('detailPharmBranch').innerText = branch;
             document.getElementById('detailPharmAddress').innerText = address;
+            document.getElementById('detailPharmContact').innerText = contact;
+            document.getElementById('detailPharmImage').src = imageUrl;
             document.getElementById('pharmacyDetailsModal').classList.remove('hidden');
         }
         function closePharmacyDetails() { document.getElementById('pharmacyDetailsModal').classList.add('hidden'); }
@@ -1370,25 +1217,23 @@
             const navBtn = document.getElementById('startNavigationBtn');
             
             const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
+            
+            // Render basic standard view first
             mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
             
             navBtn.onclick = () => {
-                showToast('Requesting GPS location...', 'success');
+                showToast('Requesting GPS location for live routing...', 'success');
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const origin = `${position.coords.latitude},${position.coords.longitude}`;
-                            const wazeLink = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodedDest}`;
-                            window.open(wazeLink, '_blank');
+                            // Force live directions inside iframe
+                            mapFrame.src = `https://maps.google.com/maps?saddr=${origin}&daddr=${encodedDest}&output=embed`;
+                            navBtn.classList.add('hidden');
                         },
-                        (error) => {
-                            showToast('GPS access denied. Using generic directions.', 'error');
-                            window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedDest}`, '_blank');
-                        }
+                        (error) => { showToast('GPS access denied. Cannot generate live route.', 'error'); }
                     );
-                } else {
-                    showToast('Geolocation is not supported by your browser.', 'error');
-                }
+                } else { showToast('Geolocation is not supported by your browser.', 'error'); }
             };
             
             navBtn.classList.remove('hidden');
@@ -1396,59 +1241,208 @@
         }
         function closeMapModal() { document.getElementById('mapModal').classList.add('hidden'); }
 
-        // Logic for Pharmacy Dashboard Tabs
-        function switchPharmTab(tab) {
-            ['update', 'manage'].forEach(t => {
-                document.getElementById(`pContent-${t}`).classList.add('hidden');
-                document.getElementById(`pTab-${t}`).className = "w-full text-left px-6 py-4 rounded-2xl text-smoke hover:bg-silk/40 hover:text-velvet font-bold text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 drop-shadow-sm";
-                const iconContainer = document.querySelector(`#pTab-${t} div`);
-                if(iconContainer) {
-                    iconContainer.className = "bg-transparent p-2 rounded-lg";
-                    iconContainer.querySelector('i').classList.remove('text-luxuryGreenLight');
-                }
-                const mTab = document.getElementById(`mTab-p-${t}`);
-                if (mTab) mTab.className = "flex-1 py-3.5 rounded-xl text-smoke font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 hover:bg-silk/40 drop-shadow-sm";
-            });
-            
-            document.getElementById(`pContent-${tab}`).classList.remove('hidden');
-            document.getElementById(`pTab-${tab}`).className = "w-full text-left px-6 py-4 rounded-2xl bg-velvet text-white font-bold text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 shadow-3d-btn hover:shadow-[0_15px_25px_-5px_rgba(0,0,0,0.4)]";
-            
-            const activeIconContainer = document.querySelector(`#pTab-${tab} div`);
-            if(activeIconContainer) {
-                activeIconContainer.className = "bg-luxuryGreen/20 p-2 rounded-lg shadow-inner";
-                activeIconContainer.querySelector('i').classList.add('text-luxuryGreenLight');
-            }
+        // --- BUSINESS LOGIN (Pharmacy & Admin) ---
+        async function handleLogin(e) {
+            e.preventDefault();
+            const unlock = lockButton('btnSubmitLogin');
+            const emailInput = document.getElementById('loginEmail');
+            const passInput = document.getElementById('loginPassword');
 
-            const mTabActive = document.getElementById(`mTab-p-${tab}`);
-            if (mTabActive) mTabActive.className = "flex-1 py-3.5 rounded-xl bg-velvet text-white font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 shadow-3d-btn";
+            showToast('Verifying your credentials...');
+            
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput.value, password: passInput.value, role: currentRole })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast(result.message);
+                    authState = { id: result.id, role: result.role, name: result.name || result.pharmacyName };
+                    localStorage.setItem('ooc_user', JSON.stringify(authState));
+                    updateNavBasedOnAuth();
+                    e.target.reset(); // clear form entirely
+                    
+                    if(currentRole === 'pharmacy') {
+                        if(result.pharmacyName) document.getElementById('dashboardPharmName').innerText = result.pharmacyName;
+                        navigateTo('pharmacy'); fetchPharmacyData();
+                    } else { navigateTo('admin'); fetchAdminData(); }
+                } else {
+                    showToast('Error: ' + (result.error || 'Invalid credentials'), 'error');
+                    passInput.value = ''; // clear only password
+                    emailInput.value = '';
+                }
+            } catch (error) { showToast('Server error.', 'error'); } finally { unlock(); }
         }
 
-        function switchAdminTab(tab) {
-            ['requests', 'analytics', 'logs'].forEach(t => {
-                document.getElementById(`aContent-${t}`).classList.add('hidden');
-                document.getElementById(`aTab-${t}`).className = "w-full text-left px-6 py-4 rounded-2xl text-smoke hover:bg-silk/40 hover:text-velvet font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 drop-shadow-sm";
-                const iconContainer = document.querySelector(`#aTab-${t} div`);
-                if(iconContainer) {
-                    iconContainer.className = "bg-transparent p-2 rounded-lg";
-                    iconContainer.querySelector('i').classList.remove('text-luxuryGreenLight');
-                }
-                const mTab = document.getElementById(`mTab-a-${t}`);
-                if (mTab) mTab.className = "whitespace-nowrap flex-1 py-3.5 px-4 rounded-xl text-smoke font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 hover:bg-silk/40 drop-shadow-sm";
-            });
-            
-            document.getElementById(`aContent-${tab}`).classList.remove('hidden');
-            document.getElementById(`aTab-${tab}`).className = "w-full text-left px-6 py-4 rounded-2xl bg-velvet text-white font-bold text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-4 shadow-3d-btn";
-            
-            const activeIconContainer = document.querySelector(`#aTab-${tab} div`);
-            if(activeIconContainer) {
-                activeIconContainer.className = "bg-luxuryGreen/20 p-2 rounded-lg shadow-inner";
-                activeIconContainer.querySelector('i').classList.add('text-luxuryGreenLight');
-            }
-            const mTabActive = document.getElementById(`mTab-a-${tab}`);
-            if (mTabActive) mTabActive.className = "whitespace-nowrap flex-1 py-3.5 px-4 rounded-xl bg-velvet text-white font-bold text-[10px] uppercase tracking-[0.15em] transition-all flex justify-center items-center gap-2 shadow-3d-btn";
+        // --- PHARMACY REGISTRATION ---
+        function openPharmacyRegistration() {
+            document.getElementById('pharmacyRegModal').classList.remove('hidden');
+            // Hard wipe forms
+            document.getElementById('signupPharmEmail').value = '';
+            document.getElementById('signupPharmPassword').value = '';
+            document.getElementById('pharmSignupStep1').classList.remove('hidden');
+            document.getElementById('pharmSignupStep2').classList.add('hidden');
+            document.getElementById('pharmSignupStep3').classList.add('hidden');
+        }
+        function closePharmacyRegistration() { 
+            document.getElementById('pharmacyRegModal').classList.add('hidden'); 
+            const form1 = document.getElementById('pharmSignupForm1'); if (form1) form1.reset();
+            const form2 = document.getElementById('pharmSignupForm2'); if (form2) form2.reset();
+            const form3 = document.getElementById('pharmSignupForm3'); if (form3) form3.reset();
+            tempStorePhotoBase64 = null;
+            tempPermitPhotoBase64 = null;
         }
 
-        // --- REAL FETCH LOGIC FOR PHARMACY DATA ---
+        document.getElementById('regStorePhoto').addEventListener('change', async function() {
+            if(this.files && this.files[0]) tempStorePhotoBase64 = await fileToBase64(this.files[0]);
+        });
+        document.getElementById('regPermitPhoto').addEventListener('change', async function() {
+            if(this.files && this.files[0]) tempPermitPhotoBase64 = await fileToBase64(this.files[0]);
+        });
+
+        async function handlePharmSignupStep1(e) {
+            e.preventDefault();
+            tempPharmEmail = document.getElementById('signupPharmEmail').value;
+            const unlock = lockButton('btnPharmReg1');
+            try {
+                const response = await fetch(`${API_URL}/api/send-verification`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: tempPharmEmail })
+                });
+                if(response.ok) {
+                    document.getElementById('pharmSignupStep1').classList.add('hidden');
+                    document.getElementById('pharmSignupStep2').classList.remove('hidden');
+                    showToast('Code successfully sent!');
+                    startResendCooldown('pharmSignupResendBtn', 'pharm'); 
+                } else {
+                    const res = await response.json(); showToast(res.error || 'Failed to send', 'error');
+                }
+            } catch (error) { showToast('Could not reach backend', 'error'); } finally { unlock(); }
+        }
+
+        async function handlePharmSignupStep2(e) {
+            e.preventDefault();
+            const code = document.getElementById('signupPharmCode').value;
+            const unlock = lockButton('btnPharmReg2');
+            try {
+                const response = await fetch(`${API_URL}/api/verify-code`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: tempPharmEmail, code: code })
+                });
+                if(response.ok) {
+                    showToast('Code verified successfully!');
+                    document.getElementById('pharmSignupStep2').classList.add('hidden');
+                    document.getElementById('pharmSignupStep3').classList.remove('hidden');
+                    if (resendTimers.pharm) clearInterval(resendTimers.pharm); 
+                } else { showToast('Invalid verification code', 'error'); }
+            } catch(error) { showToast('Could not reach backend', 'error'); } finally { unlock(); }
+        }
+
+        async function handlePharmSignupStep3(e) {
+            e.preventDefault();
+            const unlock = lockButton('btnPharmReg3');
+            if (!tempStorePhotoBase64 || !tempPermitPhotoBase64) {
+                showToast('Please upload both the Store Photo and Business Permit.', 'error');
+                unlock(); return;
+            }
+            const signupData = {
+                email: tempPharmEmail, password: document.getElementById('signupPharmPassword').value,
+                pharmacyName: document.getElementById('regPharmName').value, barangay: document.getElementById('regBarangay').value,
+                contactNumber: document.getElementById('regContact').value, address: document.getElementById('regAddress').value,
+                mapLink: document.getElementById('regMapLink').value, storePhoto: tempStorePhotoBase64, permitPhoto: tempPermitPhotoBase64
+            };
+            try {
+                const response = await fetch(`${API_URL}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(signupData) });
+                const result = await response.json();
+                if (response.ok) { showToast('Success: ' + result.message); closePharmacyRegistration(); } 
+                else { showToast('Error: ' + (result.error || 'Registration failed'), 'error'); }
+            } catch (error) { showToast('Server is offline.', 'error'); } finally { unlock(); }
+        }
+
+        // --- DASHBOARD LOGIC (Admin & Pharmacy) ---
+        async function fetchAdminData() {
+            try {
+                const [statsRes, logsRes, pendingRes] = await Promise.all([
+                    fetch(`${API_URL}/api/admin/stats`), fetch(`${API_URL}/api/admin/logs`), fetch(`${API_URL}/api/admin/pending`)
+                ]);
+                const stats = await statsRes.json(); const logs = await logsRes.json(); const pending = await pendingRes.json();
+
+                document.getElementById('statPharm').innerText = stats.totalPharmacies || 0;
+                document.getElementById('statPatient').innerText = stats.totalPatients || 0;
+                document.getElementById('statSearch').innerText = stats.totalSearches || 0;
+
+                const ctx = document.getElementById('analyticsChart').getContext('2d');
+                if(analyticsChartInstance) analyticsChartInstance.destroy();
+                analyticsChartInstance = new Chart(ctx, {
+                    type: 'doughnut', data: { labels: ['Successful Matches', 'No Results Found'], datasets: [{ data: stats.chartData || [0,0], backgroundColor: ['#024b33', '#e19898'], borderWidth: 0 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+
+                const reqContainer = document.getElementById('adminRequestsContainer');
+                reqContainer.innerHTML = '';
+                globalPendingApplications = pending;
+                
+                if(pending.length > 0) {
+                    pending.forEach(p => {
+                        reqContainer.innerHTML += `
+                            <div class="bg-white p-6 rounded-[24px] shadow-3d-card border border-silk/80 flex flex-col md:flex-row justify-between items-start md:items-center">
+                                <div><h4 class="text-lg font-bold text-velvet text-shadow-3d">${p.name}</h4><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mt-1.5">${p.branch}</p></div>
+                                <div class="flex gap-4 mt-4 md:mt-0"><button onclick="openAdminReview(${p.id})" class="bg-[#024b33] text-white px-8 py-3 rounded-xl font-bold text-xs uppercase btn-luxury shadow-3d-btn">Review Application</button></div>
+                            </div>`;
+                    });
+                } else { reqContainer.innerHTML = '<p class="text-smoke font-bold text-center py-6">No pending applications.</p>'; }
+
+                const tbody = document.getElementById('auditLogsTable');
+                tbody.innerHTML = '';
+                logs.forEach(log => {
+                    tbody.innerHTML += `
+                        <tr class="border-b border-silk/40 text-sm">
+                            <td class="p-6">${log.time}</td><td class="p-6 font-bold">${log.user}</td>
+                            <td class="p-6"><span class="px-3 py-1 rounded-full text-[10px] uppercase font-bold ${log.result === 'Success' ? 'bg-[#e8f1ed] text-luxuryGreen' : 'bg-rose/10 text-rose'}">${log.result}</span></td>
+                        </tr>`;
+                });
+            } catch(e) { console.error("Error loading admin data"); }
+        }
+
+        let activeReviewId = null;
+        function openAdminReview(id) {
+            const appData = globalPendingApplications.find(p => p.id === id);
+            if(!appData) return;
+            activeReviewId = id;
+            document.getElementById('revName').innerText = appData.name;
+            document.getElementById('revEmail').innerText = appData.email;
+            document.getElementById('revContact').innerText = appData.contact;
+            document.getElementById('revBranch').innerText = appData.branch;
+            document.getElementById('revAddress').innerText = appData.address;
+            document.getElementById('revMap').href = appData.mapLink;
+            document.getElementById('revMap').innerText = appData.mapLink;
+            
+            const storeImg = document.getElementById('revStorePhotoImg'), storeText = document.getElementById('revStorePhotoText');
+            if(appData.storePhoto) { storeImg.src = appData.storePhoto; storeImg.classList.remove('hidden'); storeText.classList.add('hidden'); } 
+            else { storeImg.classList.add('hidden'); storeText.classList.remove('hidden'); }
+
+            const permitImg = document.getElementById('revPermitPhotoImg'), permitText = document.getElementById('revPermitPhotoText');
+            if(appData.permitPhoto) { permitImg.src = appData.permitPhoto; permitImg.classList.remove('hidden'); permitText.classList.add('hidden'); } 
+            else { permitImg.classList.add('hidden'); permitText.classList.remove('hidden'); }
+
+            document.getElementById('adminReviewModal').classList.remove('hidden');
+        }
+
+        function closeAdminReview() { document.getElementById('adminReviewModal').classList.add('hidden'); activeReviewId = null; }
+
+        async function handleApplicationDecision(action) {
+            if(!activeReviewId) return;
+            const btnId = action === 'approve' ? 'btnRevApprove' : 'btnRevReject';
+            const unlock = lockButton(btnId);
+            try {
+                const response = await fetch(`${API_URL}/api/admin/resolve`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ pharmacyId: activeReviewId, action: action })
+                });
+                if(response.ok) { showToast(`Application successfully ${action}d`); closeAdminReview(); fetchAdminData(); }
+            } catch(error) { showToast('Network Error', 'error'); } finally { unlock(); }
+        }
+
         async function fetchPharmacyData() {
             try {
                 const profileRes = await fetch(`${API_URL}/api/pharmacy/profile/${authState.id}`);
@@ -1475,45 +1469,22 @@
                                 <td class="p-6 text-xs font-medium text-smoke">${med.category}</td>
                                 <td class="p-6 text-sm font-bold text-velvet">₱${med.price}</td>
                                 <td class="p-6"><span class="border px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest ${statusColor}">${med.status}</span></td>
-                                <td class="p-6 text-right">
-                                    <button onclick="deleteMedicine(${med.id})" class="text-smoke hover:text-rose p-3 drop-shadow-md btn-luxury"><i class="fa-solid fa-trash-can text-lg"></i></button>
-                                </td>
-                            </tr>
-                        `;
+                                <td class="p-6 text-right"><button onclick="deleteMedicine(${med.id})" class="text-smoke hover:text-rose p-3 drop-shadow-md btn-luxury"><i class="fa-solid fa-trash-can text-lg"></i></button></td>
+                            </tr>`;
                     });
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-smoke font-bold">No inventory items found.</td></tr>';
-                }
+                } else { tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-smoke font-bold">No inventory items found.</td></tr>'; }
             } catch(e) { console.error("Error fetching pharmacy data"); }
         }
 
-        // --- REAL ADD MEDICINE API FETCH ---
         async function submitAddMedicine(e) {
             e.preventDefault();
             const unlock = lockButton('btnAddMed');
-            const name = document.getElementById('newMedName').value;
-            const price = document.getElementById('newMedPrice').value;
-            const status = document.getElementById('newMedStatus').value;
-            const category = document.getElementById('newMedCategory').value;
-
+            const data = { name: document.getElementById('newMedName').value, price: document.getElementById('newMedPrice').value, status: document.getElementById('newMedStatus').value, category: document.getElementById('newMedCategory').value, pharmacyId: authState.id };
             try {
-                const response = await fetch(`${API_URL}/api/medicines`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, price, status, category, pharmacyId: authState.id })
-                });
-
-                if (response.ok) {
-                    document.getElementById('addModal').classList.add('hidden');
-                    e.target.reset();
-                    showToast(`${name} has been successfully saved!`);
-                    fetchPharmacyData(); // Reload table
-                } else {
-                    showToast('Failed to add medicine', 'error');
-                }
-            } catch (err) {
-                showToast('Server error. Could not connect.', 'error');
-            } finally { unlock(); }
+                const response = await fetch(`${API_URL}/api/medicines`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                if (response.ok) { document.getElementById('addModal').classList.add('hidden'); e.target.reset(); showToast(`Saved successfully!`); fetchPharmacyData(); } 
+                else { showToast('Failed to add medicine', 'error'); }
+            } catch (err) { showToast('Server error.', 'error'); } finally { unlock(); }
         }
         
         async function deleteMedicine(id) {
@@ -1530,135 +1501,21 @@
             try {
                 const res = await fetch(`${API_URL}/api/pharmacy/update`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        pharmacyId: authState.id,
-                        name: document.getElementById('updName').value,
-                        contact: document.getElementById('updContact').value,
-                        address: document.getElementById('updAddress').value,
-                        mapLink: document.getElementById('updMap').value
-                    })
+                    body: JSON.stringify({ pharmacyId: authState.id, name: document.getElementById('updName').value, contact: document.getElementById('updContact').value, address: document.getElementById('updAddress').value, mapLink: document.getElementById('updMap').value })
                 });
-                if(res.ok) { 
-                    showToast('Profile updated successfully!'); 
-                    authState.name = document.getElementById('updName').value; 
-                    localStorage.setItem('ooc_user', JSON.stringify(authState)); 
-                    document.getElementById('dashboardPharmName').innerText = authState.name;
-                }
+                if(res.ok) { showToast('Profile updated successfully!'); authState.name = document.getElementById('updName').value; localStorage.setItem('ooc_user', JSON.stringify(authState)); document.getElementById('dashboardPharmName').innerText = authState.name; }
             } catch(e) { showToast('Update error', 'error'); } finally { unlock(); }
         }
 
-        // --- ADMIN DASHBOARD LOGIC (Chart.js, Logs, and Review System) ---
-        async function fetchAdminData() {
-            try {
-                const [statsRes, logsRes, pendingRes] = await Promise.all([
-                    fetch(`${API_URL}/api/admin/stats`),
-                    fetch(`${API_URL}/api/admin/logs`),
-                    fetch(`${API_URL}/api/admin/pending`)
-                ]);
-                
-                const stats = await statsRes.json();
-                const logs = await logsRes.json();
-                const pending = await pendingRes.json();
-
-                document.getElementById('statPharm').innerText = stats.totalPharmacies || 0;
-                document.getElementById('statPatient').innerText = stats.totalPatients || 0;
-                document.getElementById('statSearch').innerText = stats.totalSearches || 0;
-
-                const ctx = document.getElementById('analyticsChart').getContext('2d');
-                if(analyticsChartInstance) analyticsChartInstance.destroy();
-                analyticsChartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Successful Matches', 'No Results Found'],
-                        datasets: [{ data: stats.chartData || [0,0], backgroundColor: ['#024b33', '#e19898'], borderWidth: 0 }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-                });
-
-                const reqContainer = document.getElementById('adminRequestsContainer');
-                reqContainer.innerHTML = '';
-                
-                // Store pending globally for review modal access
-                globalPendingApplications = pending;
-                
-                if(pending.length > 0) {
-                    pending.forEach(p => {
-                        reqContainer.innerHTML += `
-                            <div class="bg-white p-6 rounded-[24px] shadow-3d-card border border-silk/80 flex flex-col md:flex-row justify-between items-start md:items-center">
-                                <div><h4 class="text-lg font-bold text-velvet text-shadow-3d">${p.name}</h4><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mt-1.5">${p.branch}</p></div>
-                                <div class="flex gap-4 mt-4 md:mt-0">
-                                    <button onclick="openAdminReview(${p.id})" class="bg-[#024b33] text-white px-8 py-3 rounded-xl font-bold text-xs uppercase btn-luxury shadow-3d-btn">Review Application</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    reqContainer.innerHTML = '<p class="text-smoke font-bold text-center py-6">No pending applications.</p>';
-                }
-
-                const tbody = document.getElementById('auditLogsTable');
-                tbody.innerHTML = '';
-                logs.forEach(log => {
-                    tbody.innerHTML += `
-                        <tr class="border-b border-silk/40 text-sm">
-                            <td class="p-6">${log.time}</td><td class="p-6 font-bold">${log.user}</td>
-                            <td class="p-6"><span class="px-3 py-1 rounded-full text-[10px] uppercase font-bold ${log.result === 'Success' ? 'bg-[#e8f1ed] text-luxuryGreen' : 'bg-rose/10 text-rose'}">${log.result}</span></td>
-                        </tr>
-                    `;
-                });
-            } catch(e) { console.error("Error loading admin data"); }
-        }
-
-        // Logic to populate and trigger the Admin Review Modal
-        let activeReviewId = null;
-        function openAdminReview(id) {
-            const appData = globalPendingApplications.find(p => p.id === id);
-            if(!appData) return;
-            
-            activeReviewId = id;
-            document.getElementById('revName').innerText = appData.name;
-            document.getElementById('revEmail').innerText = appData.email;
-            document.getElementById('revContact').innerText = appData.contact;
-            document.getElementById('revBranch').innerText = appData.branch;
-            document.getElementById('revAddress').innerText = appData.address;
-            document.getElementById('revMap').href = appData.mapLink;
-            document.getElementById('revMap').innerText = appData.mapLink;
-            
-            document.getElementById('adminReviewModal').classList.remove('hidden');
-        }
-
-        function closeAdminReview() {
-            document.getElementById('adminReviewModal').classList.add('hidden');
-            activeReviewId = null;
-        }
-
-        async function handleApplicationDecision(action) {
-            if(!activeReviewId) return;
-            
-            const btnId = action === 'approve' ? 'btnRevApprove' : 'btnRevReject';
-            const unlock = lockButton(btnId);
-            
-            try {
-                const response = await fetch(`${API_URL}/api/admin/resolve`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ pharmacyId: activeReviewId, action: action })
-                });
-                if(response.ok) { 
-                    showToast(`Application successfully ${action}d`); 
-                    closeAdminReview();
-                    fetchAdminData(); // Refresh UI
-                }
-            } catch(error) { 
-                showToast('Network Error', 'error'); 
-            } finally { unlock(); }
-        }
-
-
-        // --- START OF RESEND CODE LOGIC ---
+        // --- GLOBAL RESEND CODE LOGIC ---
         async function handleResendCode(flowType) {
-            const btnId = flowType === 'signup' ? 'signupResendBtn' : 'forgotResendBtn';
-            const email = flowType === 'signup' ? tempSignupEmail : tempForgotEmail;
-            const btn = document.getElementById(btnId);
+            let btnId, email;
+            if (flowType === 'forgot') { btnId = 'forgotResendBtn'; email = tempForgotEmail; }
+            else if (flowType === 'pharm') { btnId = 'pharmSignupResendBtn'; email = tempPharmEmail; }
+            else if (flowType === 'user') { btnId = 'userResendBtn'; email = tempUserSignupEmail; }
+            else { btnId = 'signupResendBtn'; email = tempSignupEmail; }
 
+            const btn = document.getElementById(btnId);
             if (btn.disabled) return; 
 
             btn.disabled = true;
@@ -1666,284 +1523,78 @@
 
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email })
                 });
-
-                if (response.ok) {
-                    showToast('New code sent to your email!');
-                    startResendCooldown(btnId, flowType);
-                } else {
-                    showToast('Failed to resend code', 'error');
-                    btn.disabled = false;
-                    btn.innerText = 'RESEND CODE';
-                }
-            } catch (error) {
-                showToast('Backend offline', 'error');
-                btn.disabled = false;
-                btn.innerText = 'RESEND CODE';
-            }
+                if (response.ok) { showToast('New code sent to your email!'); startResendCooldown(btnId, flowType); } 
+                else { showToast('Failed to resend code', 'error'); btn.disabled = false; btn.innerText = 'RESEND CODE'; }
+            } catch (error) { showToast('Backend offline', 'error'); btn.disabled = false; btn.innerText = 'RESEND CODE'; }
         }
 
         function startResendCooldown(btnId, flowType) {
             const btn = document.getElementById(btnId);
-            let timeLeft = 60;
-            btn.innerText = `RESEND IN ${timeLeft}S`;
-
+            let timeLeft = 60; btn.innerText = `RESEND IN ${timeLeft}S`;
             if (resendTimers[flowType]) clearInterval(resendTimers[flowType]);
-
             resendTimers[flowType] = setInterval(() => {
                 timeLeft--;
-                if (timeLeft <= 0) {
-                    clearInterval(resendTimers[flowType]);
-                    btn.disabled = false;
-                    btn.innerText = 'RESEND CODE';
-                } else {
-                    btn.innerText = `RESEND IN ${timeLeft}S`;
-                }
+                if (timeLeft <= 0) { clearInterval(resendTimers[flowType]); btn.disabled = false; btn.innerText = 'RESEND CODE'; } 
+                else { btn.innerText = `RESEND IN ${timeLeft}S`; }
             }, 1000);
         }
-        // --- END OF RESEND CODE LOGIC ---
 
-        // --- REAL REGISTRATION & SIGN UP FLOW ---
-        function openSignupModal() {
-            document.getElementById('signupModal').classList.remove('hidden');
-            document.getElementById('signupStep1').classList.remove('hidden');
-            document.getElementById('signupStep2').classList.add('hidden');
-            document.getElementById('signupStep3').classList.add('hidden');
-        }
-        function closeSignupModal() { 
-            document.getElementById('signupModal').classList.add('hidden'); 
-            document.getElementById('pharmSignupForm1').reset();
-            document.getElementById('pharmSignupForm2').reset();
-            document.getElementById('pharmSignupForm3').reset();
-        }
-
-        async function handleSignupStep1(e) {
-            e.preventDefault();
-            tempSignupEmail = document.getElementById('signupEmail').value;
-            const unlock = lockButton('btnPharmReg1');
-
-            try {
-                const response = await fetch(`${API_URL}/api/send-verification`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: tempSignupEmail })
-                });
-                if(response.ok) {
-                    document.getElementById('signupStep1').classList.add('hidden');
-                    document.getElementById('signupStep2').classList.remove('hidden');
-                    showToast('Code successfully sent!');
-                    startResendCooldown('signupResendBtn', 'signup'); 
-                } else {
-                    const res = await response.json();
-                    showToast(res.error || 'Failed to send', 'error');
-                }
-            } catch (error) {
-                showToast('Could not reach backend', 'error');
-            } finally { unlock(); }
-        }
-
-        async function handleSignupStep2(e) {
-            e.preventDefault();
-            const code = document.getElementById('signupVerificationCode').value;
-            const unlock = lockButton('btnPharmReg2');
-            
-            try {
-                const response = await fetch(`${API_URL}/api/verify-code`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: tempSignupEmail, code: code })
-                });
-                
-                if(response.ok) {
-                    showToast('Code verified successfully!');
-                    document.getElementById('signupStep2').classList.add('hidden');
-                    document.getElementById('signupStep3').classList.remove('hidden');
-                    if (resendTimers.signup) clearInterval(resendTimers.signup); 
-                } else {
-                    showToast('Invalid verification code', 'error');
-                }
-            } catch(error) {
-                showToast('Could not reach backend', 'error');
-            } finally { unlock(); }
-        }
-
-        async function handleSignupStep3(e) {
-            e.preventDefault();
-            const unlock = lockButton('btnPharmReg3');
-            
-            const signupData = {
-                email: tempSignupEmail,
-                password: document.getElementById('signupPassword').value,
-                pharmacyName: document.getElementById('regPharmName').value,
-                barangay: document.getElementById('regBarangay').value,
-                contactNumber: document.getElementById('regContact').value,
-                address: document.getElementById('regAddress').value,
-                mapLink: document.getElementById('regMapLink').value
-            };
-
-            try {
-                const response = await fetch(`${API_URL}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(signupData)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    showToast('Success: ' + result.message);
-                    closeSignupModal();
-                } else {
-                    showToast('Error: ' + (result.error || 'Registration failed'), 'error');
-                }
-            } catch (error) {
-                showToast('Server is offline. Please start app.py', 'error');
-            } finally { unlock(); }
-        }
-
-        // --- REAL FORGOT PASSWORD FLOW ---
-        function openForgotModal() {
-            document.getElementById('forgotModal').classList.remove('hidden');
-            document.getElementById('forgotStep1').classList.remove('hidden');
-            document.getElementById('forgotStep2').classList.add('hidden');
-            document.getElementById('forgotStep3').classList.add('hidden');
-        }
+        // --- FORGOT PASSWORD FLOW ---
+        function openForgotModal() { document.getElementById('forgotModal').classList.remove('hidden'); document.getElementById('forgotStep1').classList.remove('hidden'); document.getElementById('forgotStep2').classList.add('hidden'); document.getElementById('forgotStep3').classList.add('hidden'); }
         function closeForgotModal() { 
             document.getElementById('forgotModal').classList.add('hidden'); 
-            document.getElementById('forgotForm1').reset();
-            document.getElementById('forgotForm2').reset();
-            document.getElementById('forgotForm3').reset();
+            const f1 = document.getElementById('forgotForm1'); if (f1) f1.reset();
+            const f2 = document.getElementById('forgotForm2'); if (f2) f2.reset();
+            const f3 = document.getElementById('forgotForm3'); if (f3) f3.reset();
         }
 
         async function handleForgotStep1(e) {
             e.preventDefault();
             tempForgotEmail = document.getElementById('forgotEmail').value;
             const unlock = lockButton('btnForgot1');
-            
             try {
-                const response = await fetch(`${API_URL}/api/send-verification`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: tempForgotEmail })
-                });
-                if(response.ok) {
-                    document.getElementById('forgotStep1').classList.add('hidden');
-                    document.getElementById('forgotStep2').classList.remove('hidden');
-                    showToast('Code sent to your email.');
-                    startResendCooldown('forgotResendBtn', 'forgot'); 
-                } else {
-                    showToast('Failed to send code', 'error');
-                }
-            } catch (err) {
-                showToast('Backend offline', 'error');
-            } finally { unlock(); }
+                const response = await fetch(`${API_URL}/api/send-verification`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: tempForgotEmail }) });
+                if(response.ok) { document.getElementById('forgotStep1').classList.add('hidden'); document.getElementById('forgotStep2').classList.remove('hidden'); showToast('Code sent to your email.'); startResendCooldown('forgotResendBtn', 'forgot'); } 
+                else { showToast('Failed to send code', 'error'); }
+            } catch (err) { showToast('Backend offline', 'error'); } finally { unlock(); }
         }
 
         async function handleForgotStep2(e) {
             e.preventDefault();
             const code = document.getElementById('forgotVerificationCode').value;
             const unlock = lockButton('btnForgot2');
-            
             try {
-                const response = await fetch(`${API_URL}/api/verify-code`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: tempForgotEmail, code: code })
-                });
-                if(response.ok) {
-                    showToast('Code matched!');
-                    document.getElementById('forgotStep2').classList.add('hidden');
-                    document.getElementById('forgotStep3').classList.remove('hidden');
-                    if (resendTimers.forgot) clearInterval(resendTimers.forgot); 
-                } else {
-                    showToast('Invalid Code', 'error');
-                }
-            } catch(err) {
-                showToast('Backend offline', 'error');
-            } finally { unlock(); }
+                const response = await fetch(`${API_URL}/api/verify-code`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: tempForgotEmail, code: code }) });
+                if(response.ok) { showToast('Code matched!'); document.getElementById('forgotStep2').classList.add('hidden'); document.getElementById('forgotStep3').classList.remove('hidden'); if (resendTimers.forgot) clearInterval(resendTimers.forgot); } 
+                else { showToast('Invalid Code', 'error'); }
+            } catch(err) { showToast('Backend offline', 'error'); } finally { unlock(); }
         }
 
         async function handleForgotStep3(e) {
             e.preventDefault();
             const unlock = lockButton('btnForgot3');
-            const pass1 = document.getElementById('forgotNewPass').value;
-            const pass2 = document.getElementById('forgotConfirmPass').value;
-            
-            if(pass1 !== pass2) {
-                showToast('Passwords do not match!', 'error');
-                unlock();
-                return;
-            }
-            
+            const pass1 = document.getElementById('forgotNewPass').value; const pass2 = document.getElementById('forgotConfirmPass').value;
+            if(pass1 !== pass2) { showToast('Passwords do not match!', 'error'); unlock(); return; }
             try {
-                const response = await fetch(`${API_URL}/api/reset-password`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ email: tempForgotEmail, password: pass1 })
-                });
-                
-                if(response.ok) {
-                    showToast('Password updated successfully!');
-                    setTimeout(() => {
-                        closeForgotModal();
-                    }, 1500);
-                } else {
-                    showToast('Error updating password', 'error');
-                }
-            } catch(err) {
-                showToast('Backend offline', 'error');
-            } finally { unlock(); }
+                const response = await fetch(`${API_URL}/api/reset-password`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email: tempForgotEmail, password: pass1 }) });
+                if(response.ok) { showToast('Password updated successfully!'); setTimeout(() => { closeForgotModal(); }, 1500); } 
+                else { showToast('Error updating password', 'error'); }
+            } catch(err) { showToast('Backend offline', 'error'); } finally { unlock(); }
         }
 
-        // Floating Toast Message Alert
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            let iconClass = 'fa-circle-check text-luxuryGreen';
-            let borderClass = 'border-luxuryGreen';
-            if(type === 'error') { iconClass = 'fa-circle-xmark text-rose'; borderClass = 'border-rose'; }
-
-            toast.className = `toast border-l-4 ${borderClass}`;
-            toast.innerHTML = `<i class="fa-solid ${iconClass} text-xl drop-shadow-md"></i> <span class="font-bold tracking-wide text-shadow-sm">${message}</span>`;
-            
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 500); 
-            }, 3000);
-        }
-
-        // Mobile Nav Trigger Menu
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             const icon = document.getElementById('mobileIcon');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                menu.classList.add('hidden');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
+            if (menu.classList.contains('hidden')) { menu.classList.remove('hidden'); icon.classList.remove('fa-bars'); icon.classList.add('fa-times'); } 
+            else { menu.classList.add('hidden'); icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); }
         }
 
-        // Navigation Bar scroll elegant blur effect
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if (window.scrollY > 20) {
-                nav.classList.add('bg-[#0f2918]/10', 'backdrop-blur-2xl', 'shadow-md', 'border-b', 'border-white/10');
-                nav.classList.remove('bg-transparent');
-            } else {
-                nav.classList.remove('bg-[#0f2918]/10', 'backdrop-blur-2xl', 'shadow-md', 'border-b', 'border-white/10');
-                nav.classList.add('bg-transparent');
-            }
+            if (window.scrollY > 20) { nav.classList.add('bg-[#0f2918]/10', 'backdrop-blur-2xl', 'shadow-md', 'border-b', 'border-white/10'); nav.classList.remove('bg-transparent'); } 
+            else { nav.classList.remove('bg-[#0f2918]/10', 'backdrop-blur-2xl', 'shadow-md', 'border-b', 'border-white/10'); nav.classList.add('bg-transparent'); }
         });
     </script>
 </body>
