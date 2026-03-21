@@ -49,7 +49,6 @@ class PatientAccount(db.Model):
     PatientID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Fname = db.Column(db.String(100), nullable=False)
     Lname = db.Column(db.String(100), nullable=False)
-    Age = db.Column(db.Integer, nullable=True)
     Email = db.Column(db.String(120), unique=True, nullable=False)
     PasswordHash = db.Column(db.String(255), nullable=False)
 
@@ -74,7 +73,8 @@ class Pharmacy(db.Model):
     ContactNumber = db.Column(db.String(20), nullable=False)
     FullAddress = db.Column(db.Text, nullable=False)
     GoogleMapLink = db.Column(db.Text, nullable=True)
-    PermitPhotoPath = db.Column(db.String(255), nullable=True)
+    StorePhotoPath = db.Column(db.Text, nullable=True) # Changed to Text to support Base64 Images
+    PermitPhotoPath = db.Column(db.Text, nullable=True) # Changed to Text to support Base64 Images
     IsActive = db.Column(db.Boolean, default=False)
     OpenTime = db.Column(db.String(50), nullable=True)
     CloseTime = db.Column(db.String(50), nullable=True)
@@ -216,7 +216,6 @@ def register_patient():
         new_patient = PatientAccount(
             Fname=data.get('fname'),
             Lname=data.get('lname'),
-            Age=data.get('age'),
             Email=email,
             PasswordHash=hashed_pw
         )
@@ -255,6 +254,8 @@ def register():
             ContactNumber=data.get('contactNumber'),
             FullAddress=data.get('address'),
             GoogleMapLink=data.get('mapLink'),
+            StorePhotoPath=data.get('storePhoto'), # Save Base64 Image
+            PermitPhotoPath=data.get('permitPhoto'), # Save Base64 Image
             BarangayID=barangay.BarangayID,
             PharmacyAccountID=new_account.PharmacyAccountID
         )
@@ -467,6 +468,8 @@ def search_medicine():
                     'medicine': med.MedicineName,
                     'price': str(med.Price),
                     'address': pharm.FullAddress,
+                    'contact': pharm.ContactNumber,
+                    'storeImage': pharm.StorePhotoPath, # Pass the real image
                     'mapLink': pharm.GoogleMapLink,
                     'inStock': med.InStock
                 })
@@ -513,7 +516,9 @@ def get_pending_pharmacies():
                 'email': account.Email,
                 'contact': pharm.ContactNumber,
                 'address': pharm.FullAddress,
-                'mapLink': pharm.GoogleMapLink
+                'mapLink': pharm.GoogleMapLink,
+                'storePhoto': pharm.StorePhotoPath, # Return actual uploaded Base64 string
+                'permitPhoto': pharm.PermitPhotoPath # Return actual uploaded Base64 string
             })
             
         return jsonify(results), 200
@@ -548,7 +553,7 @@ def resolve_application():
 @app.route('/api/admin/stats', methods=['GET'])
 def admin_stats():
     try:
-        total_pharmacies = Pharmacy.query.count()
+        total_pharmacies = Pharmacy.query.filter_by(IsActive=True).count()
         total_patients = PatientAccount.query.count()
         total_searches = SearchLog.query.count()
         
