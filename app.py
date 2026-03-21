@@ -242,7 +242,7 @@ def register():
     try:
         new_account = PharmacyAccount(Email=email, PasswordHash=hashed_password)
         db.session.add(new_account)
-        db.session.flush()
+        db.session.flush() # Force ID generation
 
         barangay = Barangay.query.filter_by(BarangayName=data.get('barangay')).first()
         if not barangay:
@@ -259,7 +259,7 @@ def register():
             PharmacyAccountID=new_account.PharmacyAccountID
         )
         db.session.add(new_pharmacy)
-        db.session.flush()
+        db.session.flush() # Force ID generation for Pharmacy Status mapping
 
         new_status = PharmacyStatus(
             PharmacyID=new_pharmacy.PharmacyID,
@@ -581,7 +581,7 @@ if __name__ == '__main__':
         db.create_all()
         print("PostgreSQL tables successfully initialized.")
         
-        # Generate default admin account to prevent blank databases
+        # Generate default admin account requested by user
         if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
             default_admin = Admin(Email='oathofcare@gmail.com', PasswordHash=hashed_admin_pw)
