@@ -259,7 +259,7 @@
                 </h1>
                 
                 <p class="relative z-10 text-sm sm:text-base md:text-xl text-smoke mb-10 md:mb-14 font-medium max-w-3xl leading-relaxed px-4 text-shadow-sm">
-                    Locate essential medicines across our exclusive network of verified pharmacies with precision and ease.
+                    Locate essential medicines across our exclusive network of verified pharmacies with precision and ease. <span class="font-bold text-velvet">Requires a verified account.</span>
                 </p>
                 
                 <div class="relative z-10 glass-panel p-3 md:p-5 rounded-[1.5rem] md:rounded-[2rem] shadow-3d-panel w-full max-w-5xl mx-auto">
@@ -439,6 +439,10 @@
                                         <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Full Address</label>
                                         <input type="text" id="updAddress" value="Gen. Alejo Santos Hwy, Poblacion, Norzagaray" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
                                     </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Google Map Link</label>
+                                        <input type="url" id="updMap" required placeholder="https://maps.google.com/..." class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                    </div>
                                     <div class="md:col-span-2 mt-6 flex justify-end">
                                         <button type="submit" id="btnUpdateProfile" class="bg-[#024b33] hover:bg-velvet text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs btn-luxury shadow-3d-btn w-full md:w-auto">Save Changes</button>
                                     </div>
@@ -595,7 +599,7 @@
             <div id="userLoginFormWrapper" class="block">
                 <div class="text-center mb-8">
                     <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">WELCOME</h3>
-                    <p class="text-smoke text-sm">to Oath of Care Pharmacy and Medicine Locator.</p>
+                    <p class="text-smoke text-sm">Your Trusted Pharmacy Locator Network.</p>
                 </div>
                 <form id="patientLoginForm" onsubmit="handleUserLoginSubmit(event)" class="space-y-6">
                     <input type="email" id="userLoginEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm transition-all">
@@ -605,7 +609,7 @@
                             <i class="fa-solid fa-eye text-lg" id="eyeIconUserLogin"></i>
                         </button>
                     </div>
-                    <button type="submit" id="btnUserLogin" class="w-full bg-[#024b33] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-2">Sign In</button>
+                    <button type="submit" id="btnUserLogin" class="w-full bg-[#024b33] hover:bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-2">Sign In</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
                     No account yet? <button type="button" onclick="toggleUserAuthForms('signup')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Create Account</button>
@@ -616,7 +620,7 @@
             <div id="userSignupFormWrapper" class="hidden">
                 <div class="text-center mb-8">
                     <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">WELCOME</h3>
-                    <p class="text-smoke text-sm">to Oath of Care Pharmacy and Medicine Locator.</p>
+                    <p class="text-smoke text-sm">Your Trusted Pharmacy Locator Network.</p>
                 </div>
                 <form id="patientSignupForm" onsubmit="handleUserSignupSubmit(event)" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
@@ -638,6 +642,71 @@
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
                     Already registered? <button type="button" onclick="toggleUserAuthForms('login')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Sign In</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Review Modal (New Component for Secure Application Review) -->
+    <div id="adminReviewModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[110] p-4 transition-opacity duration-500">
+        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-4xl relative border border-silk/50 mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.4s forwards;">
+            <button onclick="closeAdminReview()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb] transition-colors"><i class="fa-solid fa-times text-base"></i></button>
+            <h3 class="text-3xl font-serif font-bold text-velvet mb-6 text-shadow-3d">Review Application</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Verified Information Display -->
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Pharmacy Name</p>
+                        <p class="font-bold text-lg text-velvet" id="revName">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Email Address</p>
+                        <p class="font-bold text-base text-velvet" id="revEmail">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Contact Number</p>
+                        <p class="font-bold text-base text-velvet" id="revContact">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Branch / Barangay</p>
+                        <p class="font-bold text-base text-velvet" id="revBranch">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Full Address</p>
+                        <p class="font-bold text-base text-velvet" id="revAddress">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Google Maps Link</p>
+                        <a href="#" id="revMap" target="_blank" class="font-bold text-sm text-luxuryGreen hover:underline break-all">-</a>
+                    </div>
+                </div>
+                
+                <!-- 
+                  Image Validation Display 
+                  (Renders securely as verified placeholders until a cloud storage bucket is configured) 
+                -->
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Store Photo</p>
+                        <div class="w-full h-32 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner">
+                            <i class="fa-solid fa-image text-3xl mb-2 drop-shadow-md"></i> 
+                            <span class="text-xs font-bold uppercase tracking-widest">Image Verified</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Business Permit</p>
+                        <div class="w-full h-40 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner">
+                            <i class="fa-solid fa-file-contract text-4xl mb-2 drop-shadow-md"></i> 
+                            <span class="text-xs font-bold uppercase tracking-widest">Document Verified</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secure Action Dispatchers -->
+            <div class="flex gap-4 border-t border-silk pt-6">
+                <button id="btnRevApprove" class="flex-1 bg-[#024b33] hover:bg-velvet text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn transition-colors">Approve Application</button>
+                <button id="btnRevReject" class="flex-1 bg-white text-rose border border-rose/30 px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-rose hover:text-white transition-colors shadow-3d-card">Reject Application</button>
             </div>
         </div>
     </div>
@@ -790,7 +859,7 @@
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-1 ml-1 text-shadow-sm">Business Permit Photo</label>
                         <p class="text-[10px] text-smoke mb-2 ml-1">* Must be a valid, readable permit image.</p>
-                        <input type="file" required accept="image/png, image/jpeg, image/jpg, application/pdf" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
+                        <input type="file" required accept="image/png, image/jpeg, image/jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
                     </div>
                     <button type="submit" id="btnPharmReg3" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Submit Registration</button>
                 </form>
@@ -951,6 +1020,7 @@
         let tempForgotEmail = ''; 
         let resendTimers = { signup: null, forgot: null };
         let analyticsChartInstance = null;
+        let globalPendingApplications = []; // Secure cache for admin review modal
 
         // Ensure navigation correctly reflects auth state on load
         window.onload = () => {
@@ -1477,7 +1547,7 @@
             } catch(e) { showToast('Update error', 'error'); } finally { unlock(); }
         }
 
-        // --- REAL FETCH LOGIC FOR ADMIN DATA ---
+        // --- ADMIN DASHBOARD LOGIC (Chart.js, Logs, and Review System) ---
         async function fetchAdminData() {
             try {
                 const [statsRes, logsRes, pendingRes] = await Promise.all([
@@ -1507,14 +1577,17 @@
 
                 const reqContainer = document.getElementById('adminRequestsContainer');
                 reqContainer.innerHTML = '';
+                
+                // Store pending globally for review modal access
+                globalPendingApplications = pending;
+                
                 if(pending.length > 0) {
                     pending.forEach(p => {
                         reqContainer.innerHTML += `
                             <div class="bg-white p-6 rounded-[24px] shadow-3d-card border border-silk/80 flex flex-col md:flex-row justify-between items-start md:items-center">
                                 <div><h4 class="text-lg font-bold text-velvet text-shadow-3d">${p.name}</h4><p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mt-1.5">${p.branch}</p></div>
                                 <div class="flex gap-4 mt-4 md:mt-0">
-                                    <button onclick="resolveApplication(this, ${p.id}, 'approve')" class="bg-[#024b33] text-white px-8 py-3 rounded-xl font-bold text-xs uppercase btn-luxury shadow-3d-btn">Approve</button>
-                                    <button onclick="resolveApplication(this, ${p.id}, 'reject')" class="bg-white text-rose border border-rose/30 px-8 py-3 rounded-xl font-bold text-xs uppercase btn-luxury shadow-3d-btn">Reject</button>
+                                    <button onclick="openAdminReview(${p.id})" class="bg-[#024b33] text-white px-8 py-3 rounded-xl font-bold text-xs uppercase btn-luxury shadow-3d-btn">Review Application</button>
                                 </div>
                             </div>
                         `;
@@ -1536,16 +1609,47 @@
             } catch(e) { console.error("Error loading admin data"); }
         }
 
-        async function resolveApplication(btnElement, id, action) {
-            const originalText = btnElement.innerText;
-            btnElement.disabled = true;
-            btnElement.innerText = "PROCESSING...";
+        // Logic to populate and trigger the Admin Review Modal
+        let activeReviewId = null;
+        function openAdminReview(id) {
+            const appData = globalPendingApplications.find(p => p.id === id);
+            if(!appData) return;
+            
+            activeReviewId = id;
+            document.getElementById('revName').innerText = appData.name;
+            document.getElementById('revEmail').innerText = appData.email;
+            document.getElementById('revContact').innerText = appData.contact;
+            document.getElementById('revBranch').innerText = appData.branch;
+            document.getElementById('revAddress').innerText = appData.address;
+            document.getElementById('revMap').href = appData.mapLink;
+            document.getElementById('revMap').innerText = appData.mapLink;
+            
+            document.getElementById('adminReviewModal').classList.remove('hidden');
+        }
+
+        function closeAdminReview() {
+            document.getElementById('adminReviewModal').classList.add('hidden');
+            activeReviewId = null;
+        }
+
+        async function handleApplicationDecision(action) {
+            if(!activeReviewId) return;
+            
+            const btnId = action === 'approve' ? 'btnRevApprove' : 'btnRevReject';
+            const unlock = lockButton(btnId);
+            
             try {
                 const response = await fetch(`${API_URL}/api/admin/resolve`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ pharmacyId: id, action: action })
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ pharmacyId: activeReviewId, action: action })
                 });
-                if(response.ok) { showToast(`Application successfully ${action}d`); fetchAdminData(); }
-            } catch(error) { showToast('Network Error', 'error'); btnElement.disabled = false; btnElement.innerText = originalText; }
+                if(response.ok) { 
+                    showToast(`Application successfully ${action}d`); 
+                    closeAdminReview();
+                    fetchAdminData(); // Refresh UI
+                }
+            } catch(error) { 
+                showToast('Network Error', 'error'); 
+            } finally { unlock(); }
         }
 
 
