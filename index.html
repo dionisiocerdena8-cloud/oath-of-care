@@ -42,7 +42,6 @@
                         sans: ['"Inter"', 'sans-serif'],
                     },
                     boxShadow: {
-                        /* 3D Shadows for Objects */
                         '3d-panel': '0 30px 60px -10px rgba(2, 75, 51, 0.15), 0 15px 25px -10px rgba(0, 0, 0, 0.1), inset 0 2px 5px rgba(255, 255, 255, 0.8)',
                         '3d-input': 'inset 0 3px 6px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.05), inset 0 -1px 2px rgba(255,255,255,1)',
                         '3d-btn': '0 10px 20px -4px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2)',
@@ -217,7 +216,7 @@
                     </button>
                 </div>
 
-                <!-- Mobile Menu Trigger -->
+                <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center">
                     <button class="text-luxuryGreen text-3xl focus:outline-none p-2 drop-shadow-md" onclick="toggleMobileMenu()">
                         <i class="fa-solid fa-bars" id="mobileIcon"></i>
@@ -239,7 +238,7 @@
         </div>
     </nav>
 
-    <!-- Main View Routing Area -->
+    <!-- Main App Area -->
     <main class="flex-grow pt-24 md:pt-32 flex flex-col relative z-10">
 
         <!-- ================= HOME / SEARCH VIEW ================= -->
@@ -262,35 +261,48 @@
                     Locate essential medicines across our exclusive network of verified pharmacies with precision and ease. <span class="font-bold text-velvet">Requires a verified account.</span>
                 </p>
                 
-                <div class="relative z-10 glass-panel p-3 md:p-5 rounded-[1.5rem] md:rounded-[2rem] shadow-3d-panel w-full max-w-5xl mx-auto">
-                    <form onsubmit="handleSearch(event)" class="flex flex-col md:flex-row gap-3 md:gap-4 items-center">
-                        <div class="flex-grow relative w-full">
-                            <div class="absolute left-5 md:left-6 top-1/2 transform -translate-y-1/2 text-smoke/70 text-base md:text-lg drop-shadow-md"><i class="fa-solid fa-capsules"></i></div>
-                            <input type="text" id="searchMedicine" autocomplete="off" placeholder="Enter Medicine (e.g. Paracetamol)" required class="w-full pl-12 md:pl-14 pr-5 py-4 md:py-5 rounded-xl md:rounded-2xl border border-transparent bg-white focus:bg-[#fcfcfa] focus:border-luxuryGreen/50 transition-all text-velvet font-bold placeholder-smoke/70 text-sm md:text-base outline-none shadow-3d-input text-shadow-sm">
+                <div class="relative z-10 glass-panel p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] shadow-3d-panel w-full max-w-5xl mx-auto">
+                    <form onsubmit="handleSearch(event)" class="flex flex-col gap-5 w-full">
+                        <div class="flex flex-col md:flex-row gap-5 w-full">
+                            <!-- Input 1 with label -->
+                            <div class="flex-grow relative w-full text-left">
+                                <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-2 drop-shadow-sm">Medicine Name</label>
+                                <div class="relative w-full">
+                                    <div class="absolute left-5 md:left-6 top-1/2 transform -translate-y-1/2 text-smoke/70 text-base md:text-lg drop-shadow-md"><i class="fa-solid fa-capsules"></i></div>
+                                    <input type="text" id="searchMedicine" autocomplete="off" placeholder="Enter Medicine (e.g. Paracetamol)" required class="w-full pl-12 md:pl-14 pr-5 py-4 md:py-5 rounded-xl md:rounded-2xl border border-transparent bg-white focus:bg-[#fcfcfa] focus:border-luxuryGreen/50 transition-all text-velvet font-bold placeholder-smoke/70 text-sm md:text-base outline-none shadow-3d-input text-shadow-sm">
+                                </div>
+                            </div>
+                            <!-- Input 2 with label -->
+                            <div class="flex-grow relative w-full md:w-1/3 text-left">
+                                <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-2 drop-shadow-sm">Barangay Location</label>
+                                <div class="relative w-full">
+                                    <div class="absolute left-5 md:left-6 top-1/2 transform -translate-y-1/2 text-smoke/70 text-base md:text-lg drop-shadow-md"><i class="fa-solid fa-location-crosshairs"></i></div>
+                                    <select id="searchBarangay" required class="w-full pl-12 md:pl-14 pr-10 md:pr-12 py-4 md:py-5 rounded-xl md:rounded-2xl border border-transparent bg-white focus:bg-[#fcfcfa] focus:border-luxuryGreen/50 transition-all text-velvet font-bold appearance-none text-sm md:text-base cursor-pointer outline-none shadow-3d-input text-shadow-sm">
+                                        <option value="" disabled selected>Select Area...</option>
+                                        <option value="Bangkal">Bangkal</option>
+                                        <option value="Baraka">Baraka</option>
+                                        <option value="Bigte">Bigte</option>
+                                        <option value="Bitungol">Bitungol</option>
+                                        <option value="Friendship Village Resources">Friendship Village Resources</option>
+                                        <option value="Matictic">Matictic</option>
+                                        <option value="Minuyan">Minuyan</option>
+                                        <option value="Partida">Partida</option>
+                                        <option value="Pinagtulayan">Pinagtulayan</option>
+                                        <option value="Poblacion">Poblacion</option>
+                                        <option value="San Lorenzo">San Lorenzo</option>
+                                        <option value="San Mateo">San Mateo</option>
+                                        <option value="Tigbe">Tigbe</option>
+                                    </select>
+                                    <div class="absolute right-5 md:right-6 top-1/2 transform -translate-y-1/2 text-smoke pointer-events-none drop-shadow-sm"><i class="fa-solid fa-chevron-down text-sm"></i></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex-grow relative w-full md:w-1/3">
-                            <div class="absolute left-5 md:left-6 top-1/2 transform -translate-y-1/2 text-smoke/70 text-base md:text-lg drop-shadow-md"><i class="fa-solid fa-location-crosshairs"></i></div>
-                            <select id="searchBarangay" required class="w-full pl-12 md:pl-14 pr-10 md:pr-12 py-4 md:py-5 rounded-xl md:rounded-2xl border border-transparent bg-white focus:bg-[#fcfcfa] focus:border-luxuryGreen/50 transition-all text-velvet font-bold appearance-none text-sm md:text-base cursor-pointer outline-none shadow-3d-input text-shadow-sm">
-                                <option value="" disabled selected>Select Area...</option>
-                                <option value="Bangkal">Bangkal</option>
-                                <option value="Baraka">Baraka</option>
-                                <option value="Bigte">Bigte</option>
-                                <option value="Bitungol">Bitungol</option>
-                                <option value="Friendship Village Resources">Friendship Village Resources</option>
-                                <option value="Matictic">Matictic</option>
-                                <option value="Minuyan">Minuyan</option>
-                                <option value="Partida">Partida</option>
-                                <option value="Pinagtulayan">Pinagtulayan</option>
-                                <option value="Poblacion">Poblacion</option>
-                                <option value="San Lorenzo">San Lorenzo</option>
-                                <option value="San Mateo">San Mateo</option>
-                                <option value="Tigbe">Tigbe</option>
-                            </select>
-                            <div class="absolute right-5 md:right-6 top-1/2 transform -translate-y-1/2 text-smoke pointer-events-none drop-shadow-sm"><i class="fa-solid fa-chevron-down text-sm"></i></div>
+                        <!-- Locate Button Moved Below -->
+                        <div class="flex justify-end pt-2">
+                            <button type="submit" id="btnSearch" class="bg-velvet text-white px-10 py-4 md:py-5 rounded-xl md:rounded-2xl font-bold btn-luxury w-full md:w-auto flex items-center justify-center gap-3 whitespace-nowrap shadow-3d-btn">
+                                <i class="fa-solid fa-search text-sm md:text-base"></i> <span class="uppercase tracking-widest text-[11px] md:text-xs">Locate</span>
+                            </button>
                         </div>
-                        <button type="submit" id="btnSearch" class="bg-velvet text-white px-8 md:px-10 py-4 md:py-5 rounded-xl md:rounded-2xl font-bold btn-luxury w-full md:w-auto flex items-center justify-center gap-3 whitespace-nowrap shadow-3d-btn">
-                            <i class="fa-solid fa-search text-sm md:text-base"></i> <span class="uppercase tracking-widest text-[11px] md:text-xs">Locate</span>
-                        </button>
                     </form>
                 </div>
             </div>
@@ -316,7 +328,7 @@
         </section>
 
 
-        <!-- ================= BUSINESS LOGIN VIEW (Pharmacy & Admin) ================= -->
+        <!-- ================= LOGIN / SIGNUP VIEW ================= -->
         <section id="view-login" class="view-section flex-grow justify-center items-center py-10 md:py-16 px-6 relative z-10">
             
             <div class="bg-white p-10 sm:p-12 md:p-14 rounded-[2rem] shadow-3d-panel w-full max-w-[500px] relative border border-silk/50">
@@ -335,17 +347,20 @@
                 <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6 md:space-y-8">
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.15em] mb-3 text-shadow-sm">Email Address</label>
-                        <input type="email" id="loginEmail" autocomplete="off" required placeholder="business@example.com" class="w-full px-6 py-4 md:py-5 rounded-2xl border-2 border-[#f1eada] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet placeholder-[#94a3b8] outline-none shadow-3d-input">
+                        <input type="email" id="loginEmail" autocomplete="off" required placeholder="example@gmail.com" class="w-full px-6 py-4 md:py-5 rounded-2xl border-2 border-[#f1eada] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet placeholder-[#94a3b8] outline-none shadow-3d-input">
                     </div>
                     
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.15em] mb-3 text-shadow-sm">Password</label>
                         <div class="relative">
                             <input type="password" id="loginPassword" autocomplete="new-password" required placeholder="••••••••" class="w-full px-6 py-4 md:py-5 rounded-2xl border-2 border-[#f1eada] focus:border-luxuryGreen transition-all text-base font-bold text-velvet placeholder-[#94a3b8] pr-14 outline-none tracking-widest shadow-3d-input">
+                            
+                            <!-- Show/Hide Password -->
                             <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-[#64748b] hover:text-luxuryGreen transition-colors focus:outline-none drop-shadow-md">
                                 <i class="fa-solid fa-eye text-xl" id="eyeIconLogin"></i>
                             </button>
                         </div>
+                        
                         <div class="flex justify-end mt-4">
                             <a href="#" onclick="openForgotModal()" class="text-[11px] md:text-xs text-luxuryGreen hover:text-velvet font-bold uppercase tracking-[0.15em] transition-colors text-shadow-sm">Forgot Password?</a>
                         </div>
@@ -357,8 +372,8 @@
                 </form>
                 
                 <div class="mt-10 text-center text-[12px] md:text-sm text-smoke font-medium text-shadow-sm" id="signupPrompt" style="display:none;">
-                    New Pharmacy? <br/>
-                    <a href="#" onclick="openPharmacyRegistration()" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline mt-3 inline-block drop-shadow-sm">Apply Here</a>
+                    Don't have an account? <br/>
+                    <a href="#" onclick="openSignupModal()" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline mt-3 inline-block drop-shadow-sm">Sign Up</a>
                 </div>
             </div>
         </section>
@@ -423,15 +438,36 @@
                                 <form id="profileUpdateForm" onsubmit="handleUpdateProfile(event)" class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
                                     <div class="md:col-span-2">
                                         <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Pharmacy Name</label>
-                                        <input type="text" id="updName" value="" required class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                        <input type="text" id="updName" value="Mercury Drug - Poblacion" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Location</label>
+                                        <div class="relative">
+                                            <select class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base appearance-none transition-colors cursor-pointer shadow-3d-input outline-none pr-12">
+                                                <option value="Bangkal">Bangkal</option>
+                                                <option value="Baraka">Baraka</option>
+                                                <option value="Bigte">Bigte</option>
+                                                <option value="Bitungol">Bitungol</option>
+                                                <option value="Friendship Village Resources">Friendship Village Resources</option>
+                                                <option value="Matictic">Matictic</option>
+                                                <option value="Minuyan">Minuyan</option>
+                                                <option value="Partida">Partida</option>
+                                                <option value="Pinagtulayan">Pinagtulayan</option>
+                                                <option value="Poblacion" selected>Poblacion</option>
+                                                <option value="San Lorenzo">San Lorenzo</option>
+                                                <option value="San Mateo">San Mateo</option>
+                                                <option value="Tigbe">Tigbe</option>
+                                            </select>
+                                            <div class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke pointer-events-none drop-shadow-sm"><i class="fa-solid fa-chevron-down text-sm"></i></div>
+                                        </div>
                                     </div>
                                     <div>
                                         <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Contact Number</label>
-                                        <input type="text" id="updContact" value="" required class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                        <input type="text" id="updContact" value="+63 912 345 6789" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Full Address</label>
-                                        <input type="text" id="updAddress" value="" required class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
+                                        <input type="text" id="updAddress" value="Gen. Alejo Santos Hwy, Poblacion, Norzagaray" class="w-full px-6 py-5 rounded-2xl border border-silk/80 focus:border-luxuryGreen bg-[#f8f9fa] text-velvet font-bold text-base transition-colors shadow-3d-input outline-none">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-[10px] md:text-[11px] font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Google Map Link</label>
@@ -444,7 +480,7 @@
                             </div>
                         </div>
 
-                        <!-- Inventory Control Tab -->
+                        <!-- Inventory Tab -->
                         <div id="pContent-manage" class="hidden">
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8 gap-6">
                                 <div>
@@ -528,7 +564,6 @@
 
                 <div class="flex-grow w-full bg-white/95 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-white shadow-3d-panel h-full md:min-h-[calc(100vh-12rem)]">
                     <div class="p-8 sm:p-12 md:p-16">
-                        
                         <div id="aContent-requests" class="block">
                             <div class="mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8">
                                 <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet text-shadow-3d">Pending Applications</h2>
@@ -538,7 +573,6 @@
                                 <!-- Javascript Populated -->
                             </div>
                         </div>
-
                         <div id="aContent-analytics" class="hidden">
                             <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8 text-shadow-3d">System Intelligence</h2>
                             <p class="text-smoke text-sm md:text-base text-shadow-sm">Real-time statistics from the database.</p>
@@ -548,8 +582,8 @@
                                     <p class="text-4xl font-bold text-luxuryGreen mt-2" id="statPharm">0</p>
                                 </div>
                                 <div class="bg-white p-6 rounded-2xl shadow-3d-card border border-silk text-center">
-                                    <p class="text-xs text-smoke font-bold uppercase tracking-widest">Registered Patients</p>
-                                    <p class="text-4xl font-bold text-velvet mt-2" id="statPatient">0</p>
+                                    <p class="text-xs text-smoke font-bold uppercase tracking-widest">Registered Clients</p>
+                                    <p class="text-4xl font-bold text-velvet mt-2" id="statClient">0</p>
                                 </div>
                                 <div class="bg-white p-6 rounded-2xl shadow-3d-card border border-silk text-center">
                                     <p class="text-xs text-smoke font-bold uppercase tracking-widest">Search Queries</p>
@@ -560,7 +594,6 @@
                                 <canvas id="analyticsChart"></canvas>
                             </div>
                         </div>
-
                         <div id="aContent-logs" class="hidden">
                             <h2 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-8 md:mb-12 border-b border-silk pb-6 md:pb-8 text-shadow-3d">Activity Log</h2>
                             <div class="bg-white rounded-[24px] shadow-3d-card border border-silk overflow-hidden mt-6">
@@ -587,72 +620,141 @@
 
     </main>
 
-    <!-- ================= USER AUTHENTICATION MODAL ================= -->
+    <!-- ================= CANVA-STYLE USER AUTHENTICATION MODAL ================= -->
     <div id="userAuthModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-[450px] relative border border-silk/50 mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.4s forwards;">
+        <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-[450px] relative border border-silk/50 mx-2" style="animation: premiumGlideIn 0.4s forwards;">
             <button onclick="closeUserAuthModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb] transition-colors"><i class="fa-solid fa-times text-base"></i></button>
 
             <!-- User Login Form -->
             <div id="userLoginFormWrapper" class="block">
                 <div class="text-center mb-8">
                     <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">WELCOME</h3>
-                    <p class="text-smoke text-sm">to Oath of Care Pharmacy and Medicine Locator.</p>
+                    <p class="text-smoke text-sm">Your Trusted Pharmacy Locator Network.</p>
                 </div>
-                <form id="patientLoginForm" onsubmit="handleUserLoginSubmit(event)" class="space-y-6">
-                    <input type="email" id="userLoginEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm transition-all">
-                    <div class="relative">
-                        <input type="password" id="userLoginPassword" autocomplete="new-password" required placeholder="Password" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm tracking-widest pr-12 transition-all">
-                        <button type="button" onclick="togglePassword('userLoginPassword', 'eyeIconUserLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
-                            <i class="fa-solid fa-eye text-lg" id="eyeIconUserLogin"></i>
-                        </button>
+                <form id="clientLoginForm" onsubmit="handleUserLoginSubmit(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-2 drop-shadow-sm text-left">Email Address</label>
+                        <input type="email" id="userLoginEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm transition-all">
                     </div>
-                    <button type="submit" id="btnUserLogin" class="w-full bg-[#024b33] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-2">Sign In</button>
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-2 drop-shadow-sm text-left">Password</label>
+                        <div class="relative">
+                            <input type="password" id="userLoginPassword" autocomplete="new-password" required placeholder="Password" class="w-full px-6 py-4 rounded-xl border border-silk focus:border-luxuryGreen shadow-3d-input outline-none font-bold text-sm tracking-widest pr-12 transition-all">
+                            <button type="button" onclick="togglePassword('userLoginPassword', 'eyeIconUserLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
+                                <i class="fa-solid fa-eye text-lg" id="eyeIconUserLogin"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" id="btnUserLogin" class="w-full bg-[#024b33] hover:bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-2">Sign In</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
-                    No account yet? <button type="button" onclick="toggleUserAuthForms('signup1')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Create Account</button>
+                    No account yet? <button type="button" onclick="toggleUserAuthForms('signup')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Create Account</button>
                 </div>
             </div>
 
-            <!-- User Registration: Step 1 (Details) -->
+            <!-- User Registration Form -->
             <div id="userSignupFormWrapper" class="hidden">
                 <div class="text-center mb-8">
                     <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">WELCOME</h3>
-                    <p class="text-smoke text-sm">to Oath of Care Pharmacy and Medicine Locator.</p>
+                    <p class="text-smoke text-sm">Your Trusted Pharmacy Locator Network.</p>
                 </div>
-                <form id="patientSignupForm1" onsubmit="handleUserSignupStep1(event)" class="space-y-4">
+                <form id="clientSignupForm" onsubmit="handleUserSignupSubmit(event)" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="userRegFname" autocomplete="off" required placeholder="First Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
-                        <input type="text" id="userRegLname" autocomplete="off" required placeholder="Last Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
+                        <div>
+                            <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-2 drop-shadow-sm text-left">First Name</label>
+                            <input type="text" id="userRegFname" autocomplete="off" required placeholder="First Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-2 drop-shadow-sm text-left">Last Name</label>
+                            <input type="text" id="userRegLname" autocomplete="off" required placeholder="Last Name" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
+                        </div>
                     </div>
-                    <input type="email" id="userRegEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
-                    <div class="relative">
-                        <input type="password" id="userRegPass" autocomplete="new-password" required placeholder="Password" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold tracking-widest pr-12 transition-all">
-                        <button type="button" onclick="togglePassword('userRegPass', 'eyeIconUserReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
-                            <i class="fa-solid fa-eye text-lg" id="eyeIconUserReg"></i>
-                        </button>
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-2 drop-shadow-sm text-left">Email Address</label>
+                        <input type="email" id="userRegEmail" autocomplete="off" required placeholder="Email Address" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold transition-all">
                     </div>
-                    <button type="submit" id="btnUserSignup1" class="w-full bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Next Step</button>
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-2 drop-shadow-sm text-left">Password</label>
+                        <div class="relative">
+                            <input type="password" id="userRegPass" autocomplete="new-password" required placeholder="Password" class="w-full px-5 py-4 rounded-xl border border-silk shadow-3d-input outline-none text-sm font-bold tracking-widest pr-12 transition-all">
+                            <button type="button" onclick="togglePassword('userRegPass', 'eyeIconUserReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none">
+                                <i class="fa-solid fa-eye text-lg" id="eyeIconUserReg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" id="btnUserSignup" class="w-full bg-velvet text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Register</button>
                 </form>
                 <div class="mt-6 text-center text-xs font-bold text-smoke">
                     Already registered? <button type="button" onclick="toggleUserAuthForms('login')" class="text-luxuryGreen uppercase tracking-widest hover:underline ml-1">Sign In</button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- User Registration: Step 2 (Verify Code) -->
-            <div id="userVerifyFormWrapper" class="hidden">
-                <div class="text-center mb-8">
-                    <h3 class="text-3xl font-serif font-bold text-velvet mb-2 text-shadow-3d">Verify Email</h3>
-                    <p class="text-smoke text-sm">Please enter the 6-digit code sent to your email.</p>
+    <!-- Admin Review Modal (New Component for Secure Application Review) -->
+    <div id="adminReviewModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[110] p-4 transition-opacity duration-500">
+        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-4xl relative border border-silk/50 mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.4s forwards;">
+            <button onclick="closeAdminReview()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb] transition-colors"><i class="fa-solid fa-times text-base"></i></button>
+            <h3 class="text-3xl font-serif font-bold text-velvet mb-6 text-shadow-3d">Review Application</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Verified Information Display -->
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Pharmacy Name</p>
+                        <p class="font-bold text-lg text-velvet" id="revName">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Email Address</p>
+                        <p class="font-bold text-base text-velvet" id="revEmail">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Contact Number</p>
+                        <p class="font-bold text-base text-velvet" id="revContact">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Branch / Barangay</p>
+                        <p class="font-bold text-base text-velvet" id="revBranch">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Full Address</p>
+                        <p class="font-bold text-base text-velvet" id="revAddress">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Google Maps Link</p>
+                        <a href="#" id="revMap" target="_blank" class="font-bold text-sm text-luxuryGreen hover:underline break-all">-</a>
+                    </div>
                 </div>
-                <form id="patientSignupForm2" onsubmit="handleUserSignupStep2(event)" class="space-y-4">
-                    <input type="text" id="userVerifyCode" autocomplete="off" required maxlength="6" placeholder="XXXXXX" class="w-full px-5 py-6 rounded-xl border border-silk shadow-3d-input outline-none text-2xl tracking-[0.6em] font-bold text-center uppercase transition-all">
-                    <button type="submit" id="btnUserSignup2" class="w-full bg-luxuryGreen text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn mt-4">Create Account</button>
-                </form>
-                <div class="mt-6 text-center text-xs font-bold text-smoke">
-                    <button type="button" id="userResendBtn" onclick="handleResendCode('user')" class="text-smoke uppercase tracking-widest hover:text-velvet">Resend Code</button>
+                
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Store Photo / Logo</p>
+                        <div class="w-full h-32 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner overflow-hidden">
+                            <img id="revLogoImg" src="" class="w-full h-full object-cover hidden" alt="Shop Photo">
+                            <div id="revLogoIcon" class="flex flex-col items-center justify-center">
+                                <i class="fa-solid fa-image text-3xl mb-2 drop-shadow-md"></i> 
+                                <span class="text-xs font-bold uppercase tracking-widest">Image Uploaded</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Business Permit</p>
+                        <div class="w-full h-40 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner overflow-hidden">
+                            <img id="revPermitImg" src="" class="w-full h-full object-cover hidden" alt="Business Permit">
+                            <div id="revPermitIcon" class="flex flex-col items-center justify-center">
+                                <i class="fa-solid fa-file-contract text-4xl mb-2 drop-shadow-md"></i> 
+                                <span class="text-xs font-bold uppercase tracking-widest">Document Uploaded</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- Secure Action Dispatchers -->
+            <div class="flex gap-4 border-t border-silk pt-6">
+                <button id="btnRevApprove" class="flex-1 bg-[#024b33] hover:bg-velvet text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn transition-colors">Approve Application</button>
+                <button id="btnRevReject" class="flex-1 bg-white text-rose border border-rose/30 px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-rose hover:text-white transition-colors shadow-3d-card">Reject Application</button>
+            </div>
         </div>
     </div>
 
@@ -705,65 +807,65 @@
         </div>
     </div>
 
-    <!-- Pharmacy Registration Modal -->
-    <div id="pharmacyRegModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
+    <!-- Sign Up / Registration Modal -->
+    <div id="signupModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
         <div class="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-3d-panel w-full max-w-2xl relative border border-white mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;">
-            <button onclick="closePharmacyRegistration()" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-chiffon flex items-center justify-center text-smoke hover:text-rose hover:bg-rose/10 transition-colors z-10 border border-silk/50 shadow-3d-card">
+            <button onclick="closeSignupModal()" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-chiffon flex items-center justify-center text-smoke hover:text-rose hover:bg-rose/10 transition-colors z-10 border border-silk/50 shadow-3d-card">
                 <i class="fa-solid fa-times text-base"></i>
             </button>
 
-            <!-- Pharmacy Step 1: Account Creation -->
-            <div id="pharmSignupStep1" class="block">
+            <!-- Step 1: Account Creation -->
+            <div id="signupStep1" class="block">
                 <div class="text-center mb-10">
-                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Pharmacy Sign Up</h3>
+                    <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Sign Up</h3>
                     <p class="text-smoke text-sm md:text-base text-shadow-sm">Create your pharmacy account.</p>
                 </div>
-                <form id="pharmSignupForm1" onsubmit="handlePharmSignupStep1(event)" class="space-y-6 md:space-y-8">
+                <form id="pharmSignupForm1" onsubmit="handleSignupStep1(event)" class="space-y-6 md:space-y-8">
                     <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Business Email Address</label>
-                        <input type="email" autocomplete="off" required id="signupPharmEmail" placeholder="business@example.com" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet bg-white outline-none shadow-3d-input">
+                        <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Email Address</label>
+                        <input type="email" autocomplete="off" required id="signupEmail" placeholder="example@gmail.com" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet bg-white outline-none shadow-3d-input">
                     </div>
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Password</label>
                         <div class="relative">
-                            <input type="password" autocomplete="new-password" required id="signupPharmPassword" placeholder="••••••••" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet pr-14 bg-white outline-none tracking-widest shadow-3d-input">
-                            <button type="button" onclick="togglePassword('signupPharmPassword', 'eyeIconPharmReg')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none drop-shadow-md">
-                                <i class="fa-solid fa-eye text-xl" id="eyeIconPharmReg"></i>
+                            <input type="password" autocomplete="new-password" required id="signupPassword" placeholder="••••••••" class="w-full px-6 py-5 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-base font-semibold text-velvet pr-14 bg-white outline-none tracking-widest shadow-3d-input">
+                            <button type="button" onclick="togglePassword('signupPassword', 'eyeIconSignup')" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke hover:text-luxuryGreen transition-colors focus:outline-none drop-shadow-md">
+                                <i class="fa-solid fa-eye text-xl" id="eyeIconSignup"></i>
                             </button>
                         </div>
                     </div>
-                    <button type="submit" id="btnPharmReg1" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Next Step</button>
+                    <button type="submit" id="btnPharmReg1" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Sign Up</button>
                     <div class="mt-8 text-center text-xs md:text-sm text-smoke font-medium text-shadow-sm">
-                        Already have an account? <button type="button" onclick="closePharmacyRegistration()" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm">Log In</button>
+                        Already have an account? <a href="#" onclick="closeSignupModal()" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm">Log In</a>
                     </div>
                 </form>
             </div>
 
             <!-- Step 2: Verification Code -->
-            <div id="pharmSignupStep2" class="hidden">
+            <div id="signupStep2" class="hidden">
                 <div class="text-center mb-10">
                     <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Verify Email</h3>
                     <p class="text-smoke text-sm md:text-base leading-relaxed px-4 text-shadow-sm">We have sent a 6-digit verification code to your email address. Please enter the code below.</p>
                 </div>
-                <form id="pharmSignupForm2" onsubmit="handlePharmSignupStep2(event)" class="space-y-8">
+                <form id="pharmSignupForm2" onsubmit="handleSignupStep2(event)" class="space-y-8">
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-[#334155] uppercase tracking-[0.2em] mb-4 text-center text-shadow-sm">6-Digit Code</label>
-                        <input type="text" autocomplete="off" required maxlength="6" id="signupPharmCode" placeholder="XXXXXX" class="w-full px-6 py-6 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-center text-2xl md:text-3xl tracking-[0.6em] font-bold text-velvet uppercase bg-white outline-none shadow-3d-input">
+                        <input type="text" autocomplete="off" required maxlength="6" id="signupVerificationCode" placeholder="XXXXXX" class="w-full px-6 py-6 rounded-2xl border border-[#cbd5e0] focus:border-luxuryGreen transition-all text-center text-2xl md:text-3xl tracking-[0.6em] font-bold text-velvet uppercase bg-white outline-none shadow-3d-input">
                     </div>
                     <button type="submit" id="btnPharmReg2" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-4">Verify Account</button>
                 </form>
                 <div class="mt-6 text-center text-xs md:text-sm text-smoke font-medium text-shadow-sm">
-                    Didn't receive the code? <button type="button" id="pharmSignupResendBtn" onclick="handleResendCode('pharmacy')" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">Resend Code</button>
+                    Didn't receive the code? <button type="button" id="signupResendBtn" onclick="handleResendCode('signup')" class="text-luxuryGreen font-bold uppercase tracking-[0.2em] hover:underline ml-2 drop-shadow-sm transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">Resend Code</button>
                 </div>
             </div>
 
             <!-- Step 3: Pharmacy Details -->
-            <div id="pharmSignupStep3" class="hidden">
+            <div id="signupStep3" class="hidden">
                 <div class="text-center mb-10">
                     <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet mb-3 tracking-tight text-shadow-3d">Pharmacy Details</h3>
                     <p class="text-smoke text-sm md:text-base text-shadow-sm">Complete your registration profile.</p>
                 </div>
-                <form id="pharmSignupForm3" onsubmit="handlePharmSignupStep3(event)" class="space-y-6 md:space-y-8">
+                <form id="pharmSignupForm3" onsubmit="handleSignupStep3(event)" class="space-y-6 md:space-y-8">
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Pharmacy Name</label>
                         <input type="text" id="regPharmName" required placeholder="e.g. Mercury Drug" class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen bg-[#f8f9fa] text-base font-bold transition-colors text-velvet outline-none shadow-3d-input">
@@ -807,78 +909,16 @@
                         <input type="url" id="regMapLink" required placeholder="https://maps.google.com/..." class="w-full px-6 py-5 rounded-2xl border border-silk focus:border-luxuryGreen bg-[#f8f9fa] text-base font-bold transition-colors text-velvet outline-none shadow-3d-input">
                     </div>
                     <div>
-                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-3 ml-1 text-shadow-sm">Pharmacy Logo / Shop Photo</label>
-                        <input type="file" id="regStorePhoto" required accept=".png, .jpeg, .jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
+                        <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-1 ml-1 text-shadow-sm">Pharmacy Logo / Shop Photo</label>
+                        <input type="file" id="regLogo" required accept="image/png, image/jpeg, image/jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
                     </div>
                     <div>
                         <label class="block text-[11px] md:text-xs font-bold text-velvet uppercase tracking-[0.2em] mb-1 ml-1 text-shadow-sm">Business Permit Photo</label>
-                        <p class="text-[10px] text-smoke mb-2 ml-1">* Must be a valid, readable permit image or PDF.</p>
-                        <input type="file" id="regPermitPhoto" required accept=".png, .jpeg, .jpg, .pdf" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
+                        <p class="text-[10px] text-smoke mb-2 ml-1">* Must be a valid, readable permit image.</p>
+                        <input type="file" id="regPermit" required accept="image/png, image/jpeg, image/jpg" class="w-full px-6 py-4 rounded-2xl border border-silk focus:border-luxuryGreen bg-white text-sm font-bold transition-colors text-velvet file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[11px] file:uppercase file:tracking-widest file:font-bold file:bg-[#e8f1ed] file:text-luxuryGreen hover:file:bg-luxuryGreen hover:file:text-white file:transition-colors file:cursor-pointer cursor-pointer outline-none shadow-3d-input">
                     </div>
                     <button type="submit" id="btnPharmReg3" class="w-full bg-[#024b33] hover:bg-velvet text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-xs transition-colors btn-luxury shadow-3d-btn mt-6">Submit Registration</button>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Review Modal (Secure Application Review with Real Images) -->
-    <div id="adminReviewModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-sm hidden flex items-center justify-center z-[110] p-4 transition-opacity duration-500">
-        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-4xl relative border border-silk/50 mx-2 max-h-[90vh] overflow-y-auto" style="animation: premiumGlideIn 0.4s forwards;">
-            <button onclick="closeAdminReview()" class="absolute top-8 right-8 w-10 h-10 rounded-full flex items-center justify-center hover:text-rose border border-silk/50 shadow-3d-card bg-[#f4f1eb] transition-colors"><i class="fa-solid fa-times text-base"></i></button>
-            <h3 class="text-3xl font-serif font-bold text-velvet mb-6 text-shadow-3d">Review Application</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <!-- Verified Information Display -->
-                <div class="space-y-4">
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Pharmacy Name</p>
-                        <p class="font-bold text-lg text-velvet" id="revName">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Email Address</p>
-                        <p class="font-bold text-base text-velvet" id="revEmail">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Contact Number</p>
-                        <p class="font-bold text-base text-velvet" id="revContact">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Branch / Barangay</p>
-                        <p class="font-bold text-base text-velvet" id="revBranch">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Full Address</p>
-                        <p class="font-bold text-base text-velvet" id="revAddress">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em]">Google Maps Link</p>
-                        <a href="#" id="revMap" target="_blank" class="font-bold text-sm text-luxuryGreen hover:underline break-all">-</a>
-                    </div>
-                </div>
-                
-                <!-- Secure Base64 Rendered Images from Database -->
-                <div class="space-y-6">
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Store Photo</p>
-                        <div class="w-full h-40 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner overflow-hidden">
-                            <img id="revStorePhotoImg" src="" alt="Store Photo" class="w-full h-full object-cover hidden">
-                            <span id="revStorePhotoText" class="text-xs font-bold uppercase tracking-widest hidden">No Image</span>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-bold uppercase tracking-[0.2em] mb-2">Business Permit</p>
-                        <div class="w-full h-48 bg-[#e8f1ed] border border-luxuryGreen/20 rounded-xl flex flex-col items-center justify-center text-luxuryGreen shadow-inner overflow-hidden relative">
-                            <img id="revPermitPhotoImg" src="" alt="Business Permit" class="w-full h-full object-cover hidden">
-                            <span id="revPermitPhotoText" class="text-xs font-bold uppercase tracking-widest hidden">No Permit Uploaded</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Secure Action Dispatchers -->
-            <div class="flex gap-4 border-t border-silk pt-6">
-                <button id="btnRevApprove" class="flex-1 bg-[#024b33] hover:bg-velvet text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs btn-luxury shadow-3d-btn transition-colors">Approve Application</button>
-                <button id="btnRevReject" class="flex-1 bg-white text-rose border border-rose/30 px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-rose hover:text-white transition-colors shadow-3d-card">Reject Application</button>
             </div>
         </div>
     </div>
@@ -889,20 +929,17 @@
             <button onclick="closePharmacyDetails()" class="absolute top-8 right-8 w-10 h-10 rounded-full bg-chiffon flex items-center justify-center text-smoke hover:text-rose hover:bg-rose/10 transition-colors z-10 border border-silk/50 shadow-3d-card">
                 <i class="fa-solid fa-times text-base"></i>
             </button>
-            
-            <!-- Real Pharmacy Image -->
-            <div class="w-full h-40 mb-6 rounded-[20px] overflow-hidden shadow-inner relative border border-silk">
-                <span class="absolute top-3 right-3 z-20 bg-[#e8f1ed] text-luxuryGreen border border-luxuryGreen/20 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-3d-card"><i class="fa-solid fa-check mr-1.5 drop-shadow-sm"></i> Verified</span>
-                <img id="detailPharmImage" src="" alt="Pharmacy Store" class="w-full h-full object-cover">
-            </div>
-
-            <div class="flex items-center gap-6 mb-6 border-b border-silk pb-6">
+            <div class="flex items-center gap-6 mb-8 border-b border-silk pb-8">
+                <div class="w-20 h-20 rounded-[24px] bg-luxuryGreen/10 flex items-center justify-center text-luxuryGreen text-3xl border border-luxuryGreen/20 shadow-inner overflow-hidden">
+                    <img id="detailPharmLogo" src="" class="w-full h-full object-cover hidden" alt="Shop Photo">
+                    <i id="detailPharmIcon" class="fa-solid fa-store drop-shadow-md"></i>
+                </div>
                 <div>
                     <h3 class="text-3xl font-serif font-bold text-velvet tracking-tight text-shadow-3d" id="detailPharmName">Pharmacy Name</h3>
                     <p class="text-smoke text-[11px] md:text-xs font-bold uppercase tracking-[0.2em] mt-2 drop-shadow-sm" id="detailPharmBranch">Branch Location</p>
                 </div>
             </div>
-            <div class="space-y-6">
+            <div class="space-y-8">
                 <div class="flex items-start gap-5">
                     <i class="fa-solid fa-location-dot text-rose mt-1 text-xl w-8 text-center drop-shadow-md"></i>
                     <div>
@@ -928,23 +965,24 @@
         </div>
     </div>
 
-    <!-- Map/Directions Modal (Waze-Style) -->
-    <div id="mapModal" class="fixed inset-0 bg-velvet/40 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-5xl relative border border-white mx-2 h-[75vh] md:h-[85vh] flex flex-col" style="animation: premiumGlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;">
+    <!-- Map/Directions Modal -->
+    <div id="mapModal" class="fixed inset-0 bg-velvet/60 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
+        <!-- Massive Modal replacing entire viewport mostly -->
+        <div class="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-3d-panel w-full max-w-[95vw] h-[90vh] relative border border-white flex flex-col" style="animation: premiumGlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;">
             <button onclick="closeMapModal()" class="absolute top-8 right-8 w-12 h-12 rounded-full bg-white shadow-3d-card flex items-center justify-center text-smoke hover:text-rose transition-colors z-20 border border-silk/50">
                 <i class="fa-solid fa-times text-xl"></i>
             </button>
-            <div class="mb-4 pl-4 pr-16 flex justify-between items-center">
+            <div class="mb-6 pl-4 pr-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h3 class="text-3xl md:text-4xl font-serif font-bold text-velvet tracking-tight text-shadow-3d">Route and Directions</h3>
                     <p class="text-smoke text-base md:text-lg mt-2 text-shadow-sm">Navigate to the selected pharmacy location.</p>
                 </div>
-                <button id="startNavigationBtn" class="hidden bg-[#024b33] hover:bg-velvet text-white px-6 py-3 rounded-xl font-bold uppercase text-[11px] shadow-3d-btn btn-luxury flex items-center gap-2 transition-colors">
+                <button id="startNavigationBtn" class="bg-[#024b33] text-white px-8 py-4 rounded-xl font-bold uppercase text-[12px] shadow-3d-btn btn-luxury flex items-center gap-3">
                     <i class="fa-solid fa-location-arrow"></i> Start Navigation
                 </button>
             </div>
             <div class="flex-grow rounded-[24px] overflow-hidden bg-chiffon border border-silk relative shadow-inner">
-                <!-- Embedded Google Map using an iframe for in-app directions -->
+                <!-- Embedded Google Map using an iframe -->
                 <iframe id="googleMapFrame" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
@@ -1038,11 +1076,7 @@
         let currentRole = 'pharmacy';
         let tempSignupEmail = ''; 
         let tempForgotEmail = ''; 
-        let tempPharmEmail = '';
-        let tempStorePhotoBase64 = null;
-        let tempPermitPhotoBase64 = null;
-
-        let resendTimers = { signup: null, forgot: null, pharm: null };
+        let resendTimers = { signup: null, forgot: null };
         let analyticsChartInstance = null;
         let globalPendingApplications = []; // Secure cache for admin review modal
 
@@ -1051,41 +1085,11 @@
             updateNavBasedOnAuth();
         };
 
-        // --- THE MISSING SHOW TOAST FUNCTION THAT BROKE THE APP ---
-        // This handles UI notifications securely. If this is missing, errors crash the logic.
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            if (!container) return;
-            
-            const toast = document.createElement('div');
-            // Assign base class and apply conditional border/text colors
-            toast.className = 'toast';
-            if (type === 'error') {
-                toast.style.borderLeftColor = '#e19898'; // rose
-            } else {
-                toast.style.borderLeftColor = '#10b981'; // badgeGreen
-            }
-            
-            toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation text-rose' : 'fa-circle-check text-badgeGreen'} text-lg"></i> <span>${message}</span>`;
-            
-            container.appendChild(toast);
-            
-            // Trigger reflow to ensure the CSS transition plays correctly
-            void toast.offsetWidth;
-            toast.classList.add('show');
-            
-            // Auto remove after 3 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
-        }
-
         function updateNavBasedOnAuth() {
             const btnLogout = document.getElementById('navLogoutBtn');
             const btnLogoutMobile = document.getElementById('navLogoutBtnMobile');
             
-            if(authState.role === 'patient' || authState.role === 'pharmacy' || authState.role === 'admin') {
+            if(authState.role === 'client' || authState.role === 'pharmacy' || authState.role === 'admin') {
                 if(btnLogout) btnLogout.classList.remove('hidden');
                 if(btnLogoutMobile) btnLogoutMobile.classList.remove('hidden');
             } else {
@@ -1100,16 +1104,6 @@
             updateNavBasedOnAuth();
             navigateTo('home');
             showToast('Logged out successfully.');
-        }
-
-        // --- Base64 Conversion Utility for Secure Image Storage ---
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
         }
 
         // --- Rotating 3D Background ---
@@ -1225,35 +1219,30 @@
 
         function closeUserAuthModal() {
             document.getElementById('userAuthModal').classList.add('hidden');
-            document.getElementById('patientLoginForm').reset();
-            document.getElementById('patientSignupForm1').reset();
-            document.getElementById('patientSignupForm2').reset();
-            document.getElementById('userSignupFormWrapper').classList.remove('hidden');
-            document.getElementById('userVerifyFormWrapper').classList.add('hidden');
+            document.getElementById('clientLoginForm').reset();
+            document.getElementById('clientSignupForm').reset();
         }
 
         function toggleUserAuthForms(view) {
             if(view === 'login') {
                 document.getElementById('userLoginFormWrapper').classList.remove('hidden');
                 document.getElementById('userSignupFormWrapper').classList.add('hidden');
-                document.getElementById('userVerifyFormWrapper').classList.add('hidden');
             } else {
                 document.getElementById('userLoginFormWrapper').classList.add('hidden');
                 document.getElementById('userSignupFormWrapper').classList.remove('hidden');
-                document.getElementById('userVerifyFormWrapper').classList.add('hidden');
             }
         }
 
         async function handleUserLoginSubmit(e) {
             e.preventDefault();
             const unlock = lockButton('btnUserLogin');
-            const emailInput = document.getElementById('userLoginEmail');
-            const passInput = document.getElementById('userLoginPassword');
+            const email = document.getElementById('userLoginEmail').value;
+            const password = document.getElementById('userLoginPassword').value;
 
             try {
                 const response = await fetch(`${API_URL}/login`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailInput.value, password: passInput.value, role: 'patient' })
+                    body: JSON.stringify({ email, password, role: 'client' })
                 });
                 const result = await response.json();
                 
@@ -1267,89 +1256,45 @@
                     navigateTo('home');
                 } else {
                     showToast(result.error, 'error');
-                    passInput.value = ''; // Clean field on error
-                    emailInput.value = '';
+                    document.getElementById('userLoginPassword').value = ''; // clear input on error
                 }
             } catch (err) { 
                 showToast('Server offline', 'error'); 
             } finally { unlock(); }
         }
 
-        // Patient Multi-Step Registration
-        async function handleUserSignupStep1(e) {
+        async function handleUserSignupSubmit(e) {
             e.preventDefault();
-            tempSignupEmail = document.getElementById('userRegEmail').value;
-            const unlock = lockButton('btnUserSignup1');
-
+            const unlock = lockButton('btnUserSignup');
+            const data = {
+                fname: document.getElementById('userRegFname').value,
+                lname: document.getElementById('userRegLname').value,
+                email: document.getElementById('userRegEmail').value,
+                password: document.getElementById('userRegPass').value
+            };
             try {
-                const response = await fetch(`${API_URL}/api/send-verification`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: tempSignupEmail })
+                const response = await fetch(`${API_URL}/register-client`, {
+                    method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
                 });
-                if(response.ok) {
-                    document.getElementById('userSignupFormWrapper').classList.add('hidden');
-                    document.getElementById('userVerifyFormWrapper').classList.remove('hidden');
-                    showToast('Verification code sent to email!');
-                    startResendCooldown('userResendBtn', 'signup'); 
-                } else {
-                    const res = await response.json();
-                    showToast(res.error || 'Failed to send', 'error');
+                const result = await response.json();
+                if(response.ok){ 
+                    showToast(result.message); 
+                    e.target.reset();
+                    toggleUserAuthForms('login'); 
+                } else { 
+                    showToast(result.error, 'error'); 
+                    document.getElementById('userRegPass').value = ''; // clear input on error
                 }
-            } catch (error) {
-                showToast('Could not reach backend', 'error');
-            } finally { unlock(); }
+            } catch(err) { showToast('Network Error', 'error'); } finally { unlock(); }
         }
 
-        async function handleUserSignupStep2(e) {
-            e.preventDefault();
-            const code = document.getElementById('userVerifyCode').value;
-            const unlock = lockButton('btnUserSignup2');
-            
-            try {
-                const response = await fetch(`${API_URL}/api/verify-code`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: tempSignupEmail, code: code })
-                });
-                
-                if(response.ok) {
-                    // Code verified! Now register the actual user.
-                    if (resendTimers.signup) clearInterval(resendTimers.signup);
-                    
-                    const data = {
-                        fname: document.getElementById('userRegFname').value,
-                        lname: document.getElementById('userRegLname').value,
-                        email: document.getElementById('userRegEmail').value,
-                        password: document.getElementById('userRegPass').value
-                    };
-                    
-                    const regResponse = await fetch(`${API_URL}/register-patient`, {
-                        method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
-                    });
-                    
-                    const regResult = await regResponse.json();
-                    if(regResponse.ok){ 
-                        showToast(regResult.message); 
-                        closeUserAuthModal();
-                        toggleUserAuthForms('login'); 
-                    } else { 
-                        showToast(regResult.error, 'error'); 
-                    }
-                } else {
-                    showToast('Invalid verification code', 'error');
-                }
-            } catch(error) {
-                showToast('Could not reach backend', 'error');
-            } finally { unlock(); }
-        }
 
         // --- BUSINESS LOGIN (Pharmacy & Admin) ---
         async function handleLogin(e) {
             e.preventDefault();
             const unlock = lockButton('btnSubmitLogin');
-            const emailInput = document.getElementById('loginEmail');
-            const passInput = document.getElementById('loginPassword');
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
 
             showToast('Verifying your credentials...');
             
@@ -1357,7 +1302,7 @@
                 const response = await fetch(`${API_URL}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailInput.value, password: passInput.value, role: currentRole })
+                    body: JSON.stringify({ email, password, role: currentRole })
                 });
 
                 const result = await response.json();
@@ -1379,8 +1324,7 @@
                     }
                 } else {
                     showToast('Error: ' + (result.error || 'Invalid credentials'), 'error');
-                    passInput.value = ''; // clean password field on error
-                    emailInput.value = '';
+                    document.getElementById('loginPassword').value = ''; // clean password field on error
                 }
             } catch (error) {
                 showToast('Server error.', 'error');
@@ -1391,8 +1335,8 @@
         async function handleSearch(e) {
             e.preventDefault();
             
-            if (authState.role !== 'patient') {
-                showToast("Please log in or create a user account to search.", "error");
+            if (authState.role !== 'client') {
+                showToast("Please log in or create a client account to search.", "error");
                 openUserAuthModal();
                 return;
             }
@@ -1413,7 +1357,7 @@
                 const response = await fetch(`${API_URL}/api/search`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ medicine: medInput, barangay: brgy, patientId: authState.id })
+                    body: JSON.stringify({ medicine: medInput, barangay: brgy, clientId: authState.id })
                 });
                 
                 const data = await response.json();
@@ -1424,12 +1368,17 @@
                 } else if (response.ok && data.results.length > 0) {
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
-                        // Use real image if exists, else fallback
-                        let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
+                        // Priority to uploaded logo, then fallback images
+                        let shopImage = res.logo || 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
+                        if (!res.logo) {
+                            if (brgy === 'Minuyan') shopImage = 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80';
+                            else if (brgy === 'San Mateo') shopImage = 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&q=80';
+                            else if (brgy === 'Bigte') shopImage = 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&q=80'; 
+                        }
 
                         grid.innerHTML += `
                             <div class="bg-white rounded-[24px] shadow-3d-card hover:shadow-[0_25px_50px_-12px_rgba(2,75,51,0.25)] transition-all duration-500 overflow-hidden flex flex-col group border border-silk/50 relative z-10">
-                                <div class="h-52 md:h-60 overflow-hidden relative rounded-t-[24px] shadow-inner">
+                                <div class="h-52 md:h-60 overflow-hidden relative rounded-t-[24px] shadow-inner bg-chiffon">
                                     <span class="absolute top-5 right-5 z-20 bg-[#e8f1ed] text-luxuryGreen border border-luxuryGreen/20 px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-3d-card"><i class="fa-solid fa-check mr-1.5 drop-shadow-sm"></i> IN STOCK</span>
                                     <img src="${shopImage}" alt="Pharmacy Store" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
                                 </div>
@@ -1449,7 +1398,7 @@
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-4 mt-auto">
-                                        <button onclick="openPharmacyDetails('${res.pharmacyName}', 'Branch in ${res.branch}', '${res.address}', '${res.contact}', '${shopImage}')" class="bg-white border border-silk text-velvet py-4 md:py-4.5 rounded-xl font-bold text-[10px] md:text-[11px] uppercase tracking-widest hover:border-velvet hover:bg-chiffon/30 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.05),_inset_0_-2px_4px_rgba(0,0,0,0.05)]">Details</button>
+                                        <button onclick="openPharmacyDetails('${res.pharmacyName}', 'Branch in ${res.branch}', '${res.address}', '${res.contact}', '${res.logo}')" class="bg-white border border-silk text-velvet py-4 md:py-4.5 rounded-xl font-bold text-[10px] md:text-[11px] uppercase tracking-widest hover:border-velvet hover:bg-chiffon/30 transition-colors shadow-[0_5px_15px_rgba(0,0,0,0.05),_inset_0_-2px_4px_rgba(0,0,0,0.05)]">Details</button>
                                         <button onclick="openMapModal('${res.address}', '${res.pharmacyName}')" class="bg-velvet text-white py-4 md:py-4.5 rounded-xl font-bold text-[10px] md:text-[11px] uppercase tracking-widest hover:bg-luxuryGreen transition-colors shadow-3d-btn"><i class="fa-solid fa-diamond-turn-right mr-2 drop-shadow-sm"></i> Directions</button>
                                     </div>
                                 </div>
@@ -1467,12 +1416,23 @@
         }
 
         // Logic for Displaying Modals (Details & Map)
-        function openPharmacyDetails(name, branch, address, contact, imageUrl) {
+        function openPharmacyDetails(name, branch, address, contact, logo) {
             document.getElementById('detailPharmName').innerText = name;
             document.getElementById('detailPharmBranch').innerText = branch;
             document.getElementById('detailPharmAddress').innerText = address;
-            document.getElementById('detailPharmContact').innerText = contact;
-            document.getElementById('detailPharmImage').src = imageUrl;
+            document.getElementById('detailPharmContact').innerText = contact || 'Not Provided';
+            
+            const logoImg = document.getElementById('detailPharmLogo');
+            const logoIcon = document.getElementById('detailPharmIcon');
+            if (logo && logo !== 'null') {
+                logoImg.src = logo;
+                logoImg.classList.remove('hidden');
+                logoIcon.classList.add('hidden');
+            } else {
+                logoImg.classList.add('hidden');
+                logoIcon.classList.remove('hidden');
+            }
+
             document.getElementById('pharmacyDetailsModal').classList.remove('hidden');
         }
         function closePharmacyDetails() { document.getElementById('pharmacyDetailsModal').classList.add('hidden'); }
@@ -1483,23 +1443,21 @@
             const navBtn = document.getElementById('startNavigationBtn');
             
             const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
+            // Zoomed in tightly (z=18) on the target pharmacy automatically
+            mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&t=&z=18&ie=UTF8&iwloc=&output=embed`;
             
-            // Standard static embed view first
-            mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
-            
-            // In-app Waze Routing feature
             navBtn.onclick = () => {
-                showToast('Requesting GPS location for live routing...', 'success');
+                showToast('Requesting GPS location...', 'success');
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const origin = `${position.coords.latitude},${position.coords.longitude}`;
-                            // Update iframe strictly to Waze/Maps direction interface inside the app
-                            mapFrame.src = `https://www.google.com/maps/embed/v1/directions?origin=${origin}&destination=${encodedDest}&mode=driving`;
-                            navBtn.classList.add('hidden');
+                            // Update iframe with routing directions within the app seamlessly
+                            mapFrame.src = `https://maps.google.com/maps?saddr=${origin}&daddr=${encodedDest}&output=embed`;
+                            showToast('Navigation Started', 'success');
                         },
                         (error) => {
-                            showToast('GPS access denied. Cannot generate live route.', 'error');
+                            showToast('GPS access denied. Cannot start live navigation.', 'error');
                         }
                     );
                 } else {
@@ -1507,7 +1465,6 @@
                 }
             };
             
-            navBtn.classList.remove('hidden');
             mapModal.classList.remove('hidden');
         }
         function closeMapModal() { document.getElementById('mapModal').classList.add('hidden'); }
@@ -1663,7 +1620,7 @@
             } catch(e) { showToast('Update error', 'error'); } finally { unlock(); }
         }
 
-        // --- REAL FETCH LOGIC FOR ADMIN DATA ---
+        // --- ADMIN DASHBOARD LOGIC (Chart.js, Logs, and Review System) ---
         async function fetchAdminData() {
             try {
                 const [statsRes, logsRes, pendingRes] = await Promise.all([
@@ -1677,7 +1634,7 @@
                 const pending = await pendingRes.json();
 
                 document.getElementById('statPharm').innerText = stats.totalPharmacies || 0;
-                document.getElementById('statPatient').innerText = stats.totalPatients || 0;
+                document.getElementById('statClient').innerText = stats.totalClients || 0;
                 document.getElementById('statSearch').innerText = stats.totalSearches || 0;
 
                 const ctx = document.getElementById('analyticsChart').getContext('2d');
@@ -1740,27 +1697,27 @@
             document.getElementById('revMap').href = appData.mapLink;
             document.getElementById('revMap').innerText = appData.mapLink;
             
-            // Set the Base64 Images for visual verification
-            const storeImg = document.getElementById('revStorePhotoImg');
-            const storeText = document.getElementById('revStorePhotoText');
-            if(appData.storePhoto) {
-                storeImg.src = appData.storePhoto;
-                storeImg.classList.remove('hidden');
-                storeText.classList.add('hidden');
+            // Handle images
+            const logoImg = document.getElementById('revLogoImg');
+            const logoIcon = document.getElementById('revLogoIcon');
+            if (appData.logo) {
+                logoImg.src = appData.logo;
+                logoImg.classList.remove('hidden');
+                logoIcon.classList.add('hidden');
             } else {
-                storeImg.classList.add('hidden');
-                storeText.classList.remove('hidden');
+                logoImg.classList.add('hidden');
+                logoIcon.classList.remove('hidden');
             }
 
-            const permitImg = document.getElementById('revPermitPhotoImg');
-            const permitText = document.getElementById('revPermitPhotoText');
-            if(appData.permitPhoto) {
-                permitImg.src = appData.permitPhoto;
+            const permitImg = document.getElementById('revPermitImg');
+            const permitIcon = document.getElementById('revPermitIcon');
+            if (appData.permit) {
+                permitImg.src = appData.permit;
                 permitImg.classList.remove('hidden');
-                permitText.classList.add('hidden');
+                permitIcon.classList.add('hidden');
             } else {
                 permitImg.classList.add('hidden');
-                permitText.classList.remove('hidden');
+                permitIcon.classList.remove('hidden');
             }
 
             document.getElementById('adminReviewModal').classList.remove('hidden');
@@ -1791,10 +1748,11 @@
             } finally { unlock(); }
         }
 
+
         // --- START OF RESEND CODE LOGIC ---
         async function handleResendCode(flowType) {
-            const btnId = flowType === 'signup' ? 'signupResendBtn' : (flowType === 'forgot' ? 'forgotResendBtn' : 'pharmSignupResendBtn');
-            const email = flowType === 'signup' ? tempSignupEmail : (flowType === 'forgot' ? tempForgotEmail : tempPharmEmail);
+            const btnId = flowType === 'signup' ? 'signupResendBtn' : 'forgotResendBtn';
+            const email = flowType === 'signup' ? tempSignupEmail : tempForgotEmail;
             const btn = document.getElementById(btnId);
 
             if (btn.disabled) return; 
@@ -1844,50 +1802,47 @@
         }
         // --- END OF RESEND CODE LOGIC ---
 
-        // --- REAL REGISTRATION & SIGN UP FLOW ---
-        function openPharmacyRegistration() {
-            document.getElementById('pharmacyRegModal').classList.remove('hidden');
-            document.getElementById('pharmSignupStep1').classList.remove('hidden');
-            document.getElementById('pharmSignupStep2').classList.add('hidden');
-            document.getElementById('pharmSignupStep3').classList.add('hidden');
+        // Helper to convert uploaded files to Base64 String
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) resolve(null);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
         }
-        function closePharmacyRegistration() { 
-            document.getElementById('pharmacyRegModal').classList.add('hidden'); 
+
+        // --- REAL REGISTRATION & SIGN UP FLOW ---
+        function openSignupModal() {
+            document.getElementById('signupModal').classList.remove('hidden');
+            document.getElementById('signupStep1').classList.remove('hidden');
+            document.getElementById('signupStep2').classList.add('hidden');
+            document.getElementById('signupStep3').classList.add('hidden');
+        }
+        function closeSignupModal() { 
+            document.getElementById('signupModal').classList.add('hidden'); 
             document.getElementById('pharmSignupForm1').reset();
             document.getElementById('pharmSignupForm2').reset();
             document.getElementById('pharmSignupForm3').reset();
-            tempStorePhotoBase64 = null;
-            tempPermitPhotoBase64 = null;
         }
 
-        // Attach listeners to file inputs to cache the base64 conversions securely
-        document.getElementById('regStorePhoto').addEventListener('change', async function() {
-            if(this.files && this.files[0]) {
-                tempStorePhotoBase64 = await fileToBase64(this.files[0]);
-            }
-        });
-        document.getElementById('regPermitPhoto').addEventListener('change', async function() {
-            if(this.files && this.files[0]) {
-                tempPermitPhotoBase64 = await fileToBase64(this.files[0]);
-            }
-        });
-
-        async function handlePharmSignupStep1(e) {
+        async function handleSignupStep1(e) {
             e.preventDefault();
-            tempPharmEmail = document.getElementById('signupPharmEmail').value;
+            tempSignupEmail = document.getElementById('signupEmail').value;
             const unlock = lockButton('btnPharmReg1');
 
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: tempPharmEmail })
+                    body: JSON.stringify({ email: tempSignupEmail })
                 });
                 if(response.ok) {
-                    document.getElementById('pharmSignupStep1').classList.add('hidden');
-                    document.getElementById('pharmSignupStep2').classList.remove('hidden');
+                    document.getElementById('signupStep1').classList.add('hidden');
+                    document.getElementById('signupStep2').classList.remove('hidden');
                     showToast('Code successfully sent!');
-                    startResendCooldown('pharmSignupResendBtn', 'pharm'); 
+                    startResendCooldown('signupResendBtn', 'signup'); 
                 } else {
                     const res = await response.json();
                     showToast(res.error || 'Failed to send', 'error');
@@ -1897,23 +1852,23 @@
             } finally { unlock(); }
         }
 
-        async function handlePharmSignupStep2(e) {
+        async function handleSignupStep2(e) {
             e.preventDefault();
-            const code = document.getElementById('signupPharmCode').value;
+            const code = document.getElementById('signupVerificationCode').value;
             const unlock = lockButton('btnPharmReg2');
             
             try {
                 const response = await fetch(`${API_URL}/api/verify-code`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: tempPharmEmail, code: code })
+                    body: JSON.stringify({ email: tempSignupEmail, code: code })
                 });
                 
                 if(response.ok) {
                     showToast('Code verified successfully!');
-                    document.getElementById('pharmSignupStep2').classList.add('hidden');
-                    document.getElementById('pharmSignupStep3').classList.remove('hidden');
-                    if (resendTimers.pharm) clearInterval(resendTimers.pharm); 
+                    document.getElementById('signupStep2').classList.add('hidden');
+                    document.getElementById('signupStep3').classList.remove('hidden');
+                    if (resendTimers.signup) clearInterval(resendTimers.signup); 
                 } else {
                     showToast('Invalid verification code', 'error');
                 }
@@ -1922,26 +1877,26 @@
             } finally { unlock(); }
         }
 
-        async function handlePharmSignupStep3(e) {
+        async function handleSignupStep3(e) {
             e.preventDefault();
             const unlock = lockButton('btnPharmReg3');
             
-            if (!tempStorePhotoBase64 || !tempPermitPhotoBase64) {
-                showToast('Please upload both the Store Photo and Business Permit.', 'error');
-                unlock();
-                return;
-            }
+            // Read images as base64 to store safely
+            const logoFile = document.getElementById('regLogo').files[0];
+            const permitFile = document.getElementById('regPermit').files[0];
+            const logoBase64 = await getBase64(logoFile);
+            const permitBase64 = await getBase64(permitFile);
 
             const signupData = {
-                email: tempPharmEmail,
-                password: document.getElementById('signupPharmPassword').value,
+                email: tempSignupEmail,
+                password: document.getElementById('signupPassword').value,
                 pharmacyName: document.getElementById('regPharmName').value,
                 barangay: document.getElementById('regBarangay').value,
                 contactNumber: document.getElementById('regContact').value,
                 address: document.getElementById('regAddress').value,
                 mapLink: document.getElementById('regMapLink').value,
-                storePhoto: tempStorePhotoBase64,
-                permitPhoto: tempPermitPhotoBase64
+                logoBase64: logoBase64,
+                permitBase64: permitBase64
             };
 
             try {
@@ -1955,7 +1910,7 @@
 
                 if (response.ok) {
                     showToast('Success: ' + result.message);
-                    closePharmacyRegistration();
+                    closeSignupModal();
                 } else {
                     showToast('Error: ' + (result.error || 'Registration failed'), 'error');
                 }
@@ -2058,6 +2013,27 @@
             } finally { unlock(); }
         }
 
+        // Floating Toast Message Alert
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let iconClass = 'fa-circle-check text-luxuryGreen';
+            let borderClass = 'border-luxuryGreen';
+            if(type === 'error') { iconClass = 'fa-circle-xmark text-rose'; borderClass = 'border-rose'; }
+
+            toast.className = `toast border-l-4 ${borderClass}`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass} text-xl drop-shadow-md"></i> <span class="font-bold tracking-wide text-shadow-sm">${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 500); 
+            }, 3000);
+        }
+
         // Mobile Nav Trigger Menu
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
@@ -2084,10 +2060,6 @@
                 nav.classList.add('bg-transparent');
             }
         });
-        
-        // Add event listeners for Admin approval buttons
-        document.getElementById('btnRevApprove').addEventListener('click', () => handleApplicationDecision('approve'));
-        document.getElementById('btnRevReject').addEventListener('click', () => handleApplicationDecision('reject'));
     </script>
 </body>
 </html>
