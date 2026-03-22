@@ -23,6 +23,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # ==========================================
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 SENDER_EMAIL = 'oathofcareofficial@gmail.com'
+SENDER_NAME = 'Oath of Care'
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -33,8 +34,6 @@ search_rate_limits = {}
 
 # ==========================================
 # DATABASE MODELS (ORM)
-# [SECURITY] SQLAlchemy ORM natively utilizes parameterized queries, 
-# completely neutralizing SQL Injection (SQLi) vulnerabilities.
 # ==========================================
 
 class Admin(db.Model):
@@ -44,9 +43,9 @@ class Admin(db.Model):
     PasswordHash = db.Column(db.String(255), nullable=False)
     IsFirstLogin = db.Column(db.Boolean, default=True)
 
-class PatientAccount(db.Model):
-    __tablename__ = 'patient_account'
-    PatientID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+class ClientAccount(db.Model):
+    __tablename__ = 'client_account'
+    ClientID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Fname = db.Column(db.String(100), nullable=False)
     Lname = db.Column(db.String(100), nullable=False)
     Email = db.Column(db.String(120), unique=True, nullable=False)
@@ -73,8 +72,8 @@ class Pharmacy(db.Model):
     ContactNumber = db.Column(db.String(20), nullable=False)
     FullAddress = db.Column(db.Text, nullable=False)
     GoogleMapLink = db.Column(db.Text, nullable=True)
-    StorePhotoPath = db.Column(db.Text, nullable=True) # Changed to Text to support Base64 Images
-    PermitPhotoPath = db.Column(db.Text, nullable=True) # Changed to Text to support Base64 Images
+    LogoPhotoPath = db.Column(db.Text, nullable=True)
+    PermitPhotoPath = db.Column(db.Text, nullable=True)
     IsActive = db.Column(db.Boolean, default=False)
     OpenTime = db.Column(db.String(50), nullable=True)
     CloseTime = db.Column(db.String(50), nullable=True)
@@ -107,11 +106,68 @@ class SearchLog(db.Model):
     __tablename__ = 'search_log'
     SearchLogID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     BarangayID = db.Column(db.Integer, db.ForeignKey('barangay.BarangayID'), nullable=True)
-    PatientID = db.Column(db.Integer, db.ForeignKey('patient_account.PatientID'), nullable=True)
+    ClientID = db.Column(db.Integer, db.ForeignKey('client_account.ClientID'), nullable=True)
     MedicineID = db.Column(db.Integer, db.ForeignKey('medicine.MedicineID'), nullable=True)
     CreatedAt = db.Column(db.DateTime, default=datetime.utcnow)
     HasResult = db.Column(db.Boolean, default=False)
 
+
+# ==========================================
+# EMAIL HELPER FUNCTIONS
+# ==========================================
+def send_email_api(to_email, subject, html_content):
+    if not BREVO_API_KEY:
+        return False, "Server email key misconfiguration."
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": BREVO_API_KEY,
+        "content-type": "application/json"
+    }
+    payload = {
+        "sender": {"name": SENDER_NAME, "email": SENDER_EMAIL},
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "htmlContent": html_content
+    }
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code in [200, 201, 202]:
+            return True, "Email sent successfully"
+        return False, "Failed to send email."
+    except Exception as e:
+        return False, "System error while sending email."
+
+def get_base_email_template(title, subtitle, content_html):
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f3ef; margin: 0; padding: 30px 10px; }}
+            .container {{ max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; padding: 40px 30px; box-shadow: 0 10px 30px rgba(2, 75, 51, 0.08); text-align: center; border: 1px solid #e8dacc; width: 100%; box-sizing: border-box; }}
+            .logo {{ color: #a3c936; font-size: 28px; font-weight: 800; letter-spacing: 2px; margin-bottom: 25px; display: block; font-family: 'Georgia', serif; text-transform: uppercase; }}
+            .logo span {{ color: #024b33; }}
+            .title {{ color: #0a0a0a; font-size: 26px; font-weight: bold; margin-bottom: 12px; }}
+            .subtitle {{ color: #4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 30px; padding: 0 10px; }}
+            .footer {{ color: #9ca3af; font-size: 12px; margin-top: 35px; border-top: 1px solid #e8dacc; padding-top: 25px; line-height: 1.6; }}
+            .btn {{ display: inline-block; padding: 14px 28px; background-color: #024b33; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; font-size: 13px; margin-top: 10px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo"><span>Oath of</span> Care</div>
+            <div class="title">{title}</div>
+            <div class="subtitle">{subtitle}</div>
+            {content_html}
+            <div class="footer">
+                &copy; {datetime.utcnow().year} Oath of Care Medical Locator Network.<br>All rights reserved.
+            </div>
+        </div>
+    </body>
+    </html>
+    """
 
 # ==========================================
 # API ENDPOINTS
@@ -128,68 +184,18 @@ def send_verification():
     code = ''.join(random.choices(string.digits, k=6))
     verification_codes[email] = code
     
-    try:
-        if not BREVO_API_KEY:
-            return jsonify({'error': 'Server misconfiguration.'}), 500
-
-        url = "https://api.brevo.com/v3/smtp/email"
-        headers = {
-            "accept": "application/json",
-            "api-key": BREVO_API_KEY,
-            "content-type": "application/json"
-        }
-        
-        professional_html_content = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-                body {{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f3ef; margin: 0; padding: 20px 10px; }}
-                .container {{ max-width: 450px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; padding: 30px 20px; box-shadow: 0 4px 15px rgba(2, 75, 51, 0.08); text-align: center; border: 1px solid #e8dacc; width: 100%; box-sizing: border-box; }}
-                .logo {{ color: #a3c936; font-size: 24px; font-weight: 800; letter-spacing: 2px; margin-bottom: 20px; display: block; font-family: 'Georgia', serif; text-transform: uppercase; }}
-                .logo span {{ color: #024b33; }}
-                .title {{ color: #0a0a0a; font-size: 22px; font-weight: bold; margin-bottom: 10px; }}
-                .subtitle {{ color: #4b5563; font-size: 14px; line-height: 1.5; margin-bottom: 25px; padding: 0 10px; }}
-                .code-box {{ background-color: #fcfcfa; border: 2px dashed #024b33; border-radius: 8px; padding: 15px; margin: 0 auto 25px auto; max-width: 200px; }}
-                .code {{ font-size: 28px; font-weight: 900; color: #024b33; letter-spacing: 8px; margin: 0; text-align: center; }}
-                .warning {{ color: #9ca3af; font-size: 12px; margin-bottom: 25px; }}
-                .footer {{ color: #9ca3af; font-size: 11px; margin-top: 30px; border-top: 1px solid #e8dacc; padding-top: 20px; line-height: 1.5; }}
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="logo"><span>Oath of</span> Care</div>
-                <div class="title">Welcome to Oath of Care!</div>
-                <div class="subtitle">You are almost there. Please use the verification code below to authenticate your account.</div>
-                <div class="code-box">
-                    <p class="code">{code}</p>
-                </div>
-                <div class="warning">If you did not request this code, you can safely ignore this email.</div>
-                <div class="footer">
-                    &copy; {datetime.utcnow().year} Medical Locator Network. All rights reserved.
-                </div>
-            </div>
-        </body>
-        </html>
-        """
-
-        payload = {
-            "sender": {"name": "Oath of Care Support", "email": SENDER_EMAIL},
-            "to": [{"email": email}],
-            "subject": f"{code} is your Oath of Care verification code",
-            "htmlContent": professional_html_content
-        }
-
-        response = requests.post(url, json=payload, headers=headers)
-        
-        if response.status_code in [200, 201, 202]:
-            return jsonify({'message': 'Verification code sent successfully'})
-        else:
-            return jsonify({'error': 'Failed to send email. Check configuration.'}), 500
-
-    except Exception as e:
-        return jsonify({'error': 'System error while sending email.'}), 500
+    content = f"""
+    <div style="background-color: #fcfcfa; border: 2px dashed #024b33; border-radius: 12px; padding: 20px; margin: 0 auto 30px auto; max-width: 220px;">
+        <p style="font-size: 32px; font-weight: 900; color: #024b33; letter-spacing: 10px; margin: 0; text-align: center;">{code}</p>
+    </div>
+    <div style="color: #9ca3af; font-size: 13px; margin-bottom: 25px;">If you did not request this code, you can safely ignore this email.</div>
+    """
+    html_content = get_base_email_template("Verify Your Account", "You are almost there. Please use the verification code below to authenticate.", content)
+    
+    success, msg = send_email_api(email, f"{code} is your verification code", html_content)
+    if success:
+        return jsonify({'message': 'Verification code sent successfully'})
+    return jsonify({'error': msg}), 500
 
 @app.route('/api/verify-code', methods=['POST'])
 def verify_code():
@@ -202,31 +208,38 @@ def verify_code():
     else:
         return jsonify({'error': 'Invalid or expired code'}), 400
 
-# Endpoint: Register Patient
-@app.route('/register-patient', methods=['POST'])
-def register_patient():
+@app.route('/register-client', methods=['POST'])
+def register_client():
     data = request.json
     email = data.get('email')
     
-    if PatientAccount.query.filter_by(Email=email).first():
-        return jsonify({'error': 'Email is already registered as a patient'}), 400
+    if ClientAccount.query.filter_by(Email=email).first():
+        return jsonify({'error': 'Email is already registered as a client'}), 400
 
     hashed_pw = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
     try:
-        new_patient = PatientAccount(
+        new_client = ClientAccount(
             Fname=data.get('fname'),
             Lname=data.get('lname'),
             Email=email,
             PasswordHash=hashed_pw
         )
-        db.session.add(new_patient)
+        db.session.add(new_client)
         db.session.commit()
-        return jsonify({'message': 'Patient registration complete!'}), 201
+        
+        # Send a Beautiful Welcome Email after successful registration
+        welcome_content = f"""
+        <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">Thank you for joining our network. You now have full access to our database to quickly locate the essential medicines you need across our verified pharmacy partners.</p>
+        <a href="https://oath-of-care.com" class="btn">Explore Now</a>
+        """
+        html_mail = get_base_email_template("Welcome to Oath of Care!", f"Hello {data.get('fname')}, your account has been successfully created.", welcome_content)
+        send_email_api(email, "Welcome to Oath of Care!", html_mail)
+
+        return jsonify({'message': 'Client registration complete!'}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Database error.'}), 500
 
-# Endpoint: Register Pharmacy
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
@@ -241,7 +254,7 @@ def register():
     try:
         new_account = PharmacyAccount(Email=email, PasswordHash=hashed_password)
         db.session.add(new_account)
-        db.session.flush() # Force ID generation
+        db.session.flush()
 
         barangay = Barangay.query.filter_by(BarangayName=data.get('barangay')).first()
         if not barangay:
@@ -254,13 +267,13 @@ def register():
             ContactNumber=data.get('contactNumber'),
             FullAddress=data.get('address'),
             GoogleMapLink=data.get('mapLink'),
-            StorePhotoPath=data.get('storePhoto'), # Save Base64 Image
-            PermitPhotoPath=data.get('permitPhoto'), # Save Base64 Image
+            LogoPhotoPath=data.get('logoBase64'), 
+            PermitPhotoPath=data.get('permitBase64'), 
             BarangayID=barangay.BarangayID,
             PharmacyAccountID=new_account.PharmacyAccountID
         )
         db.session.add(new_pharmacy)
-        db.session.flush() # Force ID generation for Pharmacy Status mapping
+        db.session.flush()
 
         new_status = PharmacyStatus(
             PharmacyID=new_pharmacy.PharmacyID,
@@ -275,7 +288,6 @@ def register():
         db.session.rollback()
         return jsonify({'error': 'A database error occurred.'}), 500
 
-# Endpoint: Secure Login (Handles Roles)
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -283,14 +295,14 @@ def login():
     password = data.get('password')
     role = data.get('role')
 
-    if role == 'patient':
-        user = PatientAccount.query.filter_by(Email=email).first()
+    if role == 'client':
+        user = ClientAccount.query.filter_by(Email=email).first()
         if user and bcrypt.check_password_hash(user.PasswordHash, password):
             return jsonify({
                 'message': 'Login successful', 
-                'id': user.PatientID, 
+                'id': user.ClientID, 
                 'name': f"{user.Fname} {user.Lname}",
-                'role': 'patient'
+                'role': 'client'
             }), 200
             
     elif role == 'pharmacy':
@@ -327,12 +339,10 @@ def reset_password():
     db.session.commit()
     return jsonify({'message': 'Password has been successfully reset.'}), 200
 
-
 # ==========================================
 # SECURE PHARMACY ENDPOINTS
 # ==========================================
 
-# Fetch existing pharmacy profile data to populate the update form
 @app.route('/api/pharmacy/profile/<int:pharm_id>', methods=['GET'])
 def get_pharmacy_profile(pharm_id):
     try:
@@ -363,7 +373,7 @@ def update_pharmacy():
             pharmacy.PharmacyName = data.get('name')
             pharmacy.ContactNumber = data.get('contact')
             pharmacy.FullAddress = data.get('address')
-            pharmacy.GoogleMapLink = data.get('mapLink') # Map link processing
+            pharmacy.GoogleMapLink = data.get('mapLink')
             db.session.commit()
             return jsonify({'message': 'Profile updated successfully!'}), 200
         return jsonify({'error': 'Pharmacy not found'}), 404
@@ -371,7 +381,6 @@ def update_pharmacy():
         db.session.rollback()
         return jsonify({'error': 'Update failed'}), 500
 
-# Get all medicines for a specific pharmacy
 @app.route('/api/medicines/<int:pharm_id>', methods=['GET'])
 def get_medicines(pharm_id):
     try:
@@ -429,35 +438,31 @@ def delete_medicine(med_id):
 @app.route('/api/search', methods=['POST'])
 def search_medicine():
     data = request.json
-    patient_id = data.get('patientId')
+    client_id = data.get('clientId')
     medicine_query = data.get('medicine', '').strip()
     barangay_query = data.get('barangay', '').strip()
     
-    # Require authentication
-    if not patient_id:
-        return jsonify({'error': 'Access Denied. You must log in as a Patient to search.'}), 403
+    if not client_id:
+        return jsonify({'error': 'Access Denied. You must log in as a Client to search.'}), 403
 
-    # [SECURITY] Rate Limiting: Prevent API abuse (10-second cooldown per user)
     now = datetime.utcnow()
-    if patient_id in search_rate_limits:
-        time_passed = (now - search_rate_limits[patient_id]).total_seconds()
+    if client_id in search_rate_limits:
+        time_passed = (now - search_rate_limits[client_id]).total_seconds()
         if time_passed < 10:
             return jsonify({'error': f'Please wait {int(10 - time_passed)} seconds before searching again to prevent spam.'}), 429
-    search_rate_limits[patient_id] = now
+    search_rate_limits[client_id] = now
 
-    # [SECURITY] SQLAlchemy ORM executes parameterized queries to prevent SQL Injection
     try:
         barangay = Barangay.query.filter_by(BarangayName=barangay_query).first()
         results = []
         medicine_id_for_log = None
         
         if barangay:
-            # Query joined tables securely
             medicines = db.session.query(Medicine, Pharmacy).join(Pharmacy).filter(
                 Medicine.MedicineName.ilike(f'%{medicine_query}%'),
                 Medicine.InStock == True,
                 Pharmacy.BarangayID == barangay.BarangayID,
-                Pharmacy.IsActive == True # Ensure only active pharmacies are searched
+                Pharmacy.IsActive == True 
             ).all()
 
             for med, pharm in medicines:
@@ -467,17 +472,16 @@ def search_medicine():
                     'branch': barangay.BarangayName,
                     'medicine': med.MedicineName,
                     'price': str(med.Price),
-                    'address': pharm.FullAddress,
                     'contact': pharm.ContactNumber,
-                    'storeImage': pharm.StorePhotoPath, # Pass the real image
+                    'address': pharm.FullAddress,
                     'mapLink': pharm.GoogleMapLink,
+                    'logo': pharm.LogoPhotoPath, 
                     'inStock': med.InStock
                 })
 
-        # Save Audit Log
         new_log = SearchLog(
             BarangayID=barangay.BarangayID if barangay else None,
-            PatientID=patient_id,
+            ClientID=client_id,
             MedicineID=medicine_id_for_log,
             HasResult=bool(results)
         )
@@ -489,15 +493,13 @@ def search_medicine():
     except Exception as e:
         return jsonify({'error': 'Database search failed.'}), 500
 
-
 # ==========================================
-# ADMIN ENDPOINTS (REAL DATA)
+# ADMIN ENDPOINTS
 # ==========================================
 
 @app.route('/api/admin/pending', methods=['GET'])
 def get_pending_pharmacies():
     try:
-        # Fetch actual pending pharmacy requests from database, joining Accounts to get the email
         pending = db.session.query(Pharmacy, PharmacyStatus, Barangay, PharmacyAccount).join(
             PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID
         ).join(
@@ -517,8 +519,8 @@ def get_pending_pharmacies():
                 'contact': pharm.ContactNumber,
                 'address': pharm.FullAddress,
                 'mapLink': pharm.GoogleMapLink,
-                'storePhoto': pharm.StorePhotoPath, # Return actual uploaded Base64 string
-                'permitPhoto': pharm.PermitPhotoPath # Return actual uploaded Base64 string
+                'logo': pharm.LogoPhotoPath,
+                'permit': pharm.PermitPhotoPath
             })
             
         return jsonify(results), 200
@@ -529,7 +531,7 @@ def get_pending_pharmacies():
 def resolve_application():
     data = request.json
     pharm_id = data.get('pharmacyId')
-    action = data.get('action') # 'approve' or 'reject'
+    action = data.get('action') 
     
     try:
         status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
@@ -553,17 +555,16 @@ def resolve_application():
 @app.route('/api/admin/stats', methods=['GET'])
 def admin_stats():
     try:
-        total_pharmacies = Pharmacy.query.filter_by(IsActive=True).count()
-        total_patients = PatientAccount.query.count()
+        total_pharmacies = Pharmacy.query.count()
+        total_clients = ClientAccount.query.count()
         total_searches = SearchLog.query.count()
         
-        # Determine real success vs failed searches for Chart.js
         success_count = SearchLog.query.filter_by(HasResult=True).count()
         failed_count = SearchLog.query.filter_by(HasResult=False).count()
         
         return jsonify({
             'totalPharmacies': total_pharmacies,
-            'totalPatients': total_patients,
+            'totalClients': total_clients,
             'totalSearches': total_searches,
             'chartData': [success_count, failed_count]
         }), 200
@@ -573,26 +574,23 @@ def admin_stats():
 @app.route('/api/admin/logs', methods=['GET'])
 def admin_logs():
     try:
-        # Securely fetch the last 15 audit logs
-        logs = db.session.query(SearchLog, PatientAccount).join(PatientAccount).order_by(SearchLog.CreatedAt.desc()).limit(15).all()
+        logs = db.session.query(SearchLog, ClientAccount).join(ClientAccount).order_by(SearchLog.CreatedAt.desc()).limit(15).all()
         log_data = []
-        for log, patient in logs:
+        for log, client in logs:
             log_data.append({
                 'time': log.CreatedAt.strftime("%Y-%m-%d %H:%M:%S"),
-                'user': f"{patient.Fname} {patient.Lname}",
+                'user': f"{client.Fname} {client.Lname}",
                 'result': 'Success' if log.HasResult else 'No Match'
             })
         return jsonify(log_data), 200
     except Exception as e:
         return jsonify({'error': 'Failed to fetch logs'}), 500
 
-# Execute Server Application
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         print("PostgreSQL tables successfully initialized.")
         
-        # Generate default admin account requested by user
         if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
             default_admin = Admin(Email='oathofcare@gmail.com', PasswordHash=hashed_admin_pw)
@@ -600,6 +598,5 @@ if __name__ == '__main__':
             db.session.commit()
             print("Default admin created: oathofcare@gmail.com / admin123")
 
-    # Dynamic Port allocation for Render hosting deployment
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port, debug=False)
