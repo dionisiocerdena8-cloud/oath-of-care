@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from datetime import datetime
+from sqlalchemy import text
 import random
 import string
 import requests
@@ -44,8 +45,9 @@ class Admin(db.Model):
     IsFirstLogin = db.Column(db.Boolean, default=True)
 
 class ClientAccount(db.Model):
-    __tablename__ = 'client_account'
-    ClientID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # Mapping back to existing 'patient_account' table to prevent 500 errors and data loss
+    __tablename__ = 'patient_account'
+    ClientID = db.Column('PatientID', db.Integer, primary_key=True, autoincrement=True)
     Fname = db.Column(db.String(100), nullable=False)
     Lname = db.Column(db.String(100), nullable=False)
     Email = db.Column(db.String(120), unique=True, nullable=False)
@@ -106,7 +108,8 @@ class SearchLog(db.Model):
     __tablename__ = 'search_log'
     SearchLogID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     BarangayID = db.Column(db.Integer, db.ForeignKey('barangay.BarangayID'), nullable=True)
-    ClientID = db.Column(db.Integer, db.ForeignKey('client_account.ClientID'), nullable=True)
+    # Mapping back to the existing database PatientID column to prevent 500 errors
+    ClientID = db.Column('PatientID', db.Integer, db.ForeignKey('patient_account.PatientID'), nullable=True)
     MedicineID = db.Column(db.Integer, db.ForeignKey('medicine.MedicineID'), nullable=True)
     CreatedAt = db.Column(db.DateTime, default=datetime.utcnow)
     HasResult = db.Column(db.Boolean, default=False)
@@ -590,6 +593,14 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         print("PostgreSQL tables successfully initialized.")
+        
+        # AUTO-PATCH: Add missing LogoPhotoPath column if database already existed previously
+        try:
+            db.session.execute(text('ALTER TABLE pharmacy ADD COLUMN "LogoPhotoPath" TEXT;'))
+            db.session.commit()
+            print("Database Patched: Added LogoPhotoPath column successfully.")
+        except Exception:
+            db.session.rollback() # Ignored if column already exists
         
         if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
