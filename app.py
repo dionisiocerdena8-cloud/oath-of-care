@@ -8,20 +8,18 @@ import random
 import string
 import requests
 import os
+import re
 
 app = Flask(__name__)
 
 # ==========================================
-# CORS CONFIGURATION (FIXED)
+# CORS CONFIGURATION (FIXED FOR ALL PORTALS)
 # ==========================================
-# Inilagay natin ang eksaktong URL ng iyong frontend para hindi magka-CORS error.
+# Ginamit natin ang regex (re.compile) para tanggapin ang kahit anong frontend URL 
+# (Client, Admin, Pharmacy) habang pinapayagan pa rin ang credentials.
 CORS(app, resources={
     r"/*": {
-        "origins": [
-            "https://client-d9et.onrender.com", 
-            "http://localhost:3000",
-            "http://localhost:5173"
-        ]
+        "origins": re.compile(r".*")
     }
 }, supports_credentials=True)
 
@@ -231,9 +229,6 @@ def verify_code():
         return jsonify({'error': 'Invalid or expired code'}), 400
 
 
-# ==========================================
-# FIXED ROUTE: /register-patient (Match sa frontend)
-# ==========================================
 @app.route('/register-patient', methods=['POST', 'OPTIONS'])
 def register_client():
     if request.method == 'OPTIONS':
@@ -269,6 +264,7 @@ def register_client():
         print(f"Error during client registration: {e}")
         db.session.rollback()
         return jsonify({'error': f'Database error: {str(e)}'}), 500
+
 
 @app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
@@ -322,6 +318,7 @@ def register():
         db.session.rollback()
         return jsonify({'error': f'Database error: {str(e)}'}), 500
 
+
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
     if request.method == 'OPTIONS':
@@ -365,6 +362,7 @@ def login():
 
     return jsonify({'error': 'Invalid email or password'}), 401
 
+
 @app.route('/api/reset-password', methods=['POST', 'OPTIONS'])
 def reset_password():
     if request.method == 'OPTIONS':
@@ -382,12 +380,16 @@ def reset_password():
     db.session.commit()
     return jsonify({'message': 'Password has been successfully reset.'}), 200
 
+
 # ==========================================
 # SECURE PHARMACY ENDPOINTS
 # ==========================================
 
-@app.route('/api/pharmacy/profile/<int:pharm_id>', methods=['GET'])
+@app.route('/api/pharmacy/profile/<int:pharm_id>', methods=['GET', 'OPTIONS'])
 def get_pharmacy_profile(pharm_id):
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+
     try:
         pharmacy = Pharmacy.query.get(pharm_id)
         if not pharmacy:
@@ -401,6 +403,7 @@ def get_pharmacy_profile(pharm_id):
         }), 200
     except Exception as e:
         return jsonify({'error': 'Database error'}), 500
+
 
 @app.route('/api/pharmacy/update', methods=['POST', 'OPTIONS'])
 def update_pharmacy():
@@ -427,8 +430,12 @@ def update_pharmacy():
         db.session.rollback()
         return jsonify({'error': 'Update failed'}), 500
 
-@app.route('/api/medicines/<int:pharm_id>', methods=['GET'])
+
+@app.route('/api/medicines/<int:pharm_id>', methods=['GET', 'OPTIONS'])
 def get_medicines(pharm_id):
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+
     try:
         medicines = Medicine.query.filter_by(PharmacyID=pharm_id).all()
         results = [{
@@ -441,6 +448,7 @@ def get_medicines(pharm_id):
         return jsonify(results), 200
     except Exception as e:
         return jsonify({'error': 'Failed to load inventory'}), 500
+
 
 @app.route('/api/medicines', methods=['POST', 'OPTIONS'])
 def add_medicine():
@@ -468,6 +476,7 @@ def add_medicine():
         db.session.rollback()
         return jsonify({'error': 'Failed to add medicine.'}), 500
 
+
 @app.route('/api/medicines/<int:med_id>', methods=['DELETE', 'OPTIONS'])
 def delete_medicine(med_id):
     if request.method == 'OPTIONS':
@@ -483,6 +492,7 @@ def delete_medicine(med_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Database error'}), 500
+
 
 # ==========================================
 # SECURITY: RATE LIMITED SEARCH ENGINE
@@ -548,12 +558,16 @@ def search_medicine():
     except Exception as e:
         return jsonify({'error': 'Database search failed.'}), 500
 
+
 # ==========================================
 # ADMIN ENDPOINTS
 # ==========================================
 
-@app.route('/api/admin/pending', methods=['GET'])
+@app.route('/api/admin/pending', methods=['GET', 'OPTIONS'])
 def get_pending_pharmacies():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+
     try:
         pending = db.session.query(Pharmacy, PharmacyStatus, Barangay, PharmacyAccount).join(
             PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID
@@ -581,6 +595,7 @@ def get_pending_pharmacies():
         return jsonify(results), 200
     except Exception as e:
         return jsonify({'error': 'Failed to fetch pending applications'}), 500
+
 
 @app.route('/api/admin/resolve', methods=['POST', 'OPTIONS'])
 def resolve_application():
@@ -610,8 +625,12 @@ def resolve_application():
         db.session.rollback()
         return jsonify({'error': 'Database error occurred'}), 500
 
-@app.route('/api/admin/stats', methods=['GET'])
+
+@app.route('/api/admin/stats', methods=['GET', 'OPTIONS'])
 def admin_stats():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+
     try:
         total_pharmacies = Pharmacy.query.count()
         total_clients = ClientAccount.query.count()
@@ -629,8 +648,12 @@ def admin_stats():
     except Exception as e:
         return jsonify({'error': 'Failed to fetch statistics'}), 500
 
-@app.route('/api/admin/logs', methods=['GET'])
+
+@app.route('/api/admin/logs', methods=['GET', 'OPTIONS'])
 def admin_logs():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+
     try:
         logs = db.session.query(SearchLog, ClientAccount).join(ClientAccount).order_by(SearchLog.CreatedAt.desc()).limit(15).all()
         log_data = []
@@ -643,6 +666,7 @@ def admin_logs():
         return jsonify(log_data), 200
     except Exception as e:
         return jsonify({'error': 'Failed to fetch logs'}), 500
+
 
 if __name__ == '__main__':
     with app.app_context():
