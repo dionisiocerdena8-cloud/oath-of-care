@@ -10,8 +10,8 @@ import requests
 import os
 
 app = Flask(__name__)
-# Enable CORS to allow secure communication between the frontend and this Flask API
-CORS(app)
+# Enable CORS nang mas malawak para hindi ma-block at hindi mag "Server connection failed"
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # ==========================================
 # DATABASE CONFIGURATION
@@ -22,7 +22,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # ==========================================
 # BREVO API CONFIGURATION
 # ==========================================
-BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
+# DITO MO ILAGAY ANG IYONG BREVO API KEY SA LOOB NG QUOTES:
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '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')
+
 SENDER_EMAIL = 'oathofcareofficial@gmail.com'
 SENDER_NAME = 'Oath of Care'
 
@@ -45,7 +47,6 @@ class Admin(db.Model):
     IsFirstLogin = db.Column(db.Boolean, default=True)
 
 class ClientAccount(db.Model):
-    # Mapping back to existing 'patient_account' table to prevent 500 errors and data loss
     __tablename__ = 'patient_account'
     ClientID = db.Column('PatientID', db.Integer, primary_key=True, autoincrement=True)
     Fname = db.Column(db.String(100), nullable=False)
@@ -108,7 +109,6 @@ class SearchLog(db.Model):
     __tablename__ = 'search_log'
     SearchLogID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     BarangayID = db.Column(db.Integer, db.ForeignKey('barangay.BarangayID'), nullable=True)
-    # Mapping back to the existing database PatientID column to prevent 500 errors
     ClientID = db.Column('PatientID', db.Integer, db.ForeignKey('patient_account.PatientID'), nullable=True)
     MedicineID = db.Column(db.Integer, db.ForeignKey('medicine.MedicineID'), nullable=True)
     CreatedAt = db.Column(db.DateTime, default=datetime.utcnow)
@@ -119,8 +119,10 @@ class SearchLog(db.Model):
 # EMAIL HELPER FUNCTIONS
 # ==========================================
 def send_email_api(to_email, subject, html_content):
-    if not BREVO_API_KEY:
-        return False, "Server email key misconfiguration."
+    # Sinisigurado nito na may laman ang API key bago subukang mag-send
+    if not BREVO_API_KEY or BREVO_API_KEY == 'ILAGAY_ANG_BREVO_API_KEY_MO_DITO':
+        return False, "Server email key misconfiguration. Paki-check ang app.py mo."
+        
     url = "https://api.brevo.com/v3/smtp/email"
     headers = {
         "accept": "application/json",
@@ -137,7 +139,7 @@ def send_email_api(to_email, subject, html_content):
         response = requests.post(url, json=payload, headers=headers)
         if response.status_code in [200, 201, 202]:
             return True, "Email sent successfully"
-        return False, "Failed to send email."
+        return False, "Failed to send email. Mali ang API Key."
     except Exception as e:
         return False, "System error while sending email."
 
@@ -198,7 +200,9 @@ def send_verification():
     success, msg = send_email_api(email, f"{code} is your verification code", html_content)
     if success:
         return jsonify({'message': 'Verification code sent successfully'})
-    return jsonify({'error': msg}), 500
+    
+    # Pinalitan ang 500 ng 400 para hindi ma-block ng CORS at mabasa ng frontend ang actual error
+    return jsonify({'error': msg}), 400
 
 @app.route('/api/verify-code', methods=['POST'])
 def verify_code():
@@ -240,6 +244,7 @@ def register_client():
 
         return jsonify({'message': 'Client registration complete!'}), 201
     except Exception as e:
+        print(f"Error during client registration: {e}")
         db.session.rollback()
         return jsonify({'error': 'Database error.'}), 500
 
@@ -265,13 +270,14 @@ def register():
             db.session.add(barangay)
             db.session.flush()
 
+        # Inayos ang names ng variables dito para mag-match sa ipinapadala ng frontend mo
         new_pharmacy = Pharmacy(
             PharmacyName=data.get('pharmacyName'),
             ContactNumber=data.get('contactNumber'),
             FullAddress=data.get('address'),
             GoogleMapLink=data.get('mapLink'),
-            LogoPhotoPath=data.get('logoBase64'), 
-            PermitPhotoPath=data.get('permitBase64'), 
+            LogoPhotoPath=data.get('storePhoto'), 
+            PermitPhotoPath=data.get('permitPhoto'), 
             BarangayID=barangay.BarangayID,
             PharmacyAccountID=new_account.PharmacyAccountID
         )
@@ -288,6 +294,7 @@ def register():
         return jsonify({'message': 'Registration complete! Pending admin approval.'}), 201
 
     except Exception as e:
+        print(f"Error during pharmacy registration: {e}")
         db.session.rollback()
         return jsonify({'error': 'A database error occurred.'}), 500
 
@@ -298,7 +305,7 @@ def login():
     password = data.get('password')
     role = data.get('role')
 
-    if role == 'client':
+    if role == 'client' or role == 'patient':
         user = ClientAccount.query.filter_by(Email=email).first()
         if user and bcrypt.check_password_hash(user.PasswordHash, password):
             return jsonify({
@@ -335,6 +342,9 @@ def login():
 def reset_password():
     data = request.json
     user = PharmacyAccount.query.filter_by(Email=data.get('email')).first()
+    if not user:
+        user = ClientAccount.query.filter_by(Email=data.get('email')).first()
+        
     if not user:
         return jsonify({'error': 'Account not found.'}), 404
         
@@ -441,7 +451,7 @@ def delete_medicine(med_id):
 @app.route('/api/search', methods=['POST'])
 def search_medicine():
     data = request.json
-    client_id = data.get('clientId')
+    client_id = data.get('clientId') or data.get('patientId')
     medicine_query = data.get('medicine', '').strip()
     barangay_query = data.get('barangay', '').strip()
     
@@ -452,7 +462,7 @@ def search_medicine():
     if client_id in search_rate_limits:
         time_passed = (now - search_rate_limits[client_id]).total_seconds()
         if time_passed < 10:
-            return jsonify({'error': f'Please wait {int(10 - time_passed)} seconds before searching again to prevent spam.'}), 429
+            return jsonify({'error': f'Please wait {int(10 - time_passed)} seconds before searching again.'}), 429
     search_rate_limits[client_id] = now
 
     try:
@@ -522,8 +532,8 @@ def get_pending_pharmacies():
                 'contact': pharm.ContactNumber,
                 'address': pharm.FullAddress,
                 'mapLink': pharm.GoogleMapLink,
-                'logo': pharm.LogoPhotoPath,
-                'permit': pharm.PermitPhotoPath
+                'storePhoto': pharm.LogoPhotoPath,
+                'permitPhoto': pharm.PermitPhotoPath
             })
             
         return jsonify(results), 200
@@ -594,13 +604,12 @@ if __name__ == '__main__':
         db.create_all()
         print("PostgreSQL tables successfully initialized.")
         
-        # AUTO-PATCH: Add missing LogoPhotoPath column if database already existed previously
         try:
             db.session.execute(text('ALTER TABLE pharmacy ADD COLUMN "LogoPhotoPath" TEXT;'))
             db.session.commit()
             print("Database Patched: Added LogoPhotoPath column successfully.")
         except Exception:
-            db.session.rollback() # Ignored if column already exists
+            db.session.rollback() 
         
         if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
