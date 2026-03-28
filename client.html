@@ -564,26 +564,26 @@
             
             if (hero && svg && howItWorks) {
                 hero.classList.add('min-h-[90vh]', 'pb-20', 'pt-10');
-                hero.classList.remove('min-h-[35vh]', 'pb-4', 'pt-2');
+                hero.classList.remove('py-12');
                 
                 svg.classList.add('min-h-[40vh]', 'md:min-h-[55vh]');
-                svg.classList.remove('min-h-[35vh]', 'md:min-h-[35vh]');
+                svg.classList.remove('h-full');
                 
                 howItWorks.classList.remove('hidden');
 
                 if (heroTextGroup) {
                     heroTextGroup.classList.add('mb-8', 'mt-4', 'md:mt-8');
-                    heroTextGroup.classList.remove('scale-[0.70]', 'origin-top', 'mb-0', '-mt-8');
+                    heroTextGroup.classList.remove('mb-4', 'scale-[0.85]', 'origin-top');
                 }
 
                 if (searchForm) {
                     searchForm.classList.add('mt-6');
-                    searchForm.classList.remove('mt-0', '-translate-y-4');
+                    searchForm.classList.remove('mt-2');
                 }
 
                 if (searchBtnContainer) {
                     searchBtnContainer.classList.add('mt-10');
-                    searchBtnContainer.classList.remove('mt-2', 'scale-[0.9]');
+                    searchBtnContainer.classList.remove('mt-6', 'scale-[0.95]');
                 }
             }
 
@@ -848,32 +848,32 @@
             const searchBtnContainer = document.getElementById('searchBtnContainer');
             
             if (hero && svg && howItWorks) {
-                // Shrink hero height drastically
+                // Shrink hero height drastically but safely
                 hero.classList.remove('min-h-[90vh]', 'pb-20', 'pt-10');
-                hero.classList.add('min-h-[35vh]', 'pb-4', 'pt-2');
+                hero.classList.add('py-12'); 
                 
-                // Shrink SVG background drastically
+                // Adjust SVG background
                 svg.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
-                svg.classList.add('min-h-[35vh]', 'md:min-h-[35vh]'); 
+                svg.classList.add('h-full'); 
                 
                 howItWorks.classList.add('hidden'); 
 
                 // Scale down headings so they take up less space but keep layout
                 if (heroTextGroup) {
                     heroTextGroup.classList.remove('mb-8', 'mt-4', 'md:mt-8');
-                    heroTextGroup.classList.add('scale-[0.70]', 'origin-top', 'mb-0', '-mt-8');
+                    heroTextGroup.classList.add('mb-4', 'scale-[0.85]', 'origin-top');
                 }
 
-                // Pull search form up slightly
+                // Pull search form up gracefully
                 if (searchForm) {
                     searchForm.classList.remove('mt-6');
-                    searchForm.classList.add('mt-0', '-translate-y-4');
+                    searchForm.classList.add('mt-2');
                 }
 
-                // Pull search button closer to inputs
+                // Pull search button closer to inputs gracefully
                 if (searchBtnContainer) {
                     searchBtnContainer.classList.remove('mt-10');
-                    searchBtnContainer.classList.add('mt-2', 'scale-[0.9]');
+                    searchBtnContainer.classList.add('mt-6', 'scale-[0.95]');
                 }
             }
 
@@ -915,13 +915,13 @@
                                     <p class="text-smoke text-xs font-poppins font-bold uppercase tracking-widest mb-6"><i class="fa-solid fa-location-dot text-deepPurple mr-2"></i> ${res.branch}</p>
                                     
                                     <div class="bg-offWhite rounded-2xl p-6 mb-8 border border-starkBlack/5 transition-colors shadow-3d-input">
-                                        <div class="flex justify-between items-center mb-3">
-                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Item</span>
-                                            <span class="text-sm font-inter font-bold text-starkBlack truncate w-1/2 text-right">${res.medicine}</span>
+                                        <div class="flex justify-between items-start mb-3 gap-2">
+                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke shrink-0 mt-0.5">Item</span>
+                                            <span class="text-[13px] leading-tight font-inter font-bold text-starkBlack text-right break-words">${res.medicine}</span>
                                         </div>
-                                        <div class="flex justify-between items-center border-t border-smoke/10 pt-3">
-                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Price</span>
-                                            <span class="text-xl font-poppins font-black text-deepPurple" style="text-shadow: 1px 1px 2px rgba(74,20,140,0.2);">₱${res.price}</span>
+                                        <div class="flex justify-between items-center border-t border-smoke/10 pt-3 gap-2">
+                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke shrink-0">Price</span>
+                                            <span class="text-xl font-poppins font-black text-deepPurple break-words text-right" style="text-shadow: 1px 1px 2px rgba(74,20,140,0.2);">₱${res.price}</span>
                                         </div>
                                     </div>
 
@@ -957,18 +957,31 @@
             
             // OPEN IN NEW TAB FOR DIRECTIONS (Walang API Key na kailangan)
             navBtn.onclick = () => {
-                showToast('Opening Google Maps in a new tab...', 'success');
+                const originalText = navBtn.innerHTML;
+                navBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Humihingi ng Lokasyon...`;
+                navBtn.disabled = true;
+
+                showToast('Nanghihingi ng pahintulot para makuha ang iyong lokasyon...', 'success');
+                
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
+                            navBtn.innerHTML = originalText;
+                            navBtn.disabled = false;
                             const origin = `${position.coords.latitude},${position.coords.longitude}`;
                             window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodedDest}&travelmode=driving`, '_blank');
                         },
                         (error) => {
+                            navBtn.innerHTML = originalText;
+                            navBtn.disabled = false;
+                            showToast('Lokasyon denied. Manual na ilagay ang starting point sa Map.', 'error');
                             window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedDest}&travelmode=driving`, '_blank');
-                        }
+                        },
+                        { timeout: 10000 }
                     );
                 } else {
+                    navBtn.innerHTML = originalText;
+                    navBtn.disabled = false;
                     window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedDest}&travelmode=driving`, '_blank');
                 }
             };
