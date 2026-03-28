@@ -23,7 +23,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # BREVO API CONFIGURATION
 # ==========================================
 # Direktang nilagay ang key para 100% sure na mababasa ng server
-BREVO_API_KEY = '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'
+BREVO_API_KEY = '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'
 
 SENDER_EMAIL = 'oathofcareofficial@gmail.com'
 SENDER_NAME = 'Oath of Care'
