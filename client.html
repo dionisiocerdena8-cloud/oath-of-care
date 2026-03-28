@@ -153,7 +153,7 @@
             <div class="bg-3d-obj-3 bottom-[25%] left-[8%] hidden md:block transition-opacity duration-700"></div>
             <div class="bg-3d-obj-heading hidden md:block transition-opacity duration-700"></div>
 
-            <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center">
+            <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center mt-12 md:mt-0">
                 
                 <!-- NEW WRAPPER: Handles the universal scale down transition smoothly -->
                 <div id="heroContentWrapper" class="w-full flex flex-col items-center transition-all duration-700 origin-top scale-100 mb-0">
@@ -552,16 +552,24 @@
             authState = { id: null, role: null, name: null };
             updateNavUI();
             
-            // Revert Compact Mode pag nag log out na
             const hero = document.getElementById('heroSection');
+            const svg = document.getElementById('heroSvg');
+            const howItWorks = document.getElementById('howItWorksSection');
             const heroContentWrapper = document.getElementById('heroContentWrapper');
             
-            if (hero && heroContentWrapper) {
+            if (hero && svg && howItWorks) {
                 hero.classList.add('min-h-[90vh]');
-                hero.classList.remove('min-h-[45vh]');
+                hero.classList.remove('min-h-[40vh]');
                 
-                heroContentWrapper.classList.add('scale-100', 'mb-0');
-                heroContentWrapper.classList.remove('scale-[0.75]', 'md:scale-[0.85]', '-mb-24', 'md:-mb-32');
+                svg.classList.add('min-h-[40vh]', 'md:min-h-[55vh]');
+                svg.classList.remove('min-h-[30vh]', 'md:min-h-[30vh]');
+                
+                howItWorks.classList.remove('hidden');
+
+                if (heroContentWrapper) {
+                    heroContentWrapper.classList.add('scale-100', 'mb-0');
+                    heroContentWrapper.classList.remove('scale-[0.65]', 'md:scale-[0.70]', '-mb-36', 'md:-mb-44', '-mt-10');
+                }
             }
 
             document.getElementById('searchResults').classList.add('hidden');
@@ -816,18 +824,22 @@
 
             const unlock = lockButton('btnSearch');
             
-            // Liliit dito ang Hero Section at mag aadjust
             const hero = document.getElementById('heroSection');
+            const svg = document.getElementById('heroSvg');
+            const howItWorks = document.getElementById('howItWorksSection');
             const heroContentWrapper = document.getElementById('heroContentWrapper');
             
-            if (hero && heroContentWrapper) {
+            if (hero && heroContentWrapper && howItWorks) {
                 hero.classList.remove('min-h-[90vh]');
-                hero.classList.add('min-h-[45vh]');
+                hero.classList.add('min-h-[40vh]');
                 
                 heroContentWrapper.classList.remove('scale-100', 'mb-0');
-                // Using scale to shrink the whole block proportionally, 
-                // and negative margin to compensate for the preserved document flow height.
-                heroContentWrapper.classList.add('scale-[0.75]', 'md:scale-[0.85]', '-mb-24', 'md:-mb-32');
+                heroContentWrapper.classList.add('scale-[0.65]', 'md:scale-[0.70]', '-mb-36', 'md:-mb-44', '-mt-10');
+                
+                svg.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
+                svg.classList.add('min-h-[30vh]', 'md:min-h-[30vh]');
+                
+                howItWorks.classList.add('hidden'); 
             }
 
             document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-deepPurple">${medicine} (${milligrams}mg)</strong> in <strong class="text-deepPurple">${barangay}</strong>`;
@@ -870,7 +882,7 @@
                                     <div class="bg-offWhite rounded-2xl p-6 mb-8 border border-starkBlack/5 transition-colors shadow-3d-input">
                                         <div class="flex justify-between items-start mb-3 gap-2">
                                             <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke shrink-0 mt-0.5">Item</span>
-                                            <span class="text-[13px] leading-tight font-inter font-bold text-starkBlack text-right break-words">${res.medicine}</span>
+                                            <span class="text-xs leading-snug font-inter font-bold text-starkBlack text-right break-words max-w-[60%]">${res.medicine}</span>
                                         </div>
                                         <div class="flex justify-between items-center border-t border-smoke/10 pt-3 gap-2">
                                             <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke shrink-0">Price</span>
@@ -905,16 +917,16 @@
             document.getElementById('mapDestText').innerText = `Destination: ${pharmacyName}`;
             const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
             
-            // FREE Preview Map (Walang API Key na kailangan)
+            // FREE Preview Map
             mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
             
-            // OPEN IN NEW TAB FOR DIRECTIONS (Walang API Key na kailangan)
+            // OPEN IN NEW TAB FOR DIRECTIONS
             navBtn.onclick = () => {
                 const originalText = navBtn.innerHTML;
-                navBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Humihingi ng Lokasyon...`;
+                navBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Requesting Location...`;
                 navBtn.disabled = true;
 
-                showToast('Nanghihingi ng pahintulot para makuha ang iyong lokasyon...', 'success');
+                showToast('Requesting permission to access your location...', 'success');
                 
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
@@ -927,7 +939,7 @@
                         (error) => {
                             navBtn.innerHTML = originalText;
                             navBtn.disabled = false;
-                            showToast('Lokasyon denied. Manual na ilagay ang starting point sa Map.', 'error');
+                            showToast('Location denied. Please enter your starting point manually on the map.', 'error');
                             window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedDest}&travelmode=driving`, '_blank');
                         },
                         { timeout: 10000 }
