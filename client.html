@@ -254,15 +254,16 @@
     <main class="flex-grow pt-24 flex flex-col relative z-10">
 
         <!-- ================= HERO & SEARCH SECTION ================= -->
-        <section class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden">
+        <!-- Dinagdag ang ID na 'heroSection' at dynamic classes para sa compact transition -->
+        <section id="heroSection" class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden transition-all duration-700 ease-in-out">
             <!-- Background Elements -->
             <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
             
             <!-- Top Left Violet Gradient -->
             <div class="absolute top-[-10%] left-[-15%] w-[70vw] max-w-[800px] h-[70vw] max-h-[800px] bg-deepPurple rounded-full blur-[150px] z-[-2] opacity-50 pointer-events-none"></div>
             
-            <!-- The massive gold curve -->
-            <svg class="absolute bottom-0 left-0 w-full min-h-[40vh] md:min-h-[55vh] z-[-1] drop-shadow-2xl" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <!-- The massive gold curve (Dinagdag ang ID na 'heroSvg' at transitions) -->
+            <svg id="heroSvg" class="absolute bottom-0 left-0 w-full min-h-[40vh] md:min-h-[55vh] z-[-1] drop-shadow-2xl transition-all duration-700 ease-in-out" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <path d="M0 400C300 400 450 150 800 250C1150 350 1300 50 1440 0V600H0V400Z" fill="#FF9800"/>
             </svg>
 
@@ -382,7 +383,8 @@
         </section>
 
         <!-- ================= HOW IT WORKS SECTION ================= -->
-        <section class="py-24 bg-surface relative z-10 border-t border-smoke/10">
+        <!-- Dinagdag ang ID na 'howItWorksSection' at transitions -->
+        <section id="howItWorksSection" class="py-24 bg-surface relative z-10 border-t border-smoke/10 transition-all duration-700 ease-in-out">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="text-center mb-20 group">
                     <h2 class="text-sm font-poppins font-bold uppercase tracking-[0.3em] text-vibrantOrange mb-3 transition-transform group-hover:-translate-y-1" style="text-shadow: 1px 1px 2px rgba(255,152,0,0.2);">User Journey</h2>
@@ -439,7 +441,7 @@
         </section>
 
         <!-- ================= SEARCH RESULTS DISPLAY ================= -->
-        <section id="searchResults" class="hidden bg-offWhite py-20 relative z-20 border-t border-smoke/10 min-h-[50vh]">
+        <section id="searchResults" class="hidden bg-offWhite py-10 lg:py-20 relative z-20 border-t border-smoke/10 min-h-[50vh] transition-all duration-700 ease-in-out">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 border-b border-smoke/20 pb-6 gap-4">
                     <div>
@@ -751,6 +753,20 @@
             localStorage.removeItem('ooc_client_user');
             authState = { id: null, role: null, name: null };
             updateNavUI();
+            
+            // Revert Compact Mode pag nag log out na
+            const hero = document.getElementById('heroSection');
+            const svg = document.getElementById('heroSvg');
+            const howItWorks = document.getElementById('howItWorksSection');
+            
+            if (hero && svg && howItWorks) {
+                hero.classList.add('min-h-[90vh]', 'pb-20');
+                hero.classList.remove('min-h-[45vh]', 'pb-10');
+                svg.classList.add('min-h-[40vh]', 'md:min-h-[55vh]');
+                svg.classList.remove('min-h-[20vh]', 'md:min-h-[25vh]');
+                howItWorks.classList.remove('hidden');
+            }
+
             document.getElementById('searchResults').classList.add('hidden');
             document.getElementById('resultsGrid').innerHTML = '';
             document.getElementById('searchMedicine').value = '';
@@ -766,6 +782,7 @@
             }
 
             showToast('Signed out successfully.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Password Toggle
@@ -1015,6 +1032,20 @@
 
             const unlock = lockButton('btnSearch');
             
+            // --- COMPACT MODE LOGIC: Pinapaliit ang Hero Section at itinatago ang Instructions ---
+            const hero = document.getElementById('heroSection');
+            const svg = document.getElementById('heroSvg');
+            const howItWorks = document.getElementById('howItWorksSection');
+            
+            if (hero && svg && howItWorks) {
+                hero.classList.remove('min-h-[90vh]', 'pb-20');
+                hero.classList.add('min-h-[45vh]', 'pb-10'); // Magiging half-size siya
+                svg.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
+                svg.classList.add('min-h-[20vh]', 'md:min-h-[25vh]'); // Paliitin rin ang design sa background
+                howItWorks.classList.add('hidden'); // Itago yung "How It Works" para sumiksik agad ang results
+            }
+            // ------------------------------------------------------------------------------------
+
             document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-deepPurple">${medicine} (${milligrams}mg)</strong> in <strong class="text-deepPurple">${barangay}</strong>`;
             
             const resultsDiv = document.getElementById('searchResults');
@@ -1023,6 +1054,9 @@
             resultsDiv.classList.remove('hidden');
             grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Querying database...</p></div>';
             
+            // Smoothly go to the top para makita both ang compact search bar at ang results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             try {
                 const response = await fetch(`${API_URL}/api/search`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1073,7 +1107,6 @@
                 } else {
                     grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="text-6xl text-smoke/30 mb-6"><i class="fa-solid fa-box-open transition-transform hover:scale-110"></i></div><div class="text-starkBlack font-poppins font-black text-2xl" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">No inventory matches found.</div><p class="text-smoke mt-3 font-inter font-medium">Try adjusting your search terms or barangay.</p></div>';
                 }
-                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
                 showToast('Server connection failed.', 'error');
                 grid.innerHTML = '<div class="col-span-full text-center py-20 text-error font-poppins font-black text-2xl">Server Offline. Cannot process search.</div>';
