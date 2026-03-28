@@ -293,7 +293,8 @@
                                     <p class="text-5xl font-poppins font-black text-deepPurple mt-3 drop-shadow-sm" id="statPharm">0</p>
                                 </div>
                                 <div class="bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner text-center">
-                                    <p class="text-xs text-smoke font-poppins font-bold uppercase tracking-widest">Registered Patients</p>
+                                    <p class="text-xs text-smoke font-poppins font-bold uppercase tracking-widest">Registered Clients</p>
+                                    <!-- INAYOS NA DITO: totalClients na ang inaasahan mula sa backend -->
                                     <p class="text-5xl font-poppins font-black text-starkBlack mt-3 drop-shadow-sm" id="statPatient">0</p>
                                 </div>
                                 <div class="bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner text-center">
@@ -576,7 +577,8 @@
                 const pending = await pendingRes.json();
 
                 document.getElementById('statPharm').innerText = stats.totalPharmacies || 0;
-                document.getElementById('statPatient').innerText = stats.totalPatients || 0;
+                // INAYOS: Ito na ay binabasa bilang stats.totalClients (Base sa app.py setup)
+                document.getElementById('statPatient').innerText = stats.totalClients || 0;
                 document.getElementById('statSearch').innerText = stats.totalSearches || 0;
 
                 const ctx = document.getElementById('analyticsChart').getContext('2d');
