@@ -10,8 +10,20 @@ import requests
 import os
 
 app = Flask(__name__)
-# Enable CORS nang mas malawak para hindi ma-block at hindi mag "Server connection failed"
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
+# ==========================================
+# CORS CONFIGURATION (FIXED)
+# ==========================================
+# Inilagay natin ang eksaktong URL ng iyong frontend para hindi magka-CORS error.
+CORS(app, resources={
+    r"/*": {
+        "origins": [
+            "https://client-d9et.onrender.com", 
+            "http://localhost:3000",
+            "http://localhost:5173"
+        ]
+    }
+}, supports_credentials=True)
 
 # ==========================================
 # DATABASE CONFIGURATION
@@ -22,10 +34,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # ==========================================
 # BREVO API CONFIGURATION (SECURED)
 # ==========================================
-# Kukunin na lang niya ito nang patago sa Render Environment Variables!
-# Wala nang hardcoded key kaya hindi ka na iba-block ni GitHub.
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
-
 SENDER_EMAIL = 'oathofcareofficial@gmail.com'
 SENDER_NAME = 'Oath of Care'
 
@@ -140,7 +149,6 @@ def send_email_api(to_email, subject, html_content):
         if response.status_code in [200, 201, 202]:
             return True, "Email sent successfully"
             
-        # Para makita mo agad kung anong problema base mismo sa sagot ni Brevo!
         return False, f"BREVO ERROR: {response.text}"
     except Exception as e:
         return False, f"System error while sending email: {str(e)}"
@@ -180,8 +188,11 @@ def get_base_email_template(title, subtitle, content_html):
 # API ENDPOINTS
 # ==========================================
 
-@app.route('/api/send-verification', methods=['POST'])
+@app.route('/api/send-verification', methods=['POST', 'OPTIONS'])
 def send_verification():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     email = data.get('email')
     
@@ -203,11 +214,13 @@ def send_verification():
     if success:
         return jsonify({'message': 'Verification code sent successfully'})
     
-    # Ibabato ang totoong error mula kay Brevo pabalik sa website mo
     return jsonify({'error': msg}), 400
 
-@app.route('/api/verify-code', methods=['POST'])
+@app.route('/api/verify-code', methods=['POST', 'OPTIONS'])
 def verify_code():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     email = data.get('email')
     code = data.get('code')
@@ -217,8 +230,15 @@ def verify_code():
     else:
         return jsonify({'error': 'Invalid or expired code'}), 400
 
-@app.route('/register-client', methods=['POST'])
+
+# ==========================================
+# FIXED ROUTE: /register-patient (Match sa frontend)
+# ==========================================
+@app.route('/register-patient', methods=['POST', 'OPTIONS'])
 def register_client():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'Preflight OK'}), 200
+        
     data = request.json
     email = data.get('email')
     
@@ -250,8 +270,11 @@ def register_client():
         db.session.rollback()
         return jsonify({'error': f'Database error: {str(e)}'}), 500
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     email = data.get('email')
     password = data.get('password')
@@ -272,7 +295,6 @@ def register():
             db.session.add(barangay)
             db.session.flush()
 
-        # FIXED: mapped to storePhoto and permitPhoto to avoid 500 error!
         new_pharmacy = Pharmacy(
             PharmacyName=data.get('pharmacyName'),
             ContactNumber=data.get('contactNumber'),
@@ -298,11 +320,13 @@ def register():
     except Exception as e:
         print(f"Error during pharmacy registration: {e}")
         db.session.rollback()
-        # Mas malinaw na error message para makita sa frontend
         return jsonify({'error': f'Database error: {str(e)}'}), 500
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     email = data.get('email')
     password = data.get('password')
@@ -341,8 +365,11 @@ def login():
 
     return jsonify({'error': 'Invalid email or password'}), 401
 
-@app.route('/api/reset-password', methods=['POST'])
+@app.route('/api/reset-password', methods=['POST', 'OPTIONS'])
 def reset_password():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     user = PharmacyAccount.query.filter_by(Email=data.get('email')).first()
     if not user:
@@ -375,8 +402,11 @@ def get_pharmacy_profile(pharm_id):
     except Exception as e:
         return jsonify({'error': 'Database error'}), 500
 
-@app.route('/api/pharmacy/update', methods=['POST'])
+@app.route('/api/pharmacy/update', methods=['POST', 'OPTIONS'])
 def update_pharmacy():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     pharm_id = data.get('pharmacyId')
     
@@ -412,8 +442,11 @@ def get_medicines(pharm_id):
     except Exception as e:
         return jsonify({'error': 'Failed to load inventory'}), 500
 
-@app.route('/api/medicines', methods=['POST'])
+@app.route('/api/medicines', methods=['POST', 'OPTIONS'])
 def add_medicine():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     pharm_id = data.get('pharmacyId')
     
@@ -435,8 +468,11 @@ def add_medicine():
         db.session.rollback()
         return jsonify({'error': 'Failed to add medicine.'}), 500
 
-@app.route('/api/medicines/<int:med_id>', methods=['DELETE'])
+@app.route('/api/medicines/<int:med_id>', methods=['DELETE', 'OPTIONS'])
 def delete_medicine(med_id):
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     try:
         med = Medicine.query.get(med_id)
         if med:
@@ -451,8 +487,11 @@ def delete_medicine(med_id):
 # ==========================================
 # SECURITY: RATE LIMITED SEARCH ENGINE
 # ==========================================
-@app.route('/api/search', methods=['POST'])
+@app.route('/api/search', methods=['POST', 'OPTIONS'])
 def search_medicine():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     client_id = data.get('clientId') or data.get('patientId')
     medicine_query = data.get('medicine', '').strip()
@@ -543,8 +582,11 @@ def get_pending_pharmacies():
     except Exception as e:
         return jsonify({'error': 'Failed to fetch pending applications'}), 500
 
-@app.route('/api/admin/resolve', methods=['POST'])
+@app.route('/api/admin/resolve', methods=['POST', 'OPTIONS'])
 def resolve_application():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
     data = request.json
     pharm_id = data.get('pharmacyId')
     action = data.get('action') 
