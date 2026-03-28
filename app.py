@@ -248,7 +248,7 @@ def register_client():
     except Exception as e:
         print(f"Error during client registration: {e}")
         db.session.rollback()
-        return jsonify({'error': 'Database error.'}), 500
+        return jsonify({'error': f'Database error: {str(e)}'}), 500
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -298,7 +298,8 @@ def register():
     except Exception as e:
         print(f"Error during pharmacy registration: {e}")
         db.session.rollback()
-        return jsonify({'error': 'A database error occurred.'}), 500
+        # Mas malinaw na error message para makita sa frontend
+        return jsonify({'error': f'Database error: {str(e)}'}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -606,12 +607,26 @@ if __name__ == '__main__':
         db.create_all()
         print("PostgreSQL tables successfully initialized.")
         
+        # AUTO-PATCH: Sisiguraduhin natin na TEXT (unlimited length) ang data type ng Base64 Photos 
+        # para maiwasan ang "DataError: value too long for type character varying(255)"
         try:
             db.session.execute(text('ALTER TABLE pharmacy ADD COLUMN "LogoPhotoPath" TEXT;'))
             db.session.commit()
             print("Database Patched: Added LogoPhotoPath column successfully.")
         except Exception:
             db.session.rollback() 
+            
+        try:
+            db.session.execute(text('ALTER TABLE pharmacy ALTER COLUMN "LogoPhotoPath" TYPE TEXT;'))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            
+        try:
+            db.session.execute(text('ALTER TABLE pharmacy ALTER COLUMN "PermitPhotoPath" TYPE TEXT;'))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
         
         if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
