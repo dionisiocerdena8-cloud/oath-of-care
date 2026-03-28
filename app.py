@@ -22,8 +22,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # ==========================================
 # BREVO API CONFIGURATION
 # ==========================================
-# DITO MO ILAGAY ANG IYONG BREVO API KEY SA LOOB NG QUOTES:
-BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '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')
+# Direktang nilagay ang key para 100% sure na mababasa ng server
+BREVO_API_KEY = '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'
 
 SENDER_EMAIL = 'oathofcareofficial@gmail.com'
 SENDER_NAME = 'Oath of Care'
@@ -119,10 +119,6 @@ class SearchLog(db.Model):
 # EMAIL HELPER FUNCTIONS
 # ==========================================
 def send_email_api(to_email, subject, html_content):
-    # Sinisigurado nito na may laman ang API key bago subukang mag-send
-    if not BREVO_API_KEY or BREVO_API_KEY == 'ILAGAY_ANG_BREVO_API_KEY_MO_DITO':
-        return False, "Server email key misconfiguration. Paki-check ang app.py mo."
-        
     url = "https://api.brevo.com/v3/smtp/email"
     headers = {
         "accept": "application/json",
@@ -139,9 +135,11 @@ def send_email_api(to_email, subject, html_content):
         response = requests.post(url, json=payload, headers=headers)
         if response.status_code in [200, 201, 202]:
             return True, "Email sent successfully"
-        return False, "Failed to send email. Mali ang API Key."
+            
+        # Para makita mo agad kung anong problema base mismo sa sagot ni Brevo!
+        return False, f"BREVO ERROR: {response.text}"
     except Exception as e:
-        return False, "System error while sending email."
+        return False, f"System error while sending email: {str(e)}"
 
 def get_base_email_template(title, subtitle, content_html):
     return f"""
@@ -201,7 +199,7 @@ def send_verification():
     if success:
         return jsonify({'message': 'Verification code sent successfully'})
     
-    # Pinalitan ang 500 ng 400 para hindi ma-block ng CORS at mabasa ng frontend ang actual error
+    # Ibabato ang totoong error mula kay Brevo pabalik sa website mo!
     return jsonify({'error': msg}), 400
 
 @app.route('/api/verify-code', methods=['POST'])
@@ -270,7 +268,6 @@ def register():
             db.session.add(barangay)
             db.session.flush()
 
-        # Inayos ang names ng variables dito para mag-match sa ipinapadala ng frontend mo
         new_pharmacy = Pharmacy(
             PharmacyName=data.get('pharmacyName'),
             ContactNumber=data.get('contactNumber'),
