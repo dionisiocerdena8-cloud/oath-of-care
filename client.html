@@ -155,91 +155,93 @@
 
             <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center">
                 
-                <!-- ID "heroTextGroup" added for compact scaling -->
-                <div id="heroTextGroup" class="text-center w-full max-w-[1400px] mx-auto flex flex-col items-center mb-8 mt-4 md:mt-8 group cursor-default relative transition-all duration-700 origin-top">
-                    <div class="absolute -top-12 md:-top-16 right-2 md:-right-6 lg:-right-16 w-32 h-32 md:w-40 md:h-40 flex items-center justify-center opacity-95 pointer-events-none z-0">
-                        <svg class="rotating-badge w-full h-full text-deepPurple" viewBox="0 0 100 100" style="filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.15));">
-                            <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" fill="transparent" />
-                            <text class="font-poppins font-black text-[8.5px] uppercase" fill="currentColor">
-                                <textPath href="#circlePath" startOffset="0%" textLength="238" lengthAdjust="spacing">• VERIFIED PHARMACY &amp; MEDICINE LOCATOR</textPath>
-                            </text>
-                        </svg>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <i class="fa-solid fa-capsules text-vibrantOrange text-2xl md:text-3xl drop-shadow-md"></i>
+                <!-- NEW WRAPPER: Handles the universal scale down transition smoothly -->
+                <div id="heroContentWrapper" class="w-full flex flex-col items-center transition-all duration-700 origin-top scale-100 mb-0">
+                    <div id="heroTextGroup" class="text-center w-full max-w-[1400px] mx-auto flex flex-col items-center mb-8 mt-4 md:mt-8 group cursor-default relative">
+                        <div class="absolute -top-12 md:-top-16 right-2 md:-right-6 lg:-right-16 w-32 h-32 md:w-40 md:h-40 flex items-center justify-center opacity-95 pointer-events-none z-0">
+                            <svg class="rotating-badge w-full h-full text-deepPurple" viewBox="0 0 100 100" style="filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.15));">
+                                <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" fill="transparent" />
+                                <text class="font-poppins font-black text-[8.5px] uppercase" fill="currentColor">
+                                    <textPath href="#circlePath" startOffset="0%" textLength="238" lengthAdjust="spacing">• VERIFIED PHARMACY &amp; MEDICINE LOCATOR</textPath>
+                                </text>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fa-solid fa-capsules text-vibrantOrange text-2xl md:text-3xl drop-shadow-md"></i>
+                            </div>
                         </div>
+
+                        <h1 class="flex flex-col items-center transition-transform duration-500 group-hover:scale-[1.02] relative z-10">
+                            <span class="font-poppins font-black text-starkBlack text-lg sm:text-xl md:text-2xl lg:text-[1.5rem] leading-none mb-2 md:mb-3 relative z-20 uppercase tracking-widest" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.15);">Your Trusted</span>
+                            <span class="font-serif font-bold text-starkBlack text-[1.5rem] sm:text-3xl md:text-4xl lg:text-[3.5rem] xl:text-[4.2rem] leading-[1.05] tracking-tighter whitespace-nowrap relative z-10" style="text-shadow: 4px 8px 15px rgba(0,0,0,0.15);">Pharmacy and Medicine Locator.</span>
+                        </h1>
+                        <p class="text-lg md:text-xl text-smoke font-inter font-medium max-w-2xl mt-6 transition-transform duration-500 group-hover:translate-y-2 relative z-10">
+                            Locate essential medicines instantly. Professional network of verified pharmacies. 
+                            <span class="font-black text-starkBlack block mt-5 md:mt-7 drop-shadow-md text-xl md:text-2xl">Account required to search.</span>
+                        </p>
                     </div>
 
-                    <h1 class="flex flex-col items-center transition-transform duration-500 group-hover:scale-[1.02] relative z-10">
-                        <span class="font-poppins font-black text-starkBlack text-lg sm:text-xl md:text-2xl lg:text-[1.5rem] leading-none mb-2 md:mb-3 relative z-20 uppercase tracking-widest" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.15);">Your Trusted</span>
-                        <span class="font-serif font-bold text-starkBlack text-[1.5rem] sm:text-3xl md:text-4xl lg:text-[3.5rem] xl:text-[4.2rem] leading-[1.05] tracking-tighter whitespace-nowrap relative z-10" style="text-shadow: 4px 8px 15px rgba(0,0,0,0.15);">Pharmacy and Medicine Locator.</span>
-                    </h1>
-                    <p class="text-lg md:text-xl text-smoke font-inter font-medium max-w-2xl mt-6 transition-transform duration-500 group-hover:translate-y-2 relative z-10">
-                        Locate essential medicines instantly. Professional network of verified pharmacies. 
-                        <span class="font-black text-starkBlack block mt-5 md:mt-7 drop-shadow-md text-xl md:text-2xl">Account required to search.</span>
-                    </p>
-                </div>
-
-                <!-- ID "searchForm" added for tight spacing -->
-                <form id="searchForm" onsubmit="handleSearch(event)" class="w-full max-w-[1150px] flex flex-col items-center mt-6 transition-all duration-700 relative z-40">
-                    <div class="glass-pill rounded-[2.5rem] p-5 md:p-7 flex flex-col lg:flex-row items-end gap-5 md:gap-4 w-full relative shadow-3d-pill">
-                        
-                        <div class="flex-grow w-full lg:w-auto relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Medicine Name</label>
-                            <div class="relative rounded-full">
-                                <i class="fa-solid fa-pills absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
-                                <input type="text" id="searchMedicine" placeholder="e.g. Paracetamol" required class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
-                            </div>
-                        </div>
-
-                        <div class="w-full lg:w-52 xl:w-60 relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Milligrams (mg)</label>
-                            <div class="relative rounded-full">
-                                <i class="fa-solid fa-weight-scale absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
-                                <input type="number" id="searchMg" placeholder="e.g. 500" required class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
-                            </div>
-                        </div>
-
-                        <div class="w-full lg:w-[24rem] xl:w-[28rem] relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50" id="customDropdownContainer">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors group-focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Barangay</label>
-                            <div class="relative rounded-full">
-                                <input type="hidden" id="searchBarangayInput" required>
-                                
-                                <div id="dropdownTrigger" class="w-full pl-12 pr-6 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface transition-all text-starkBlack font-bold cursor-pointer outline-none shadow-3d-input flex justify-between items-center hover:border-starkBlack/10 focus:shadow-3d-input-focus">
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-map-location-dot absolute left-5 text-smoke transition-colors"></i>
-                                        <span id="dropdownSelectedText" class="text-smoke/60">Select Barangay...</span>
-                                    </div>
-                                    <i class="fa-solid fa-chevron-down text-starkBlack transition-transform duration-300" id="dropdownIcon"></i>
+                    <!-- Increased max-width to 1250px so the dropdown won't get squished/overlapped -->
+                    <form id="searchForm" onsubmit="handleSearch(event)" class="w-full max-w-[1250px] flex flex-col items-center mt-6 relative z-40">
+                        <!-- TINAASAN ANG Z-INDEX TO 60 -->
+                        <div class="glass-pill rounded-[2.5rem] p-5 md:p-7 flex flex-col lg:flex-row items-end gap-5 md:gap-4 w-full relative z-[60] shadow-3d-pill">
+                            
+                            <div class="flex-grow w-full lg:w-auto relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
+                                <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Medicine Name</label>
+                                <div class="relative rounded-full">
+                                    <i class="fa-solid fa-pills absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
+                                    <input type="text" id="searchMedicine" placeholder="e.g. Paracetamol" required class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
                                 </div>
-                                
-                                <ul id="dropdownMenu" class="absolute top-full left-0 mt-2 w-full bg-white border border-smoke/10 rounded-2xl shadow-premium max-h-64 overflow-y-auto hidden z-[100] opacity-0 transition-opacity duration-200">
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bangkal">Bangkal</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Baraka">Baraka</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bigte">Bigte</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bitungol">Bitungol</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Friendship Village Resources">Friendship Village Resources</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Matictic">Matictic</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Minuyan">Minuyan</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Partida">Partida</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Pinagtulayan">Pinagtulayan</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Poblacion">Poblacion</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Lorenzo">San Lorenzo</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Mateo">San Mateo</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack dropdown-item transition-colors" data-value="Tigbe">Tigbe</li>
-                                </ul>
+                            </div>
+
+                            <div class="w-full lg:w-52 xl:w-60 relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
+                                <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Milligrams (mg)</label>
+                                <div class="relative rounded-full">
+                                    <i class="fa-solid fa-weight-scale absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
+                                    <input type="number" id="searchMg" placeholder="e.g. 500" required class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
+                                </div>
+                            </div>
+
+                            <div class="w-full lg:w-[24rem] xl:w-[28rem] relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50" id="customDropdownContainer">
+                                <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors group-focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Barangay</label>
+                                <div class="relative rounded-full">
+                                    <input type="hidden" id="searchBarangayInput" required>
+                                    
+                                    <div id="dropdownTrigger" class="w-full pl-12 pr-6 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface transition-all text-starkBlack font-bold cursor-pointer outline-none shadow-3d-input flex justify-between items-center hover:border-starkBlack/10 focus:shadow-3d-input-focus">
+                                        <div class="flex items-center">
+                                            <i class="fa-solid fa-map-location-dot absolute left-5 text-smoke transition-colors"></i>
+                                            <span id="dropdownSelectedText" class="text-smoke/60">Select Barangay...</span>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-down text-starkBlack transition-transform duration-300" id="dropdownIcon"></i>
+                                    </div>
+                                    
+                                    <ul id="dropdownMenu" class="absolute top-full left-0 mt-2 w-full bg-white border border-smoke/10 rounded-2xl shadow-premium max-h-64 overflow-y-auto hidden z-[100] opacity-0 transition-opacity duration-200">
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bangkal">Bangkal</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Baraka">Baraka</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bigte">Bigte</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bitungol">Bitungol</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Friendship Village Resources">Friendship Village Resources</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Matictic">Matictic</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Minuyan">Minuyan</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Partida">Partida</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Pinagtulayan">Pinagtulayan</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Poblacion">Poblacion</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Lorenzo">San Lorenzo</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Mateo">San Mateo</li>
+                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack dropdown-item transition-colors" data-value="Tigbe">Tigbe</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- ID "searchBtnContainer" added to pull it closer in compact mode -->
-                    <div id="searchBtnContainer" class="mt-10 flex justify-center w-full relative z-10 transition-all duration-700">
-                        <button type="submit" id="btnSearch" class="group/btn bg-starkBlack text-surface font-poppins font-black text-base md:text-lg px-12 py-5 rounded-[2rem] shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active uppercase tracking-widest flex items-center justify-center gap-4 w-full sm:w-auto min-w-[250px] transition-all duration-300">
-                            <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">FIND YOUR MEDS</span>
-                            <i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-2"></i>
-                        </button>
-                    </div>
-                </form>
-
+                        <!-- Button z-index stays low so the dropdown goes over it safely -->
+                        <div id="searchBtnContainer" class="mt-10 flex justify-center w-full relative z-10 transition-all duration-700">
+                            <button type="submit" id="btnSearch" class="group/btn bg-starkBlack text-surface font-poppins font-black text-base md:text-lg px-12 py-5 rounded-[2rem] shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active uppercase tracking-widest flex items-center justify-center gap-4 w-full sm:w-auto min-w-[250px] transition-all duration-300">
+                                <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">FIND YOUR MEDS</span>
+                                <i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </section>
 
@@ -252,7 +254,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- Step 1 -->
                     <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
                         <div class="w-16 h-16 bg-deepPurple text-surface rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
                             <i class="fa-solid fa-lock"></i>
@@ -260,7 +261,6 @@
                         <h4 class="font-poppins font-black text-xl text-starkBlack mb-4">Account Required</h4>
                         <p class="text-smoke font-inter leading-relaxed">Our professional locator network is secure. You must be authenticated to access real-time inventory.</p>
                     </div>
-                    <!-- Step 2 -->
                     <div class="bg-starkBlack p-10 rounded-[2rem] shadow-[0_15px_35px_-5px_rgba(0,0,0,0.5),_inset_0_2px_4px_rgba(255,255,255,0.1)] float-card relative z-20 cursor-pointer">
                         <div class="w-16 h-16 bg-vibrantOrange text-starkBlack rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
                             <i class="fa-solid fa-user-plus"></i>
@@ -268,7 +268,6 @@
                         <h4 class="font-poppins font-black text-xl text-surface mb-4">Create an Account</h4>
                         <p class="text-offWhite/70 font-inter leading-relaxed">Complete our quick registration and verify your email to unlock access to our partner pharmacies.</p>
                     </div>
-                    <!-- Step 3 -->
                     <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
                         <div class="w-16 h-16 bg-deepPurple text-surface rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
                             <i class="fa-solid fa-magnifying-glass-location"></i>
@@ -276,7 +275,6 @@
                         <h4 class="font-poppins font-black text-xl text-starkBlack mb-4">Search Inventory</h4>
                         <p class="text-smoke font-inter leading-relaxed">Input your medicine, exact milligrams, and targeted barangay to instantly view availability and prices.</p>
                     </div>
-                    <!-- Step 4 -->
                     <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
                         <div class="w-16 h-16 bg-vibrantOrange text-starkBlack rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
                             <i class="fa-solid fa-map-location-dot"></i>
@@ -556,35 +554,14 @@
             
             // Revert Compact Mode pag nag log out na
             const hero = document.getElementById('heroSection');
-            const svg = document.getElementById('heroSvg');
-            const howItWorks = document.getElementById('howItWorksSection');
-            const heroTextGroup = document.getElementById('heroTextGroup');
-            const searchForm = document.getElementById('searchForm');
-            const searchBtnContainer = document.getElementById('searchBtnContainer');
+            const heroContentWrapper = document.getElementById('heroContentWrapper');
             
-            if (hero && svg && howItWorks) {
-                hero.classList.add('min-h-[90vh]', 'pb-20', 'pt-10');
-                hero.classList.remove('py-12');
+            if (hero && heroContentWrapper) {
+                hero.classList.add('min-h-[90vh]');
+                hero.classList.remove('min-h-[45vh]');
                 
-                svg.classList.add('min-h-[40vh]', 'md:min-h-[55vh]');
-                svg.classList.remove('h-full');
-                
-                howItWorks.classList.remove('hidden');
-
-                if (heroTextGroup) {
-                    heroTextGroup.classList.add('mb-8', 'mt-4', 'md:mt-8');
-                    heroTextGroup.classList.remove('mb-4', 'scale-[0.85]', 'origin-top');
-                }
-
-                if (searchForm) {
-                    searchForm.classList.add('mt-6');
-                    searchForm.classList.remove('mt-2');
-                }
-
-                if (searchBtnContainer) {
-                    searchBtnContainer.classList.add('mt-10');
-                    searchBtnContainer.classList.remove('mt-6', 'scale-[0.95]');
-                }
+                heroContentWrapper.classList.add('scale-100', 'mb-0');
+                heroContentWrapper.classList.remove('scale-[0.75]', 'md:scale-[0.85]', '-mb-24', 'md:-mb-32');
             }
 
             document.getElementById('searchResults').classList.add('hidden');
@@ -839,42 +816,18 @@
 
             const unlock = lockButton('btnSearch');
             
-            // Liliit dito ang Hero Section at itatago ang instructions
+            // Liliit dito ang Hero Section at mag aadjust
             const hero = document.getElementById('heroSection');
-            const svg = document.getElementById('heroSvg');
-            const howItWorks = document.getElementById('howItWorksSection');
-            const heroTextGroup = document.getElementById('heroTextGroup');
-            const searchForm = document.getElementById('searchForm');
-            const searchBtnContainer = document.getElementById('searchBtnContainer');
+            const heroContentWrapper = document.getElementById('heroContentWrapper');
             
-            if (hero && svg && howItWorks) {
-                // Shrink hero height drastically but safely
-                hero.classList.remove('min-h-[90vh]', 'pb-20', 'pt-10');
-                hero.classList.add('py-12'); 
+            if (hero && heroContentWrapper) {
+                hero.classList.remove('min-h-[90vh]');
+                hero.classList.add('min-h-[45vh]');
                 
-                // Adjust SVG background
-                svg.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
-                svg.classList.add('h-full'); 
-                
-                howItWorks.classList.add('hidden'); 
-
-                // Scale down headings so they take up less space but keep layout
-                if (heroTextGroup) {
-                    heroTextGroup.classList.remove('mb-8', 'mt-4', 'md:mt-8');
-                    heroTextGroup.classList.add('mb-4', 'scale-[0.85]', 'origin-top');
-                }
-
-                // Pull search form up gracefully
-                if (searchForm) {
-                    searchForm.classList.remove('mt-6');
-                    searchForm.classList.add('mt-2');
-                }
-
-                // Pull search button closer to inputs gracefully
-                if (searchBtnContainer) {
-                    searchBtnContainer.classList.remove('mt-10');
-                    searchBtnContainer.classList.add('mt-6', 'scale-[0.95]');
-                }
+                heroContentWrapper.classList.remove('scale-100', 'mb-0');
+                // Using scale to shrink the whole block proportionally, 
+                // and negative margin to compensate for the preserved document flow height.
+                heroContentWrapper.classList.add('scale-[0.75]', 'md:scale-[0.85]', '-mb-24', 'md:-mb-32');
             }
 
             document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-deepPurple">${medicine} (${milligrams}mg)</strong> in <strong class="text-deepPurple">${barangay}</strong>`;
