@@ -24,7 +24,8 @@
                         offWhite: '#F4F4F5',
                         surface: '#FFFFFF',
                         smoke: '#52525b',
-                        error: '#DC2626'
+                        error: '#DC2626',
+                        success: '#16a34a'
                     },
                     fontFamily: {
                         poppins: ['"Poppins"', 'sans-serif'],
@@ -116,6 +117,19 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.98) translateY(20px); filter: blur(5px); }
             to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        /* Custom Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #FF9800;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #FF9800;
+        }
+        
+        .table-toggle:checked + .table-toggle-label {
+            background-color: #FF9800;
         }
 
         /* Toast Notifications */
@@ -299,7 +313,7 @@
                                     <h2 class="text-3xl font-poppins font-black text-starkBlack">Inventory Control</h2>
                                     <p class="text-smoke text-sm font-inter font-medium mt-1">Keep your medical stock accurate and up-to-date.</p>
                                 </div>
-                                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-vibrantOrange hover:bg-starkBlack text-surface px-8 py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-xs transition-all shadow-3d-btn hover:-translate-y-1 flex items-center gap-3 w-full md:w-auto justify-center">
+                                <button onclick="openAddModal()" class="bg-vibrantOrange hover:bg-starkBlack text-surface px-8 py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-xs transition-all shadow-3d-btn hover:-translate-y-1 flex items-center gap-3 w-full md:w-auto justify-center">
                                     <i class="fa-solid fa-plus text-lg"></i> Add Medicine
                                 </button>
                             </div>
@@ -312,7 +326,7 @@
                                                 <th class="p-6 md:p-8">Medicine Info</th>
                                                 <th class="p-6 md:p-8">Category</th>
                                                 <th class="p-6 md:p-8">Unit Price</th>
-                                                <th class="p-6 md:p-8">Availability</th>
+                                                <th class="p-6 md:p-8">Availability (Toggle)</th>
                                                 <th class="p-6 md:p-8 text-right">Actions</th>
                                             </tr>
                                         </thead>
@@ -329,14 +343,22 @@
 
     </main>
 
+    <!-- ================= ADD MEDICINE MODAL ================= -->
     <div id="addModal" class="fixed inset-0 bg-starkBlack/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
         <div class="bg-surface p-8 md:p-12 rounded-[2rem] shadow-3d-modal w-full max-w-2xl relative border border-white/20">
             <button onclick="document.getElementById('addModal').classList.add('hidden')" class="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-smoke hover:bg-gray-100 hover:text-starkBlack transition-all hover:rotate-90 z-20">
                 <i class="fa-solid fa-times text-lg"></i>
             </button>
-            <h3 class="text-3xl font-poppins font-black text-starkBlack mb-8">Add Medicine Record</h3>
-            <form id="addMedForm" onsubmit="submitAddMedicine(event)" class="space-y-6">
-                <!-- IDINAGDAG: MG FIELD SA ISANG GRID LAYOUT PARA PANTAY -->
+            <h3 class="text-3xl font-poppins font-black text-starkBlack mb-6">Add Medicine Record</h3>
+            
+            <!-- TABS FOR SINGLE OR BATCH UPLOAD -->
+            <div class="flex border-b border-smoke/10 mb-8 gap-6">
+                <button id="tabSingle" onclick="switchAddTab('single')" class="pb-3 text-sm font-poppins font-black uppercase tracking-widest text-deepPurple border-b-2 border-deepPurple transition-all">Single Entry</button>
+                <button id="tabBatch" onclick="switchAddTab('batch')" class="pb-3 text-sm font-poppins font-black uppercase tracking-widest text-smoke hover:text-starkBlack transition-all">Batch CSV Upload</button>
+            </div>
+
+            <!-- SINGLE ENTRY FORM -->
+            <form id="addMedForm" onsubmit="submitAddMedicine(event)" class="space-y-6 block">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Medicine Name</label>
@@ -352,14 +374,16 @@
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Price (₱)</label>
                         <input type="number" step="0.01" required id="newMedPrice" placeholder="0.00" class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
                     </div>
+                    
+                    <!-- TOGGLE SWITCH FOR STATUS -->
                     <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Status</label>
-                        <div class="relative">
-                            <select id="newMedStatus" class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm appearance-none outline-none shadow-3d-input cursor-pointer pr-12">
-                                <option value="In Stock">In Stock</option>
-                                <option value="Out of Stock">Out of Stock</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke pointer-events-none"></i>
+                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-3 pl-1">Status</label>
+                        <div class="px-6 py-4 rounded-2xl bg-[#F4F4F5] shadow-3d-input flex items-center border-2 border-transparent focus-within:bg-white focus-within:border-deepPurple">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="newMedStatusToggle" class="sr-only peer toggle-checkbox" checked>
+                                <div class="w-12 h-6 bg-error/30 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all toggle-label"></div>
+                                <span id="newMedStatusText" class="ml-4 text-xs font-poppins font-black uppercase tracking-widest text-vibrantOrange transition-colors">In Stock</span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -375,6 +399,31 @@
                 </div>
                 <div class="pt-6">
                     <button type="submit" id="btnAddMed" class="w-full bg-deepPurple hover:bg-starkBlack text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:-translate-y-1 transition-all duration-300">Add to Inventory</button>
+                </div>
+            </form>
+
+            <!-- BATCH UPLOAD FORM -->
+            <form id="batchUploadForm" onsubmit="processBatchCSV(event)" class="hidden space-y-6">
+                <div class="bg-vibrantOrange/10 border border-vibrantOrange/30 rounded-2xl p-5 mb-6">
+                    <div class="flex items-start gap-4">
+                        <i class="fa-solid fa-circle-info text-vibrantOrange text-xl mt-1"></i>
+                        <div>
+                            <h4 class="font-poppins font-black text-starkBlack text-sm uppercase tracking-widest mb-1">CSV Format Requirements</h4>
+                            <p class="text-xs font-inter text-smoke mb-3">Your Excel/CSV file must have headers in the first row. We will automatically map columns if they match these names: <b>Medicine Name, Mg, Price, Status, Category</b>.</p>
+                            <button type="button" onclick="downloadCSVTemplate()" class="text-[10px] font-poppins font-bold bg-white text-starkBlack px-4 py-2 rounded-lg border border-smoke/20 shadow-sm hover:border-vibrantOrange transition-colors">
+                                <i class="fa-solid fa-download mr-1"></i> Download Template
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
+                    <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Upload CSV File</label>
+                    <input type="file" id="csvFileInput" required accept=".csv" class="w-full text-sm font-inter font-bold text-smoke file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-poppins file:font-black file:uppercase file:tracking-widest file:bg-deepPurple/10 file:text-deepPurple hover:file:bg-deepPurple hover:file:text-white file:transition-colors cursor-pointer outline-none bg-[#F4F4F5] rounded-2xl p-2 shadow-3d-input">
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" id="btnBatchUpload" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:-translate-y-1 transition-all duration-300">Upload & Process Items</button>
                 </div>
             </form>
         </div>
@@ -882,6 +931,143 @@
             if (mTabActive) mTabActive.className = "flex-1 py-4 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-[10px] uppercase tracking-widest transition-all shadow-3d-btn";
         }
 
+        // --- NEW LOGIC FOR TOGGLE & TABS IN MODAL ---
+        
+        function openAddModal() {
+            document.getElementById('addModal').classList.remove('hidden');
+            switchAddTab('single');
+        }
+
+        function switchAddTab(tab) {
+            const singleTabBtn = document.getElementById('tabSingle');
+            const batchTabBtn = document.getElementById('tabBatch');
+            const singleForm = document.getElementById('addMedForm');
+            const batchForm = document.getElementById('batchUploadForm');
+
+            if(tab === 'single') {
+                singleTabBtn.className = "pb-3 text-sm font-poppins font-black uppercase tracking-widest text-deepPurple border-b-2 border-deepPurple transition-all";
+                batchTabBtn.className = "pb-3 text-sm font-poppins font-black uppercase tracking-widest text-smoke hover:text-starkBlack transition-all";
+                singleForm.classList.remove('hidden');
+                batchForm.classList.add('hidden');
+            } else {
+                batchTabBtn.className = "pb-3 text-sm font-poppins font-black uppercase tracking-widest text-deepPurple border-b-2 border-deepPurple transition-all";
+                singleTabBtn.className = "pb-3 text-sm font-poppins font-black uppercase tracking-widest text-smoke hover:text-starkBlack transition-all";
+                batchForm.classList.remove('hidden');
+                singleForm.classList.add('hidden');
+            }
+        }
+
+        // Updates the text inside the toggle when clicked
+        document.getElementById('newMedStatusToggle').addEventListener('change', function(e) {
+            const textEl = document.getElementById('newMedStatusText');
+            if (e.target.checked) {
+                textEl.innerText = "In Stock";
+                textEl.className = "ml-4 text-xs font-poppins font-black uppercase tracking-widest text-vibrantOrange transition-colors";
+            } else {
+                textEl.innerText = "Out of Stock";
+                textEl.className = "ml-4 text-xs font-poppins font-black uppercase tracking-widest text-error transition-colors";
+            }
+        });
+
+        function downloadCSVTemplate() {
+            const csvContent = "data:text/csv;charset=utf-8,Medicine Name,Mg,Price,Status,Category\nParacetamol,500,10.00,In Stock,Over the Counter (OTC)\nAmoxicillin,250,15.50,Out of Stock,Prescription";
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "OathOfCare_Inventory_Template.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function processBatchCSV(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('csvFileInput');
+            if (!fileInput.files.length) return showToast('Please select a CSV file.', 'error');
+            const unlock = lockButton('btnBatchUpload');
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(event) {
+                const text = event.target.result;
+                const rows = text.split('\n').map(r => r.trim()).filter(r => r);
+                
+                if (rows.length < 2) {
+                    unlock();
+                    return showToast('CSV is empty or missing data.', 'error');
+                }
+
+                const headers = rows[0].toLowerCase().split(',').map(h => h.trim());
+                const nameIdx = headers.findIndex(h => h.includes('name'));
+                const mgIdx = headers.findIndex(h => h === 'mg' || h.includes('milligram'));
+                const priceIdx = headers.findIndex(h => h.includes('price'));
+                const statusIdx = headers.findIndex(h => h.includes('status'));
+                const catIdx = headers.findIndex(h => h.includes('category'));
+
+                if (nameIdx === -1 || priceIdx === -1) {
+                    unlock();
+                    return showToast('CSV must contain Medicine Name and Price headers.', 'error');
+                }
+
+                let successCount = 0;
+                
+                for (let i = 1; i < rows.length; i++) {
+                    const cols = rows[i].split(',').map(c => c.trim());
+                    if (cols.length < headers.length) continue;
+
+                    const baseName = cols[nameIdx];
+                    const mg = mgIdx !== -1 ? cols[mgIdx] : '';
+                    const name = mg ? `${baseName} ${mg}mg` : baseName;
+                    const price = parseFloat(cols[priceIdx]) || 0;
+                    
+                    let statusStr = statusIdx !== -1 ? cols[statusIdx].toLowerCase() : 'in stock';
+                    const status = statusStr.includes('out') ? 'Out of Stock' : 'In Stock';
+                    
+                    const category = catIdx !== -1 ? cols[catIdx] : 'Over the Counter (OTC)';
+
+                    try {
+                        const res = await fetch(`${API_URL}/api/medicines`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, price, status, category, pharmacyId: authState.id })
+                        });
+                        if (res.ok) successCount++;
+                    } catch(e) { console.log("Batch item failed:", name); }
+                }
+                
+                showToast(`Successfully added ${successCount} items!`);
+                document.getElementById('addModal').classList.add('hidden');
+                document.getElementById('batchUploadForm').reset();
+                fetchPharmacyData();
+                unlock();
+            };
+            
+            reader.readAsText(file);
+        }
+
+        async function updateMedicineStatus(medId, isChecked) {
+            const status = isChecked ? 'In Stock' : 'Out of Stock';
+            try {
+                const response = await fetch(`${API_URL}/api/medicines/${medId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                
+                if (response.ok) {
+                    showToast('Status updated successfully!');
+                    fetchPharmacyData(); // Refresh UI to update colors
+                } else {
+                    showToast('Failed to update status', 'error');
+                    fetchPharmacyData(); // Revert toggle on failure
+                }
+            } catch (error) {
+                showToast('Server error.', 'error');
+                fetchPharmacyData();
+            }
+        }
+
         async function fetchPharmacyData() {
             try {
                 const profileRes = await fetch(`${API_URL}/api/pharmacy/profile/${authState.id}`);
@@ -902,16 +1088,19 @@
                 if (medRes.ok && meds.length > 0) {
                     meds.forEach(med => {
                         let isOut = med.status === 'Out of Stock';
-                        let badgeClass = isOut 
-                            ? 'bg-error/10 text-error border border-error/20' 
-                            : 'bg-vibrantOrange/10 text-vibrantOrange border border-vibrantOrange/20';
                         
                         tbody.innerHTML += `
                             <tr class="border-b border-smoke/5 hover:bg-offWhite transition-colors">
                                 <td class="p-6 md:p-8 font-poppins font-bold text-starkBlack text-sm">${med.name}</td>
                                 <td class="p-6 md:p-8 text-xs font-inter font-medium text-smoke">${med.category}</td>
                                 <td class="p-6 md:p-8 text-base font-poppins font-black text-deepPurple">₱${med.price}</td>
-                                <td class="p-6 md:p-8"><span class="px-4 py-2 rounded-xl text-[10px] font-poppins font-black uppercase tracking-widest ${badgeClass}">${med.status}</span></td>
+                                <td class="p-6 md:p-8 flex items-center gap-3">
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer table-toggle" ${!isOut ? 'checked' : ''} onchange="updateMedicineStatus(${med.id}, this.checked)">
+                                        <div class="w-12 h-6 bg-error/30 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all table-toggle-label"></div>
+                                    </label>
+                                    <span class="text-[10px] font-poppins font-black uppercase tracking-widest ${!isOut ? 'text-vibrantOrange' : 'text-error'}">${med.status}</span>
+                                </td>
                                 <td class="p-6 md:p-8 text-right">
                                     <button onclick="deleteMedicine(${med.id})" class="text-smoke hover:text-error p-3 transition-colors hover:scale-110 active:scale-95"><i class="fa-solid fa-trash-can text-lg"></i></button>
                                 </td>
@@ -924,7 +1113,6 @@
             } catch(e) { console.error("Error fetching pharmacy data"); }
         }
 
-        // IDINAGDAG: PINAGSAMA NA ANG MEDICINE NAME AT MILLIGRAMS BAGO IPASA SA BACKEND
         async function submitAddMedicine(e) {
             e.preventDefault();
             const unlock = lockButton('btnAddMed');
@@ -934,7 +1122,8 @@
             const name = mg ? `${baseName} ${mg}mg` : baseName;
             
             const price = document.getElementById('newMedPrice').value;
-            const status = document.getElementById('newMedStatus').value;
+            // READ FROM TOGGLE SWITCH INSTEAD OF DROPDOWN
+            const status = document.getElementById('newMedStatusToggle').checked ? 'In Stock' : 'Out of Stock';
             const category = document.getElementById('newMedCategory').value;
 
             try {
@@ -947,6 +1136,8 @@
                 if (response.ok) {
                     document.getElementById('addModal').classList.add('hidden');
                     e.target.reset();
+                    document.getElementById('newMedStatusText').innerText = "In Stock";
+                    document.getElementById('newMedStatusText').className = "ml-4 text-xs font-poppins font-black uppercase tracking-widest text-vibrantOrange transition-colors";
                     showToast(`${name} added!`);
                     fetchPharmacyData(); 
                 } else {
