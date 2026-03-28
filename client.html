@@ -241,8 +241,8 @@
 
                 <!-- Logged In State (Hidden by default) -->
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
-                    <span id="navUserName" class="font-inter font-bold text-smoke text-sm hidden md:block"></span>
-                    <button onclick="handleLogout()" class="text-error font-poppins font-bold hover:text-red-800 hover:scale-110 transition-all duration-300 text-sm uppercase tracking-widest">
+                    <span id="navUserName" class="font-poppins font-bold tracking-wide text-starkBlack text-sm hidden md:block"></span>
+                    <button onclick="handleLogout()" class="text-error font-poppins font-bold hover:text-red-800 hover:scale-110 transition-all duration-300 text-sm uppercase tracking-widest bg-red-50 px-5 py-2 rounded-full border border-red-100">
                         Sign Out
                     </button>
                 </div>
@@ -735,10 +735,12 @@
             const loggedInDiv = document.getElementById('navAuthLoggedIn');
             const nameDisplay = document.getElementById('navUserName');
 
-            if(authState.role === 'patient') {
+            // FIX: Allow 'client' role (which matches the Python backend)
+            if(authState.role === 'client' || authState.role === 'patient') {
                 loggedOutDiv.classList.add('hidden');
                 loggedInDiv.classList.remove('hidden');
-                if(nameDisplay) nameDisplay.innerText = `Hi, ${authState.name || 'User'}`;
+                // FIX: Update Name format
+                if(nameDisplay) nameDisplay.innerText = `Welcome, ${authState.name || 'User'}`;
             } else {
                 loggedOutDiv.classList.remove('hidden');
                 loggedInDiv.classList.add('hidden');
@@ -842,6 +844,7 @@
                 
                 if (response.ok) {
                     showToast('Successfully signed in!');
+                    // Result returns role: 'client' from python backend
                     authState = { id: result.id, role: result.role, name: result.name };
                     localStorage.setItem('ooc_client_user', JSON.stringify(authState));
                     updateNavUI();
@@ -993,7 +996,8 @@
         async function handleSearch(e) {
             e.preventDefault();
             
-            if (authState.role !== 'patient') {
+            // FIX: Allow 'client' role (which matches the Python backend)
+            if (authState.role !== 'client' && authState.role !== 'patient') {
                 showToast("Please sign in to search the inventory.", "error");
                 openAuthModal('login');
                 return;
@@ -1030,7 +1034,7 @@
                 if (response.status === 429) {
                     showToast(data.error, 'error');
                     grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
-                } else if (response.ok && data.results.length > 0) {
+                } else if (response.ok && data.results && data.results.length > 0) {
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
                         let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
