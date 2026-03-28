@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oath of Care | Admin Portal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepPurple: '#4A148C',
+                        vibrantOrange: '#FF9800',
+                        starkBlack: '#09090b',
+                        offWhite: '#F4F4F5',
+                        surface: '#FFFFFF',
+                        smoke: '#52525b',
+                        error: '#DC2626'
+                    },
+                    fontFamily: {
+                        poppins: ['"Poppins"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        inter: ['"Inter"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'premium': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                        'pill': '0 10px 30px -5px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(255, 255, 255, 0.6)',
+                        '3d-btn': '0 8px 25px -5px rgba(0, 0, 0, 0.3), inset 0 2px 1px rgba(255, 255, 255, 0.2)',
+                        '3d-btn-hover': '0 15px 35px -5px rgba(0, 0, 0, 0.4), inset 0 2px 1px rgba(255, 255, 255, 0.2)',
+                        '3d-btn-active': '0 4px 10px -2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.4)',
+                        '3d-input': 'inset 0 2px 5px rgba(0, 0, 0, 0.06), 0 2px 0 rgba(255, 255, 255, 1)',
+                        '3d-input-focus': '0 10px 25px -5px rgba(74, 20, 140, 0.25), inset 0 2px 5px rgba(0, 0, 0, 0.02)',
+                        '3d-modal': '0 30px 60px -15px rgba(0, 0, 0, 0.4), 0 0 40px rgba(74, 20, 140, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.9)',
+                        '3d-card': '0 10px 30px -10px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.8)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F8F9FA;
+            color: #09090b;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Input overrides for Chrome Autocomplete */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #F4F4F5 inset !important;
+            -webkit-text-fill-color: #09090b !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        /* 3D Floating Background Objects */
+        @keyframes floatObj1 {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-40px) rotate(20deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes floatObj2 {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(30px) rotate(-15deg) scale(1.1); }
+            100% { transform: translateY(0px) rotate(0deg) scale(1); }
+        }
+        .bg-3d-obj-1 {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle at 30% 30%, #FFCC80 0%, #FF9800 40%, #E65100 80%, #BF360C 100%);
+            border-radius: 50%;
+            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.8), 15px 25px 40px rgba(0,0,0,0.25);
+            animation: floatObj1 10s ease-in-out infinite;
+            z-index: -1;
+            opacity: 0.9;
+        }
+        .bg-3d-obj-2 {
+            position: absolute;
+            width: 180px;
+            height: 80px;
+            background: linear-gradient(135deg, #7E57C2, #4A148C, #311B92);
+            border-radius: 50px;
+            box-shadow: inset -15px -15px 30px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.4), 15px 25px 35px rgba(0,0,0,0.3);
+            animation: floatObj2 12s ease-in-out infinite;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        /* View Switching System */
+        .view-section {
+            display: none;
+            opacity: 0;
+        }
+        .view-section.active {
+            display: flex; 
+            animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98) translateY(20px); filter: blur(5px); }
+            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed; bottom: 30px; right: 30px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        .toast {
+            background: #09090b; color: #F8F9FA; padding: 18px 28px;
+            border-left: 5px solid #FF9800; border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1);
+            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif;
+            font-weight: 600; font-size: 0.95rem;
+        }
+        .toast.show { transform: translateX(0); }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F8F9FA; }
+        ::-webkit-scrollbar-thumb { background: #4A148C; border-radius: 10px; }
+    </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-gradient-to-r from-surface/90 via-purple-50/80 to-orange-50/90 backdrop-blur-xl border-b border-starkBlack/5 h-24 flex items-center shadow-sm" id="navbar">
+        <div class="w-full max-w-[1600px] mx-auto px-6 lg:px-12 flex justify-between items-center">
+            
+            <!-- BRAND LOGO -->
+            <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
+                <div class="relative w-12 h-12 mr-4 transform group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
+                    <i class="fa-solid fa-location-dot text-[40px] text-deepPurple relative z-0" style="text-shadow: 2px 4px 6px rgba(74,20,140,0.3);"></i>
+                    <div class="absolute bottom-0 -right-1 z-10 flex items-center justify-center drop-shadow-md">
+                        <div class="absolute w-2.5 h-2.5 bg-white rounded-full"></div>
+                        <i class="fa-solid fa-capsules text-vibrantOrange text-xl relative z-10"></i>
+                    </div>
+                </div>
+                <div class="flex items-baseline gap-1.5 ml-1 transition-transform duration-500 group-hover:translate-x-1">
+                    <span class="font-poppins font-black text-3xl text-starkBlack tracking-tight drop-shadow-sm">Oath</span>
+                    <span class="font-serif italic text-3xl text-deepPurple drop-shadow-sm">of Care</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-6">
+                <!-- Logged In State (Hidden by default) -->
+                <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
+                    <span id="navUserName" class="font-poppins font-bold text-deepPurple text-sm hidden md:block tracking-widest uppercase bg-deepPurple/10 px-4 py-2 rounded-full border border-deepPurple/20">System Administrator</span>
+                    <button onclick="handleLogoutGlobal()" class="bg-starkBlack text-surface px-8 py-3.5 rounded-full font-poppins font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24 flex flex-col relative z-10">
+
+        <!-- ================= ADMIN LOGIN VIEW ================= -->
+        <section id="view-login" class="view-section active flex-grow justify-center items-center py-10 relative z-10 min-h-[85vh]">
+            
+            <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
+            <div class="absolute top-[-10%] left-[-15%] w-[70vw] max-w-[800px] h-[70vw] max-h-[800px] bg-deepPurple rounded-full blur-[150px] z-[-2] opacity-40 pointer-events-none"></div>
+            <div class="bg-3d-obj-1 top-[15%] left-[20%] hidden md:block"></div>
+            <div class="bg-3d-obj-2 bottom-[25%] right-[20%] hidden lg:block"></div>
+
+            <div class="bg-surface p-8 md:p-12 rounded-[2rem] shadow-3d-modal w-full max-w-[450px] relative border border-white/20 transition-transform duration-300">
+                
+                <!-- Centered Admin Logo & Title -->
+                <div class="mb-10 text-center flex flex-col items-center">
+                    <div class="w-20 h-20 bg-deepPurple/10 rounded-[1.5rem] flex items-center justify-center mb-4 border border-deepPurple/20 shadow-inner">
+                        <i class="fa-solid fa-shield-halved text-deepPurple text-4xl drop-shadow-md"></i>
+                    </div>
+                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Admin</h3>
+                    <p class="text-smoke font-inter text-sm font-medium">Sign in to manage the system.</p>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-6">
+                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
+                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
+                        <input type="email" id="loginEmail" autocomplete="email" required placeholder="admin@oathofcare.com" 
+                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none cursor-text shadow-3d-input">
+                    </div>
+                    
+                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
+                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Password</label>
+                        <div class="relative">
+                            <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="••••••••" 
+                                class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest pr-12 text-sm outline-none cursor-text shadow-3d-input">
+                            <button type="button" onclick="togglePassword('loginPassword', 'eyeLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-deepPurple hover:scale-110 transition-all focus:outline-none">
+                                <i class="fa-solid fa-eye text-lg" id="eyeLogin"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-6">
+                        <button type="submit" id="btnLoginSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= ADMIN DASHBOARD VIEW ================= -->
+        <section id="view-admin" class="view-section flex-grow relative z-10 bg-offWhite min-h-[90vh]">
+            <div class="flex flex-col md:flex-row h-full max-w-[1600px] mx-auto w-full px-6 lg:px-12 py-10 gap-8 items-start">
+                
+                <!-- Mobile Navigation Tabs -->
+                <div class="md:hidden w-full bg-surface rounded-[2rem] shadow-3d-card flex p-2 gap-2 mb-4 border border-smoke/5 overflow-x-auto no-scrollbar">
+                    <button onclick="switchAdminTab('requests')" id="mTab-a-requests" class="whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-[10px] uppercase tracking-widest transition-all shadow-3d-btn">
+                        Applications
+                    </button>
+                    <button onclick="switchAdminTab('analytics')" id="mTab-a-analytics" class="whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] text-smoke font-poppins font-black text-[10px] uppercase tracking-widest transition-all hover:bg-offWhite">
+                        Analytics
+                    </button>
+                    <button onclick="switchAdminTab('logs')" id="mTab-a-logs" class="whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] text-smoke font-poppins font-black text-[10px] uppercase tracking-widest transition-all hover:bg-offWhite">
+                        Logs
+                    </button>
+                </div>
+
+                <!-- Sticky Desktop Sidebar -->
+                <aside class="w-80 bg-surface rounded-[2.5rem] flex-col hidden md:flex overflow-hidden shadow-3d-card sticky top-32 border border-smoke/5 shrink-0">
+                    <div class="p-10 border-b border-smoke/10 text-center flex flex-col items-center bg-offWhite/50">
+                        <div class="w-24 h-24 bg-deepPurple rounded-[1.5rem] flex items-center justify-center text-surface text-4xl mb-5 shadow-3d-btn relative">
+                            <i class="fa-solid fa-shield-halved drop-shadow-md"></i>
+                            <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-vibrantOrange border-[3px] border-surface rounded-full shadow-md flex items-center justify-center">
+                                <i class="fa-solid fa-star text-surface text-[10px]"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-poppins font-black text-xl text-starkBlack leading-tight w-full px-4">System Admin</h3>
+                        <p class="text-[10px] font-poppins font-bold text-smoke uppercase tracking-widest mt-2">Master Control</p>
+                    </div>
+                    <nav class="space-y-4 flex-grow p-8">
+                        <button onclick="switchAdminTab('requests')" id="aTab-requests" class="w-full text-left px-6 py-5 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4 shadow-3d-btn hover:-translate-y-1">
+                            <div class="text-vibrantOrange"><i class="fa-solid fa-file-signature text-xl"></i></div>
+                            Applications
+                        </button>
+                        <button onclick="switchAdminTab('analytics')" id="aTab-analytics" class="w-full text-left px-6 py-5 rounded-[1.5rem] text-smoke hover:bg-offWhite hover:text-starkBlack font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4">
+                            <div class="text-smoke"><i class="fa-solid fa-chart-pie text-xl"></i></div>
+                            Analytics
+                        </button>
+                        <button onclick="switchAdminTab('logs')" id="aTab-logs" class="w-full text-left px-6 py-5 rounded-[1.5rem] text-smoke hover:bg-offWhite hover:text-starkBlack font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4">
+                            <div class="text-smoke"><i class="fa-solid fa-clock-rotate-left text-xl"></i></div>
+                            Audit Log
+                        </button>
+                    </nav>
+                </aside>
+
+                <!-- Main Content Area -->
+                <main class="flex-grow w-full bg-surface rounded-[2.5rem] shadow-3d-card border border-smoke/5 overflow-hidden">
+                    <div class="p-8 sm:p-12">
+                        
+                        <!-- Applications Tab -->
+                        <div id="aContent-requests" class="block">
+                            <div class="mb-10 border-b border-smoke/10 pb-6">
+                                <h2 class="text-3xl font-poppins font-black text-starkBlack">Pending Applications</h2>
+                                <p class="text-smoke text-sm font-inter font-medium mt-1">Review and verify new pharmacy partnership requests.</p>
+                            </div>
+                            <div id="adminRequestsContainer" class="space-y-6">
+                                <!-- Javascript Populated -->
+                            </div>
+                        </div>
+
+                        <!-- Analytics Tab -->
+                        <div id="aContent-analytics" class="hidden">
+                            <div class="mb-10 border-b border-smoke/10 pb-6">
+                                <h2 class="text-3xl font-poppins font-black text-starkBlack">System Intelligence</h2>
+                                <p class="text-smoke text-sm font-inter font-medium mt-1">Real-time statistics from the database.</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                <div class="bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner text-center">
+                                    <p class="text-xs text-smoke font-poppins font-bold uppercase tracking-widest">Total Pharmacies</p>
+                                    <p class="text-5xl font-poppins font-black text-deepPurple mt-3 drop-shadow-sm" id="statPharm">0</p>
+                                </div>
+                                <div class="bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner text-center">
+                                    <p class="text-xs text-smoke font-poppins font-bold uppercase tracking-widest">Registered Patients</p>
+                                    <p class="text-5xl font-poppins font-black text-starkBlack mt-3 drop-shadow-sm" id="statPatient">0</p>
+                                </div>
+                                <div class="bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner text-center">
+                                    <p class="text-xs text-smoke font-poppins font-bold uppercase tracking-widest">Search Queries</p>
+                                    <p class="text-5xl font-poppins font-black text-vibrantOrange mt-3 drop-shadow-sm" id="statSearch">0</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-8 rounded-[2rem] shadow-3d-card border border-smoke/5 h-[400px] flex justify-center items-center">
+                                <canvas id="analyticsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Logs Tab -->
+                        <div id="aContent-logs" class="hidden">
+                            <div class="mb-10 border-b border-smoke/10 pb-6">
+                                <h2 class="text-3xl font-poppins font-black text-starkBlack">Activity Log</h2>
+                                <p class="text-smoke text-sm font-inter font-medium mt-1">System-wide search and interaction history.</p>
+                            </div>
+                            <div class="bg-offWhite rounded-[2rem] border border-smoke/5 overflow-hidden shadow-inner">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse min-w-[800px]">
+                                        <thead>
+                                            <tr class="bg-surface text-smoke font-poppins font-black text-[10px] uppercase tracking-widest border-b border-smoke/10 shadow-sm">
+                                                <th class="p-6 md:p-8">Timestamp</th>
+                                                <th class="p-6 md:p-8">User Name</th>
+                                                <th class="p-6 md:p-8">Search Result</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="auditLogsTable">
+                                            <!-- Javascript Populated -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= ADMIN REVIEW MODAL ================= -->
+    <div id="adminReviewModal" class="fixed inset-0 bg-starkBlack/80 backdrop-blur-md hidden flex items-center justify-center z-[110] p-4 transition-opacity duration-500 overflow-y-auto">
+        <div class="bg-surface p-8 md:p-12 rounded-[2.5rem] shadow-3d-modal w-full max-w-5xl relative border border-white/20 transition-transform duration-300 scale-95" id="adminReviewModalContent">
+            <button onclick="closeAdminReview()" class="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-smoke hover:bg-gray-100 hover:text-starkBlack transition-all hover:rotate-90 z-20">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+            <h3 class="text-4xl font-poppins font-black text-starkBlack mb-8">Review Application</h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 mb-10">
+                <!-- Verified Information Display -->
+                <div class="space-y-6 bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner">
+                    <div>
+                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Pharmacy Name</p>
+                        <p class="font-bold text-xl text-starkBlack" id="revName">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Email Address</p>
+                        <p class="font-bold text-base text-starkBlack" id="revEmail">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Contact Number</p>
+                        <p class="font-bold text-base text-starkBlack" id="revContact">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Branch / Barangay</p>
+                        <p class="font-bold text-base text-starkBlack" id="revBranch">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Full Address</p>
+                        <p class="font-bold text-base text-starkBlack" id="revAddress">-</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Google Maps Link</p>
+                        <a href="#" id="revMap" target="_blank" class="font-bold text-sm text-deepPurple hover:underline break-all">-</a>
+                    </div>
+                </div>
+                
+                <!-- Secure Base64 Rendered Images from Database -->
+                <div class="space-y-8">
+                    <div>
+                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-3">Store Photo</p>
+                        <div class="w-full h-48 bg-gray-100 border border-smoke/10 rounded-[1.5rem] flex flex-col items-center justify-center text-smoke shadow-inner overflow-hidden relative">
+                            <img id="revStorePhotoImg" src="" alt="Store Photo" class="w-full h-full object-cover hidden absolute inset-0">
+                            <span id="revStorePhotoText" class="text-xs font-poppins font-bold uppercase tracking-widest hidden relative z-10">No Image Uploaded</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-3">Business Permit</p>
+                        <div class="w-full h-56 bg-gray-100 border border-smoke/10 rounded-[1.5rem] flex flex-col items-center justify-center text-smoke shadow-inner overflow-hidden relative">
+                            <img id="revPermitPhotoImg" src="" alt="Business Permit" class="w-full h-full object-cover hidden absolute inset-0">
+                            <span id="revPermitPhotoText" class="text-xs font-poppins font-bold uppercase tracking-widest hidden relative z-10">No Permit Uploaded</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secure Action Dispatchers -->
+            <div class="flex flex-col sm:flex-row gap-4 border-t border-smoke/10 pt-8">
+                <button id="btnRevApprove" class="flex-1 bg-deepPurple hover:bg-starkBlack text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:-translate-y-1 transition-all duration-300">Approve Application</button>
+                <button id="btnRevReject" class="flex-1 bg-white text-error border-2 border-error/30 py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm hover:bg-error hover:text-white transition-all duration-300 shadow-sm">Reject Application</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Logic and Scripts -->
+    <script>
+        const API_URL = 'https://oath-of-care.onrender.com';
+        
+        let authState = JSON.parse(localStorage.getItem('ooc_admin_user')) || { id: null, role: null, name: null };
+        let analyticsChartInstance = null;
+        let globalPendingApplications = [];
+
+        window.onload = () => {
+            updateNavBasedOnAuth();
+            
+            if (!authState.id || authState.role !== 'admin') {
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById('view-login').classList.add('active');
+            } else {
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById('view-admin').classList.add('active');
+                fetchAdminData();
+            }
+        };
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (type === 'error') {
+                toast.style.borderLeftColor = '#DC2626'; // error
+            } else {
+                toast.style.borderLeftColor = '#FF9800'; // vibrantOrange
+            }
+            
+            toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation text-error' : 'fa-circle-check text-vibrantOrange'} text-xl"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        function lockButton(btnId) {
+            const btn = document.getElementById(btnId);
+            if(!btn) return () => {};
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="ml-2">Processing...</span>';
+            btn.classList.add('opacity-80', 'cursor-not-allowed', 'scale-95');
+            return () => {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+            };
+        }
+
+        function updateNavBasedOnAuth() {
+            const loggedOutDiv = document.getElementById('navAuthLoggedOut');
+            const loggedInDiv = document.getElementById('navAuthLoggedIn');
+
+            if(authState.role === 'admin') {
+                if(loggedOutDiv) loggedOutDiv.classList.add('hidden');
+                if(loggedInDiv) loggedInDiv.classList.remove('hidden');
+            } else {
+                if(loggedOutDiv) loggedOutDiv.classList.remove('hidden');
+                if(loggedInDiv) loggedInDiv.classList.add('hidden');
+            }
+        }
+
+        function handleLogoutGlobal() {
+            localStorage.removeItem('ooc_admin_user');
+            authState = { id: null, role: null, name: null };
+            updateNavBasedOnAuth();
+            
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-login').classList.add('active');
+            
+            showToast('Signed out successfully.');
+        }
+
+        function togglePassword(inputId, iconId) {
+            const passInput = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(iconId);
+            if (!passInput || !eyeIcon) return;
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        // --- ADMIN LOGIN ---
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            const unlock = lockButton('btnLoginSubmit');
+            const emailInput = document.getElementById('loginEmail');
+            const passInput = document.getElementById('loginPassword');
+            
+            try {
+                // Hardcode role to admin so standard users can't login here
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput.value, password: passInput.value, role: 'admin' })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast(result.message);
+                    authState = { id: result.id, role: 'admin', name: 'Administrator' };
+                    localStorage.setItem('ooc_admin_user', JSON.stringify(authState));
+                    updateNavBasedOnAuth();
+                    e.target.reset(); 
+                    
+                    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                    document.getElementById('view-admin').classList.add('active');
+                    fetchAdminData();
+                    
+                } else {
+                    showToast(result.error || 'Invalid admin credentials', 'error');
+                    passInput.value = ''; 
+                }
+            } catch (error) {
+                showToast('Server connection failed.', 'error');
+            } finally { unlock(); }
+        }
+
+        // --- DASHBOARD LOGIC ---
+        function switchAdminTab(tab) {
+            ['requests', 'analytics', 'logs'].forEach(t => {
+                document.getElementById(`aContent-${t}`).classList.add('hidden');
+                
+                const dTab = document.getElementById(`aTab-${t}`);
+                dTab.className = "w-full text-left px-6 py-5 rounded-[1.5rem] text-smoke hover:bg-offWhite hover:text-starkBlack font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4";
+                const dIcon = dTab.querySelector('div');
+                dIcon.className = "text-smoke";
+
+                const mTab = document.getElementById(`mTab-a-${t}`);
+                if (mTab) mTab.className = "whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] text-smoke font-poppins font-black text-[10px] uppercase tracking-widest transition-all hover:bg-offWhite";
+            });
+            
+            document.getElementById(`aContent-${tab}`).classList.remove('hidden');
+            
+            const activeDTab = document.getElementById(`aTab-${tab}`);
+            activeDTab.className = "w-full text-left px-6 py-5 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4 shadow-3d-btn hover:-translate-y-1";
+            const activeDIcon = activeDTab.querySelector('div');
+            activeDIcon.className = "text-vibrantOrange";
+
+            const mTabActive = document.getElementById(`mTab-a-${tab}`);
+            if (mTabActive) mTabActive.className = "whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-[10px] uppercase tracking-widest transition-all shadow-3d-btn";
+        }
+
+        async function fetchAdminData() {
+            try {
+                const [statsRes, logsRes, pendingRes] = await Promise.all([
+                    fetch(`${API_URL}/api/admin/stats`),
+                    fetch(`${API_URL}/api/admin/logs`),
+                    fetch(`${API_URL}/api/admin/pending`)
+                ]);
+                
+                const stats = await statsRes.json();
+                const logs = await logsRes.json();
+                const pending = await pendingRes.json();
+
+                document.getElementById('statPharm').innerText = stats.totalPharmacies || 0;
+                document.getElementById('statPatient').innerText = stats.totalPatients || 0;
+                document.getElementById('statSearch').innerText = stats.totalSearches || 0;
+
+                const ctx = document.getElementById('analyticsChart').getContext('2d');
+                if(analyticsChartInstance) analyticsChartInstance.destroy();
+                analyticsChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Successful Matches', 'No Results Found'],
+                        datasets: [{ data: stats.chartData || [0,0], backgroundColor: ['#4A148C', '#DC2626'], borderWidth: 0 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: "'Poppins', sans-serif", weight: 'bold' } } } } }
+                });
+
+                const reqContainer = document.getElementById('adminRequestsContainer');
+                reqContainer.innerHTML = '';
+                globalPendingApplications = pending;
+                
+                if(pending.length > 0) {
+                    pending.forEach(p => {
+                        reqContainer.innerHTML += `
+                            <div class="bg-surface p-8 rounded-[2rem] shadow-3d-card border border-smoke/5 flex flex-col md:flex-row justify-between items-start md:items-center transition-transform hover:-translate-y-1 cursor-default">
+                                <div>
+                                    <h4 class="text-2xl font-poppins font-black text-starkBlack">${p.name}</h4>
+                                    <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mt-2"><i class="fa-solid fa-location-dot text-deepPurple mr-1"></i> ${p.branch}</p>
+                                </div>
+                                <div class="mt-6 md:mt-0 w-full md:w-auto">
+                                    <button onclick="openAdminReview(${p.id})" class="w-full bg-deepPurple text-surface px-8 py-4 rounded-2xl font-poppins font-black text-xs uppercase tracking-widest shadow-3d-btn hover:bg-starkBlack transition-colors">Review Application</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    reqContainer.innerHTML = '<div class="text-center py-16 bg-offWhite rounded-[2rem] border border-smoke/5"><i class="fa-solid fa-clipboard-check text-4xl text-smoke/30 mb-4"></i><p class="text-smoke font-poppins font-bold">No pending applications at the moment.</p></div>';
+                }
+
+                const tbody = document.getElementById('auditLogsTable');
+                tbody.innerHTML = '';
+                
+                if (logs.length > 0) {
+                    logs.forEach(log => {
+                        tbody.innerHTML += `
+                            <tr class="border-b border-smoke/5 hover:bg-offWhite transition-colors">
+                                <td class="p-6 md:p-8 font-inter font-medium text-xs text-smoke">${log.time}</td>
+                                <td class="p-6 md:p-8 font-poppins font-bold text-sm text-starkBlack">${log.user}</td>
+                                <td class="p-6 md:p-8"><span class="px-4 py-2 rounded-xl text-[10px] uppercase font-poppins font-black tracking-widest ${log.result === 'Success' ? 'bg-vibrantOrange/10 text-vibrantOrange border border-vibrantOrange/20' : 'bg-error/10 text-error border border-error/20'}">${log.result}</span></td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="3" class="p-10 text-center text-smoke font-poppins font-bold">No recent system activity.</td></tr>';
+                }
+                
+            } catch(e) { console.error("Error loading admin data"); }
+        }
+
+        // Logic to populate and trigger the Admin Review Modal
+        let activeReviewId = null;
+        function openAdminReview(id) {
+            const appData = globalPendingApplications.find(p => p.id === id);
+            if(!appData) return;
+            
+            activeReviewId = id;
+            document.getElementById('revName').innerText = appData.name;
+            document.getElementById('revEmail').innerText = appData.email;
+            document.getElementById('revContact').innerText = appData.contact;
+            document.getElementById('revBranch').innerText = appData.branch;
+            document.getElementById('revAddress').innerText = appData.address;
+            document.getElementById('revMap').href = appData.mapLink;
+            document.getElementById('revMap').innerText = appData.mapLink;
+            
+            const storeImg = document.getElementById('revStorePhotoImg');
+            const storeText = document.getElementById('revStorePhotoText');
+            if(appData.storePhoto) {
+                storeImg.src = appData.storePhoto;
+                storeImg.classList.remove('hidden');
+                storeText.classList.add('hidden');
+            } else {
+                storeImg.classList.add('hidden');
+                storeText.classList.remove('hidden');
+            }
+
+            const permitImg = document.getElementById('revPermitPhotoImg');
+            const permitText = document.getElementById('revPermitPhotoText');
+            if(appData.permitPhoto) {
+                permitImg.src = appData.permitPhoto;
+                permitImg.classList.remove('hidden');
+                permitText.classList.add('hidden');
+            } else {
+                permitImg.classList.add('hidden');
+                permitText.classList.remove('hidden');
+            }
+
+            const modal = document.getElementById('adminReviewModal');
+            const content = document.getElementById('adminReviewModalContent');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeAdminReview() {
+            const modal = document.getElementById('adminReviewModal');
+            const content = document.getElementById('adminReviewModalContent');
+            
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                activeReviewId = null;
+            }, 300);
+        }
+
+        async function handleApplicationDecision(action) {
+            if(!activeReviewId) return;
+            
+            const btnId = action === 'approve' ? 'btnRevApprove' : 'btnRevReject';
+            const unlock = lockButton(btnId);
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/resolve`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ pharmacyId: activeReviewId, action: action })
+                });
+                if(response.ok) { 
+                    showToast(`Application successfully ${action}d`); 
+                    closeAdminReview();
+                    fetchAdminData(); // Refresh UI
+                } else {
+                    showToast('Failed to process decision.', 'error');
+                }
+            } catch(error) { 
+                showToast('Network Error', 'error'); 
+            } finally { unlock(); }
+        }
+
+        document.getElementById('btnRevApprove').addEventListener('click', () => handleApplicationDecision('approve'));
+        document.getElementById('btnRevReject').addEventListener('click', () => handleApplicationDecision('reject'));
+    </script>
+</body>
+</html>
