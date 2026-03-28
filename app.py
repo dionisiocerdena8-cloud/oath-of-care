@@ -23,7 +23,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # BREVO API CONFIGURATION
 # ==========================================
 # DITO MO ILAGAY ANG IYONG BREVO API KEY SA LOOB NG QUOTES:
-BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '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')
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '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')
 
 SENDER_EMAIL = 'oathofcareofficial@gmail.com'
 SENDER_NAME = 'Oath of Care'
