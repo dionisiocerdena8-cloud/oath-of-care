@@ -20,10 +20,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6N
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # ==========================================
-# BREVO API CONFIGURATION
+# BREVO API CONFIGURATION (SECURED)
 # ==========================================
-# Direktang nilagay ang key para 100% sure na mababasa ng server
-BREVO_API_KEY = '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'
+# Kukunin na lang niya ito nang patago sa Render Environment Variables!
+# Wala nang hardcoded key kaya hindi ka na iba-block ni GitHub.
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 
 SENDER_EMAIL = 'oathofcareofficial@gmail.com'
 SENDER_NAME = 'Oath of Care'
@@ -116,9 +117,12 @@ class SearchLog(db.Model):
 
 
 # ==========================================
-# EMAIL HELPER FUNCTIONS
+# EMAIL HELPER FUNCTIONS (BREVO)
 # ==========================================
 def send_email_api(to_email, subject, html_content):
+    if not BREVO_API_KEY:
+        return False, "BREVO API KEY is missing from Render Environment Variables! Paki-set sa Render."
+        
     url = "https://api.brevo.com/v3/smtp/email"
     headers = {
         "accept": "application/json",
@@ -199,7 +203,7 @@ def send_verification():
     if success:
         return jsonify({'message': 'Verification code sent successfully'})
     
-    # Ibabato ang totoong error mula kay Brevo pabalik sa website mo!
+    # Ibabato ang totoong error mula kay Brevo pabalik sa website mo
     return jsonify({'error': msg}), 400
 
 @app.route('/api/verify-code', methods=['POST'])
@@ -268,6 +272,7 @@ def register():
             db.session.add(barangay)
             db.session.flush()
 
+        # FIXED: mapped to storePhoto and permitPhoto to avoid 500 error!
         new_pharmacy = Pharmacy(
             PharmacyName=data.get('pharmacyName'),
             ContactNumber=data.get('contactNumber'),
