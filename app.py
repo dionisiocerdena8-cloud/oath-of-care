@@ -494,6 +494,25 @@ def delete_medicine(med_id):
         return jsonify({'error': 'Database error'}), 500
 
 
+@app.route('/api/medicines/<int:med_id>/status', methods=['PUT', 'OPTIONS'])
+def update_medicine_status(med_id):
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'OK'}), 200
+        
+    data = request.json
+    try:
+        med = Medicine.query.get(med_id)
+        if med:
+            # I-a-update lang nito ang InStock column (True o False)
+            med.InStock = True if data.get('status') == 'In Stock' else False
+            db.session.commit()
+            return jsonify({'message': 'Status updated successfully'}), 200
+        return jsonify({'error': 'Item not found'}), 404
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Database error'}), 500
+
+
 # ==========================================
 # SECURITY: RATE LIMITED SEARCH ENGINE
 # ==========================================
