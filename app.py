@@ -1,3 +1,4 @@
+from flask import Flask, render_template
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -11,6 +12,21 @@ import os
 import re
 
 app = Flask(__name__)
+
+# Site 1: Client (Home Page)
+@app.route('/')
+def client():
+    return render_template('client.html')
+
+# Site 2: Admin Panel
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+# Site 3: Pharmacy Portal
+@app.route('/pharmacy')
+def pharmacy():
+    return render_template('pharmacy.html')
 
 # ==========================================
 # CORS CONFIGURATION (FIXED FOR ALL PORTALS)
