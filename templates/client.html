@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oath of Care | Client Search Portal</title>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Poppins for bold sans-serif, Playfair for script/serif, Inter for body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome for professional Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS -->
@@ -21,7 +21,7 @@
             theme: {
                 extend: {
                     colors: {
-                        deepPurple: '#4A148C',
+                        deepPurple: '#4A148C', /* Darkened, more vibrant violet */
                         vibrantOrange: '#FF9800',
                         starkBlack: '#09090b',
                         offWhite: '#F4F4F5',
@@ -50,27 +50,41 @@
     </script>
 
     <style>
-        body { background-color: #F8F9FA; color: #09090b; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
-        
+        body {
+            background-color: #F8F9FA;
+            color: #09090b;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
         .glass-pill {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.9);
         }
-        
-        input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
+
+        /* Input overrides for Chrome Autocomplete */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
             -webkit-box-shadow: 0 0 0 30px #F4F4F5 inset !important;
             -webkit-text-fill-color: #09090b !important;
             transition: background-color 5000s ease-in-out 0s;
         }
 
+        /* Floating animations for cards and capsules */
         @keyframes float3d {
-            0% { transform: translateY(0px) rotateX(0deg); }
-            50% { transform: translateY(-12px) rotateX(2deg); }
-            100% { transform: translateY(0px) rotateX(0deg); }
+            0% { transform: translateY(0px) rotateX(0deg) rotate(var(--base-rot, 0deg)); }
+            50% { transform: translateY(-15px) rotateX(5deg) rotate(calc(var(--base-rot, 0deg) + 5deg)); }
+            100% { transform: translateY(0px) rotateX(0deg) rotate(var(--base-rot, 0deg)); }
         }
+        
         .float-card {
             animation: float3d 6s ease-in-out infinite;
             transform-style: preserve-3d;
@@ -80,25 +94,54 @@
             transform: translateY(-10px) scale(1.04) rotateX(5deg) !important;
             box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.9);
             z-index: 30;
+            animation-play-state: paused;
+        }
+        .float-card:nth-child(2) { animation-delay: 1s; }
+        .float-card:nth-child(3) { animation-delay: 2s; }
+        .float-card:nth-child(4) { animation-delay: 3s; }
+
+        /* CSS 3D Medicine Capsules */
+        .capsule-3d {
+            position: absolute;
+            width: 45px;
+            height: 120px;
+            border-radius: 50px;
+            z-index: -1;
+            animation: float3d 8s ease-in-out infinite;
+            opacity: 0.85;
+            box-shadow: 
+                inset -8px -8px 20px rgba(0,0,0,0.25), 
+                inset 8px 8px 20px rgba(255,255,255,0.7), 
+                15px 20px 30px rgba(0,0,0,0.15);
+        }
+        .capsule-orange {
+            background: linear-gradient(180deg, #FF9800 50%, #ffffff 50%);
+        }
+        .capsule-purple {
+            background: linear-gradient(180deg, #4A148C 50%, #ffffff 50%);
         }
 
-        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
-        .rotating-badge { animation: spin-slow 12s linear infinite; }
-
-        @keyframes floatObj1 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-40px) rotate(20deg); } }
-        @keyframes floatObj2 { 0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); } 50% { transform: translateY(30px) rotate(-15deg) scale(1.1); } }
-        @keyframes floatObj3 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(45deg); } }
-        @keyframes floatObjHeading { 0%, 100% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(20px, -30px) scale(1.05); } 66% { transform: translate(-20px, 20px) scale(0.95); } }
-
-        .bg-3d-obj-1 { position: absolute; width: 160px; height: 160px; background: radial-gradient(circle at 30% 30%, #FFCC80 0%, #FF9800 40%, #E65100 80%, #BF360C 100%); border-radius: 50%; box-shadow: inset -20px -20px 40px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.8), 15px 25px 40px rgba(0,0,0,0.25); animation: floatObj1 10s ease-in-out infinite; z-index: -1; opacity: 0.9; }
-        .bg-3d-obj-2 { position: absolute; width: 180px; height: 80px; background: linear-gradient(135deg, #7E57C2, #4A148C, #311B92); border-radius: 50px; box-shadow: inset -15px -15px 30px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.4), 15px 25px 35px rgba(0,0,0,0.3); animation: floatObj2 12s ease-in-out infinite; z-index: -1; opacity: 0.8; }
-        .bg-3d-obj-3 { position: absolute; width: 110px; height: 110px; background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e4e4e7 60%, #a1a1aa 100%); border-radius: 35px; box-shadow: inset -15px -15px 25px rgba(0,0,0,0.15), inset 10px 10px 20px rgba(255,255,255,0.9), 10px 15px 30px rgba(0,0,0,0.15); animation: floatObj3 14s ease-in-out infinite; z-index: -1; opacity: 0.95; }
-        .bg-3d-obj-heading { position: absolute; width: 250px; height: 250px; background: radial-gradient(circle at 30% 30%, #D1C4E9 0%, #7E57C2 40%, #4A148C 80%, #311B92 100%); border-radius: 50%; box-shadow: inset -25px -25px 50px rgba(0,0,0,0.6), inset 15px 15px 30px rgba(255,255,255,0.7), 20px 30px 50px rgba(0,0,0,0.25); animation: floatObjHeading 15s ease-in-out infinite; z-index: -1; opacity: 0.65; top: 15%; left: 35%; }
-
-        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; }
-        .toast { background: #09090b; color: #F8F9FA; padding: 18px 28px; border-left: 5px solid #FF9800; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1); transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; }
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed; bottom: 30px; right: 30px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        .toast {
+            background: #09090b; color: #F8F9FA; padding: 18px 28px;
+            border-left: 5px solid #FF9800; border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1);
+            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif;
+            font-weight: 600; font-size: 0.95rem;
+        }
         .toast.show { transform: translateX(0); }
-        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #F8F9FA; } ::-webkit-scrollbar-thumb { background: #4A148C; border-radius: 10px; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F8F9FA; }
+        ::-webkit-scrollbar-thumb { background: #4A148C; border-radius: 10px; }
+        
+        /* Sliding Panel for History */
+        .history-panel-open { transform: translateX(0) !important; box-shadow: -20px 0 50px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen">
@@ -107,6 +150,7 @@
     <nav class="fixed w-full z-50 transition-all duration-300 bg-gradient-to-r from-surface/90 via-purple-50/80 to-orange-50/90 backdrop-blur-xl border-b border-starkBlack/5 h-24 flex items-center shadow-sm" id="navbar">
         <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center">
             
+            <!-- BRAND LOGO -->
             <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
                 <div class="relative w-12 h-12 mr-4 transform group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
                     <i class="fa-solid fa-location-dot text-[40px] text-deepPurple relative z-0" style="text-shadow: 2px 4px 6px rgba(74,20,140,0.3);"></i>
@@ -121,132 +165,189 @@
                 </div>
             </div>
             
+            <!-- Auth Links -->
             <div class="flex items-center space-x-6">
                 <!-- Logged Out State -->
                 <div id="navAuthLoggedOut" class="flex items-center space-x-6">
-                    <button onclick="openAuthModal('login')" class="font-poppins font-bold text-starkBlack hover:text-deepPurple hover:scale-110 transition-all duration-300 text-sm uppercase tracking-widest hidden sm:block">Sign In</button>
-                    <button onclick="openAuthModal('signup1')" class="bg-starkBlack text-surface px-8 py-3.5 rounded-full font-poppins font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active">Sign Up</button>
+                    <button onclick="openAuthModal('login')" class="font-poppins font-bold text-starkBlack hover:text-deepPurple hover:scale-110 transition-all duration-300 text-sm uppercase tracking-widest hidden sm:block">
+                        Sign In
+                    </button>
+                    <button onclick="openAuthModal('signup1')" class="bg-starkBlack text-surface px-8 py-3.5 rounded-full font-poppins font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active">
+                        Sign Up
+                    </button>
                 </div>
 
-                <!-- Logged In State -->
+                <!-- Logged In State (Hidden by default) -->
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
-                    <span id="navUserName" class="font-poppins font-bold tracking-wide text-starkBlack text-sm hidden md:block"></span>
-                    <button onclick="handleLogout()" class="text-error font-poppins font-bold hover:text-red-800 hover:scale-110 transition-all duration-300 text-sm uppercase tracking-widest bg-red-50 px-5 py-2 rounded-full border border-red-100">Sign Out</button>
+                    <span id="navUserName" class="font-inter font-bold text-smoke text-sm hidden md:block"></span>
+                    
+                    <!-- NEW: My Visits Button -->
+                    <button onclick="toggleHistoryPanel()" class="font-poppins font-bold text-deepPurple hover:text-vibrantOrange hover:scale-105 transition-all duration-300 text-sm uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left"></i> My Visits
+                    </button>
+                    
+                    <button onclick="handleLogout()" class="text-error font-poppins font-bold hover:text-red-800 hover:scale-110 transition-all duration-300 text-sm uppercase tracking-widest border-l border-smoke/20 pl-6">
+                        Sign Out
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
+    <!-- My Visits Sliding Panel -->
+    <div id="historyOverlay" class="fixed inset-0 bg-starkBlack/40 backdrop-blur-sm z-[140] hidden opacity-0 transition-opacity duration-300" onclick="toggleHistoryPanel()"></div>
+    <div id="historyPanel" class="fixed right-0 top-0 h-full w-full max-w-md bg-surface transform translate-x-full transition-transform duration-500 ease-in-out z-[150] flex flex-col border-l border-smoke/10">
+        <div class="p-8 border-b border-smoke/10 bg-offWhite flex justify-between items-center">
+            <div>
+                <h3 class="text-2xl font-poppins font-black text-starkBlack">Visit History</h3>
+                <p class="text-xs font-inter text-smoke mt-1">Help us keep the inventory accurate.</p>
+            </div>
+            <button onclick="toggleHistoryPanel()" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-smoke hover:text-error hover:rotate-90 transition-all duration-300">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+        </div>
+        <div id="historyList" class="flex-grow overflow-y-auto p-6 space-y-4 bg-surface">
+            <!-- Dynamic History Cards Inserted Here -->
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
     <main class="flex-grow pt-24 flex flex-col relative z-10">
 
         <!-- ================= HERO & SEARCH SECTION ================= -->
-        <section id="heroSection" class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]">
+        <section class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden">
+            <!-- Background Elements -->
             <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
+            
+            <!-- Top Left Violet Gradient -->
             <div class="absolute top-[-10%] left-[-15%] w-[70vw] max-w-[800px] h-[70vw] max-h-[800px] bg-deepPurple rounded-full blur-[150px] z-[-2] opacity-50 pointer-events-none"></div>
             
-            <svg id="heroSvg" class="absolute bottom-0 left-0 w-full min-h-[40vh] md:min-h-[55vh] z-[-1] drop-shadow-2xl transition-all duration-700 ease-in-out" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <!-- The massive gold curve -->
+            <svg class="absolute bottom-0 left-0 w-full min-h-[40vh] md:min-h-[55vh] z-[-1] drop-shadow-2xl" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <path d="M0 400C300 400 450 150 800 250C1150 350 1300 50 1440 0V600H0V400Z" fill="#FF9800"/>
             </svg>
 
-            <div class="bg-3d-obj-1 top-[18%] left-[12%] hidden md:block transition-opacity duration-700"></div>
-            <div class="bg-3d-obj-2 top-[35%] right-[5%] hidden lg:block transition-opacity duration-700"></div>
-            <div class="bg-3d-obj-3 bottom-[25%] left-[8%] hidden md:block transition-opacity duration-700"></div>
-            <div class="bg-3d-obj-heading hidden md:block transition-opacity duration-700"></div>
+            <!-- ================= NEW BACKGROUND 3D CAPSULES ================= -->
+            <div class="capsule-3d capsule-orange top-[15%] left-[10%] hidden md:block" style="--base-rot: 35deg; animation-delay: 0s;"></div>
+            <div class="capsule-3d capsule-purple top-[40%] right-[12%] hidden lg:block" style="--base-rot: -25deg; animation-delay: 1.5s; transform: scale(1.2);"></div>
+            <div class="capsule-3d capsule-purple bottom-[30%] left-[15%] hidden md:block" style="--base-rot: 60deg; animation-delay: 3s; transform: scale(0.8);"></div>
+            <div class="capsule-3d capsule-orange top-[20%] right-[25%] hidden xl:block" style="--base-rot: -50deg; animation-delay: 2s; transform: scale(0.9); opacity: 0.6;"></div>
 
-            <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center mt-12 md:mt-0">
+            <!-- ================= ISOMETRIC STORE BACKGROUND SVGs ================= -->
+            <!-- Left Store -->
+            <div class="absolute bottom-[20%] left-[-5%] lg:left-[2%] opacity-[0.07] pointer-events-none z-[-1] transform -rotate-2">
+                <svg width="350" height="350" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 20L180 60V140L100 180L20 140V60L100 20Z" fill="#09090b"/>
+                    <path d="M100 20L180 60V140L100 100V20Z" fill="#4A148C" opacity="0.8"/>
+                    <path d="M20 60L100 100V180L20 140V60Z" fill="#FF9800" opacity="0.6"/>
+                    <!-- Medical Cross -->
+                    <rect x="45" y="95" width="30" height="10" fill="white" transform="skewY(26)"/>
+                    <rect x="55" y="85" width="10" height="30" fill="white" transform="skewY(26)"/>
+                </svg>
+            </div>
+            <!-- Right Store -->
+            <div class="absolute top-[15%] right-[-5%] lg:right-[2%] opacity-[0.07] pointer-events-none z-[-1] transform scale-x-[-1] rotate-2">
+                <svg width="300" height="300" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 20L180 60V140L100 180L20 140V60L100 20Z" fill="#09090b"/>
+                    <path d="M100 20L180 60V140L100 100V20Z" fill="#4A148C" opacity="0.8"/>
+                    <path d="M20 60L100 100V180L20 140V60Z" fill="#FF9800" opacity="0.6"/>
+                    <rect x="45" y="95" width="30" height="10" fill="white" transform="skewY(26)"/>
+                    <rect x="55" y="85" width="10" height="30" fill="white" transform="skewY(26)"/>
+                </svg>
+            </div>
+
+            <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center">
                 
-                <!-- NEW WRAPPER: Handles the universal scale down transition smoothly -->
-                <div id="heroContentWrapper" class="w-full flex flex-col items-center transition-all duration-700 origin-top scale-100 mb-0">
-                    <div id="heroTextGroup" class="text-center w-full max-w-[1400px] mx-auto flex flex-col items-center mb-8 mt-4 md:mt-8 group cursor-default relative">
-                        <div class="absolute -top-12 md:-top-16 right-2 md:-right-6 lg:-right-16 w-32 h-32 md:w-40 md:h-40 flex items-center justify-center opacity-95 pointer-events-none z-0">
-                            <svg class="rotating-badge w-full h-full text-deepPurple" viewBox="0 0 100 100" style="filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.15));">
-                                <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" fill="transparent" />
-                                <text class="font-poppins font-black text-[8.5px] uppercase" fill="currentColor">
-                                    <textPath href="#circlePath" startOffset="0%" textLength="238" lengthAdjust="spacing">• VERIFIED PHARMACY &amp; MEDICINE LOCATOR</textPath>
-                                </text>
-                            </svg>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="fa-solid fa-capsules text-vibrantOrange text-2xl md:text-3xl drop-shadow-md"></i>
+                <!-- System Heading -->
+                <div class="text-center w-full max-w-[1400px] mx-auto flex flex-col items-center mb-8 group cursor-default relative mt-4 md:mt-8">
+                    <!-- Rotating badge removed as requested -->
+                    <h1 class="flex flex-col items-center transition-transform duration-500 group-hover:scale-[1.02] relative z-10">
+                        <!-- Lifted Up 'Your Trusted' using positive margin bottom -->
+                        <span class="font-poppins font-black text-starkBlack text-lg sm:text-xl md:text-2xl lg:text-[1.5rem] leading-none mb-2 md:mb-3 relative z-20 uppercase tracking-widest" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.15);">Your Trusted</span>
+                        <!-- Main Title -->
+                        <span class="font-serif font-bold text-starkBlack text-[1.5rem] sm:text-3xl md:text-4xl lg:text-[3.5rem] xl:text-[4.2rem] leading-[1.05] tracking-tighter whitespace-nowrap relative z-10" style="text-shadow: 4px 8px 15px rgba(0,0,0,0.15);">Pharmacy and Medicine Locator.</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-smoke font-inter font-medium max-w-2xl mt-6 transition-transform duration-500 group-hover:translate-y-2 relative z-10">
+                        Locate essential medicines instantly. Professional network of verified pharmacies. 
+                        <!-- Increased margin-top for account required -->
+                        <span class="font-black text-starkBlack block mt-5 md:mt-7 drop-shadow-md text-xl md:text-2xl">Account required to search.</span>
+                    </p>
+                </div>
+
+                <!-- Critical Search Layout -->
+                <form onsubmit="handleSearch(event)" class="w-full max-w-[1150px] flex flex-col items-center mt-6">
+                    
+                    <!-- Row 1: The Inputs wrapped in a sleek pill container with 3D Shadow -->
+                    <div class="glass-pill rounded-[2.5rem] p-5 md:p-7 flex flex-col lg:flex-row items-end gap-5 md:gap-4 w-full relative z-40 shadow-3d-pill">
+                        
+                        <!-- Medicine Name -->
+                        <div class="flex-grow w-full lg:w-auto relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
+                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Medicine Name</label>
+                            <div class="relative rounded-full">
+                                <i class="fa-solid fa-pills absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
+                                <input type="text" id="searchMedicine" placeholder="e.g. Paracetamol" required 
+                                    class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
                             </div>
                         </div>
 
-                        <h1 class="flex flex-col items-center transition-transform duration-500 group-hover:scale-[1.02] relative z-10">
-                            <span class="font-poppins font-black text-starkBlack text-lg sm:text-xl md:text-2xl lg:text-[1.5rem] leading-none mb-2 md:mb-3 relative z-20 uppercase tracking-widest" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.15);">Your Trusted</span>
-                            <span class="font-serif font-bold text-starkBlack text-[1.5rem] sm:text-3xl md:text-4xl lg:text-[3.5rem] xl:text-[4.2rem] leading-[1.05] tracking-tighter whitespace-nowrap relative z-10" style="text-shadow: 4px 8px 15px rgba(0,0,0,0.15);">Pharmacy and Medicine Locator.</span>
-                        </h1>
-                        <p class="text-lg md:text-xl text-smoke font-inter font-medium max-w-2xl mt-6 transition-transform duration-500 group-hover:translate-y-2 relative z-10">
-                            Locate essential medicines instantly. Professional network of verified pharmacies. 
-                            <span class="font-black text-starkBlack block mt-5 md:mt-7 drop-shadow-md text-xl md:text-2xl">Account required to search.</span>
-                        </p>
+                        <!-- Milligrams (mg) -->
+                        <div class="w-full lg:w-52 xl:w-60 relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
+                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Milligrams (mg)</label>
+                            <div class="relative rounded-full">
+                                <i class="fa-solid fa-weight-scale absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
+                                <input type="number" id="searchMg" placeholder="e.g. 500" required 
+                                    class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
+                            </div>
+                        </div>
+
+                        <!-- Barangay Select -->
+                        <div class="w-full lg:w-[24rem] xl:w-[28rem] relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50" id="customDropdownContainer">
+                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors group-focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Barangay</label>
+                            <div class="relative rounded-full">
+                                <input type="hidden" id="searchBarangayInput" required>
+                                
+                                <div id="dropdownTrigger" class="w-full pl-12 pr-6 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface transition-all text-starkBlack font-bold cursor-pointer outline-none shadow-3d-input flex justify-between items-center hover:border-starkBlack/10 focus:shadow-3d-input-focus">
+                                    <div class="flex items-center">
+                                        <i class="fa-solid fa-map-location-dot absolute left-5 text-smoke transition-colors"></i>
+                                        <span id="dropdownSelectedText" class="text-smoke/60">Select Barangay...</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down text-starkBlack transition-transform duration-300" id="dropdownIcon"></i>
+                                </div>
+                                
+                                <ul id="dropdownMenu" class="absolute top-full left-0 mt-2 w-full bg-white border border-smoke/10 rounded-2xl shadow-premium max-h-64 overflow-y-auto hidden z-[100] opacity-0 transition-opacity duration-200">
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bangkal">Bangkal</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Baraka">Baraka</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bigte">Bigte</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bitungol">Bitungol</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Friendship Village Resources">Friendship Village Resources</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Matictic">Matictic</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Minuyan">Minuyan</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Partida">Partida</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Pinagtulayan">Pinagtulayan</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Poblacion">Poblacion</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Lorenzo">San Lorenzo</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Mateo">San Mateo</li>
+                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack dropdown-item transition-colors" data-value="Tigbe">Tigbe</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Increased max-width to 1250px so the dropdown won't get squished/overlapped -->
-                    <form id="searchForm" onsubmit="handleSearch(event)" class="w-full max-w-[1250px] flex flex-col items-center mt-6 relative z-40">
-                        <!-- TINAASAN ANG Z-INDEX TO 60 -->
-                        <div class="glass-pill rounded-[2.5rem] p-5 md:p-7 flex flex-col lg:flex-row items-end gap-5 md:gap-4 w-full relative z-[60] shadow-3d-pill">
-                            
-                            <div class="flex-grow w-full lg:w-auto relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
-                                <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Medicine Name</label>
-                                <div class="relative rounded-full">
-                                    <i class="fa-solid fa-pills absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
-                                    <input type="text" id="searchMedicine" placeholder="e.g. Paracetamol" required class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
-                                </div>
-                            </div>
+                    <!-- Row 2: Search Button -->
+                    <div class="mt-10 flex justify-center w-full relative z-10">
+                        <button type="submit" id="btnSearch" 
+                            class="group/btn bg-starkBlack text-surface font-poppins font-black text-base md:text-lg px-12 py-5 rounded-[2rem] shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active uppercase tracking-widest flex items-center justify-center gap-4 w-full sm:w-auto min-w-[250px] transition-all duration-300">
+                            <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">FIND YOUR MEDS</span>
+                            <i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-2"></i>
+                        </button>
+                    </div>
+                </form>
 
-                            <div class="w-full lg:w-52 xl:w-60 relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
-                                <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Milligrams (mg)</label>
-                                <div class="relative rounded-full">
-                                    <i class="fa-solid fa-weight-scale absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
-                                    <input type="number" id="searchMg" placeholder="e.g. 500" required class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
-                                </div>
-                            </div>
-
-                            <div class="w-full lg:w-[24rem] xl:w-[28rem] relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50" id="customDropdownContainer">
-                                <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors group-focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Barangay</label>
-                                <div class="relative rounded-full">
-                                    <input type="hidden" id="searchBarangayInput" required>
-                                    
-                                    <div id="dropdownTrigger" class="w-full pl-12 pr-6 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface transition-all text-starkBlack font-bold cursor-pointer outline-none shadow-3d-input flex justify-between items-center hover:border-starkBlack/10 focus:shadow-3d-input-focus">
-                                        <div class="flex items-center">
-                                            <i class="fa-solid fa-map-location-dot absolute left-5 text-smoke transition-colors"></i>
-                                            <span id="dropdownSelectedText" class="text-smoke/60">Select Barangay...</span>
-                                        </div>
-                                        <i class="fa-solid fa-chevron-down text-starkBlack transition-transform duration-300" id="dropdownIcon"></i>
-                                    </div>
-                                    
-                                    <ul id="dropdownMenu" class="absolute top-full left-0 mt-2 w-full bg-white border border-smoke/10 rounded-2xl shadow-premium max-h-64 overflow-y-auto hidden z-[100] opacity-0 transition-opacity duration-200">
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bangkal">Bangkal</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Baraka">Baraka</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bigte">Bigte</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bitungol">Bitungol</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Friendship Village Resources">Friendship Village Resources</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Matictic">Matictic</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Minuyan">Minuyan</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Partida">Partida</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Pinagtulayan">Pinagtulayan</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Poblacion">Poblacion</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Lorenzo">San Lorenzo</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Mateo">San Mateo</li>
-                                        <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack dropdown-item transition-colors" data-value="Tigbe">Tigbe</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Button z-index stays low so the dropdown goes over it safely -->
-                        <div id="searchBtnContainer" class="mt-10 flex justify-center w-full relative z-10 transition-all duration-700">
-                            <button type="submit" id="btnSearch" class="group/btn bg-starkBlack text-surface font-poppins font-black text-base md:text-lg px-12 py-5 rounded-[2rem] shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active uppercase tracking-widest flex items-center justify-center gap-4 w-full sm:w-auto min-w-[250px] transition-all duration-300">
-                                <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">FIND YOUR MEDS</span>
-                                <i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-2"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
             </div>
         </section>
 
         <!-- ================= HOW IT WORKS SECTION ================= -->
-        <section id="howItWorksSection" class="py-24 bg-surface relative z-10 border-t border-smoke/10 transition-all duration-700 ease-in-out">
+        <section class="py-24 bg-surface relative z-10 border-t border-smoke/10">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="text-center mb-20 group">
                     <h2 class="text-sm font-poppins font-bold uppercase tracking-[0.3em] text-vibrantOrange mb-3 transition-transform group-hover:-translate-y-1" style="text-shadow: 1px 1px 2px rgba(255,152,0,0.2);">User Journey</h2>
@@ -254,27 +355,43 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Step 1 -->
                     <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
                         <div class="w-16 h-16 bg-deepPurple text-surface rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
                             <i class="fa-solid fa-lock"></i>
                         </div>
                         <h4 class="font-poppins font-black text-xl text-starkBlack mb-4">Account Required</h4>
                         <p class="text-smoke font-inter leading-relaxed">Our professional locator network is secure. You must be authenticated to access real-time inventory.</p>
+                        <div class="absolute -right-4 top-1/2 transform -translate-y-1/2 text-smoke/20 text-4xl hidden lg:block">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
                     </div>
+
+                    <!-- Step 2 -->
                     <div class="bg-starkBlack p-10 rounded-[2rem] shadow-[0_15px_35px_-5px_rgba(0,0,0,0.5),_inset_0_2px_4px_rgba(255,255,255,0.1)] float-card relative z-20 cursor-pointer">
                         <div class="w-16 h-16 bg-vibrantOrange text-starkBlack rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
                             <i class="fa-solid fa-user-plus"></i>
                         </div>
                         <h4 class="font-poppins font-black text-xl text-surface mb-4">Create an Account</h4>
                         <p class="text-offWhite/70 font-inter leading-relaxed">Complete our quick registration and verify your email to unlock access to our partner pharmacies.</p>
+                        <div class="absolute -right-4 top-1/2 transform -translate-y-1/2 text-smoke/20 text-4xl hidden lg:block">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
                     </div>
+
+                    <!-- Step 3 -->
                     <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
                         <div class="w-16 h-16 bg-deepPurple text-surface rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
                             <i class="fa-solid fa-magnifying-glass-location"></i>
                         </div>
                         <h4 class="font-poppins font-black text-xl text-starkBlack mb-4">Search Inventory</h4>
                         <p class="text-smoke font-inter leading-relaxed">Input your medicine, exact milligrams, and targeted barangay to instantly view availability and prices.</p>
+                        <div class="absolute -right-4 top-1/2 transform -translate-y-1/2 text-smoke/20 text-4xl hidden lg:block">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
                     </div>
+
+                    <!-- Step 4 -->
                     <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
                         <div class="w-16 h-16 bg-vibrantOrange text-starkBlack rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
                             <i class="fa-solid fa-map-location-dot"></i>
@@ -287,15 +404,16 @@
         </section>
 
         <!-- ================= SEARCH RESULTS DISPLAY ================= -->
-        <section id="searchResults" class="hidden bg-offWhite py-10 lg:py-20 relative z-20 border-t border-smoke/10 min-h-[50vh] transition-all duration-700 ease-in-out">
+        <section id="searchResults" class="hidden bg-offWhite py-20 relative z-20 border-t border-smoke/10 min-h-[50vh]">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 border-b border-smoke/20 pb-6 gap-4">
                     <div>
                         <h2 class="text-4xl font-poppins font-black text-starkBlack" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Available Pharmacies</h2>
                         <p class="text-smoke font-inter font-medium mt-3 text-lg" id="searchQueryText">Showing results for your search.</p>
                     </div>
+                    <!-- CHANGED TEXT HERE -->
                     <div class="text-xs font-bold text-surface uppercase tracking-[0.2em] flex items-center gap-2 bg-deepPurple px-5 py-3 rounded-full shadow-3d-btn cursor-default hover:-translate-y-1 transition-transform duration-300">
-                        <i class="fa-solid fa-circle text-[8px] text-vibrantOrange animate-pulse"></i> Real-time Database
+                        <i class="fa-solid fa-circle text-[8px] text-vibrantOrange animate-pulse"></i> LIVE INVENTORY
                     </div>
                 </div>
                 
@@ -304,6 +422,7 @@
                 </div>
             </div>
         </section>
+
     </main>
 
     <!-- ================= PREMIUM AUTHENTICATION MODAL ================= -->
@@ -322,12 +441,14 @@
                 <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-6">
                     <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
-                        <input type="email" id="loginEmail" autocomplete="email" required placeholder="name@example.com" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none cursor-text shadow-3d-input">
+                        <input type="email" id="loginEmail" autocomplete="email" required placeholder="name@example.com" 
+                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none cursor-text shadow-3d-input">
                     </div>
                     <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Password</label>
                         <div class="relative">
-                            <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="••••••••" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest pr-12 text-sm outline-none cursor-text shadow-3d-input">
+                            <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="••••••••" 
+                                class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest pr-12 text-sm outline-none cursor-text shadow-3d-input">
                             <button type="button" onclick="togglePassword('loginPassword', 'eyeLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-deepPurple hover:scale-110 transition-all focus:outline-none">
                                 <i class="fa-solid fa-eye text-lg" id="eyeLogin"></i>
                             </button>
@@ -337,7 +458,9 @@
                         </div>
                     </div>
                     <div class="pt-4">
-                        <button type="submit" id="btnLoginSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">Continue</button>
+                        <button type="submit" id="btnLoginSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
+                            Continue
+                        </button>
                     </div>
                 </form>
                 <div class="mt-8 text-center text-xs font-inter text-smoke font-medium">
@@ -354,27 +477,33 @@
                 <form id="signup1Form" onsubmit="handleSignupStep1(event)" class="space-y-6">
                     <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">First Name</label>
-                        <input type="text" id="regFname" required placeholder="John" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                        <input type="text" id="regFname" required placeholder="John" 
+                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
                     </div>
                     <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Last Name</label>
-                        <input type="text" id="regLname" required placeholder="Doe" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                        <input type="text" id="regLname" required placeholder="Doe" 
+                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
                     </div>
                     <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
-                        <input type="email" id="regEmail" autocomplete="email" required placeholder="name@example.com" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                        <input type="email" id="regEmail" autocomplete="email" required placeholder="name@example.com" 
+                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
                     </div>
                     <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Password</label>
                         <div class="relative">
-                            <input type="password" id="regPassword" autocomplete="new-password" required placeholder="••••••••" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest text-sm pr-12 outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                            <input type="password" id="regPassword" autocomplete="new-password" required placeholder="••••••••" 
+                                class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest text-sm pr-12 outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
                             <button type="button" onclick="togglePassword('regPassword', 'eyeReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-deepPurple hover:scale-110 transition-all focus:outline-none">
                                 <i class="fa-solid fa-eye text-lg" id="eyeReg"></i>
                             </button>
                         </div>
                     </div>
                     <div class="pt-4">
-                        <button type="submit" id="btnSignup1Submit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">Continue</button>
+                        <button type="submit" id="btnSignup1Submit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
+                            Continue
+                        </button>
                     </div>
                 </form>
                 <div class="mt-8 text-center text-xs font-inter text-smoke font-medium">
@@ -391,9 +520,12 @@
                 <form id="signup2Form" onsubmit="handleSignupStep2(event)" class="space-y-8">
                     <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-3 text-center transition-colors focus-within:text-vibrantOrange">6-Digit Access Code</label>
-                        <input type="text" id="regCode" required maxlength="6" placeholder="XXXXXX" class="w-full px-5 py-6 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-black text-3xl tracking-[0.4em] text-center uppercase outline-none cursor-text shadow-3d-input">
+                        <input type="text" id="regCode" required maxlength="6" placeholder="XXXXXX" 
+                            class="w-full px-5 py-6 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-black text-3xl tracking-[0.4em] text-center uppercase outline-none cursor-text shadow-3d-input">
                     </div>
-                    <button type="submit" id="btnSignup2Submit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">Verify & Create</button>
+                    <button type="submit" id="btnSignup2Submit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
+                        Verify & Create
+                    </button>
                 </form>
                 <div class="mt-8 text-center text-[10px] font-poppins font-black text-smoke uppercase tracking-widest">
                     <button type="button" id="resendCodeBtn" onclick="handleResendCode('signup')" class="hover:text-starkBlack transition-all hover:translate-x-1">Resend Code</button>
@@ -409,10 +541,13 @@
                 <form id="forgotForm" onsubmit="handleForgotRequest(event)" class="space-y-6">
                     <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
                         <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
-                        <input type="email" id="forgotEmail" required placeholder="name@example.com" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                        <input type="email" id="forgotEmail" required placeholder="name@example.com" 
+                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
                     </div>
                     <div class="pt-4">
-                        <button type="submit" id="btnForgotSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">Send Reset Link</button>
+                        <button type="submit" id="btnForgotSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
+                            Send Reset Link
+                        </button>
                     </div>
                 </form>
                 <div class="mt-8 text-center text-xs font-inter text-smoke font-medium">
@@ -449,18 +584,26 @@
     <!-- Toast Notification Container -->
     <div id="toast-container"></div>
 
+    <!-- Core Logic -->
     <script>
-        const API_URL = 'https://python-backend-mzcr.onrender.com';
+        const API_URL = 'https://oath-of-care.onrender.com';
         
+        // State
         let authState = JSON.parse(localStorage.getItem('ooc_client_user')) || { id: null, role: null, name: null };
         let tempSignupEmail = '';
         let resendTimer = null;
+        
+        // Visits History State
+        let visitsHistory = JSON.parse(localStorage.getItem('ooc_client_visits')) || [];
 
+        // Init
         window.onload = () => {
             updateNavUI();
             setupCustomDropdown();
+            renderHistoryPanel();
         };
 
+        // --- CUSTOM DROPDOWN LOGIC ---
         function setupCustomDropdown() {
             const trigger = document.getElementById('dropdownTrigger');
             const menu = document.getElementById('dropdownMenu');
@@ -498,9 +641,11 @@
             }
         }
 
+        // UI Toast Notification
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             if (!container) return;
+            
             const toast = document.createElement('div');
             toast.className = 'toast';
             if (type === 'error') {
@@ -508,22 +653,26 @@
             } else {
                 toast.style.borderLeftColor = '#FF9800';
             }
+            
             toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation text-error' : 'fa-circle-check text-vibrantOrange'} text-xl"></i> <span>${message}</span>`;
+            
             container.appendChild(toast);
             void toast.offsetWidth;
             toast.classList.add('show');
+            
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 500);
             }, 3000);
         }
 
+        // Button Loading State (CHANGED "Processing..." to "Loading...")
         function lockButton(btnId) {
             const btn = document.getElementById(btnId);
             if(!btn) return () => {};
             const originalHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin drop-shadow-md"></i> <span class="ml-2 drop-shadow-md">Processing...</span>';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin drop-shadow-md"></i> <span class="ml-2 drop-shadow-md">Loading...</span>';
             btn.classList.add('opacity-80', 'cursor-not-allowed', 'scale-95');
             return () => {
                 btn.disabled = false;
@@ -532,15 +681,16 @@
             };
         }
 
+        // Nav Auth State UI
         function updateNavUI() {
             const loggedOutDiv = document.getElementById('navAuthLoggedOut');
             const loggedInDiv = document.getElementById('navAuthLoggedIn');
             const nameDisplay = document.getElementById('navUserName');
 
-            if(authState.role === 'client' || authState.role === 'patient') {
+            if(authState.role === 'patient') {
                 loggedOutDiv.classList.add('hidden');
                 loggedInDiv.classList.remove('hidden');
-                if(nameDisplay) nameDisplay.innerText = `Welcome, ${authState.name || 'User'}`;
+                if(nameDisplay) nameDisplay.innerText = `Hi, ${authState.name || 'User'}`;
             } else {
                 loggedOutDiv.classList.remove('hidden');
                 loggedInDiv.classList.add('hidden');
@@ -551,27 +701,6 @@
             localStorage.removeItem('ooc_client_user');
             authState = { id: null, role: null, name: null };
             updateNavUI();
-            
-            const hero = document.getElementById('heroSection');
-            const svg = document.getElementById('heroSvg');
-            const howItWorks = document.getElementById('howItWorksSection');
-            const heroContentWrapper = document.getElementById('heroContentWrapper');
-            
-            if (hero && svg && howItWorks) {
-                hero.classList.add('min-h-[90vh]');
-                hero.classList.remove('min-h-[40vh]');
-                
-                svg.classList.add('min-h-[40vh]', 'md:min-h-[55vh]');
-                svg.classList.remove('min-h-[30vh]', 'md:min-h-[30vh]');
-                
-                howItWorks.classList.remove('hidden');
-
-                if (heroContentWrapper) {
-                    heroContentWrapper.classList.add('scale-100', 'mb-0');
-                    heroContentWrapper.classList.remove('scale-[0.65]', 'md:scale-[0.70]', '-mb-36', 'md:-mb-44', '-mt-10');
-                }
-            }
-
             document.getElementById('searchResults').classList.add('hidden');
             document.getElementById('resultsGrid').innerHTML = '';
             document.getElementById('searchMedicine').value = '';
@@ -586,7 +715,6 @@
             }
 
             showToast('Signed out successfully.');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function togglePassword(inputId, iconId) {
@@ -632,7 +760,7 @@
                 document.getElementById('signup1Form').reset();
                 document.getElementById('signup2Form').reset();
                 document.getElementById('forgotForm').reset();
-            }, 300);
+            }, 300); 
         }
 
         function switchAuthView(view) {
@@ -644,6 +772,7 @@
             if(targetEl) targetEl.classList.remove('hidden');
         }
 
+        // --- AUTH API ---
         async function handleLoginSubmit(e) {
             e.preventDefault();
             const unlock = lockButton('btnLoginSubmit');
@@ -708,18 +837,15 @@
                 
                 if(response.ok) {
                     if (resendTimer) clearInterval(resendTimer);
-                    
                     const data = {
                         fname: document.getElementById('regFname').value,
                         lname: document.getElementById('regLname').value,
                         email: tempSignupEmail,
                         password: document.getElementById('regPassword').value
                     };
-                    
                     const regResponse = await fetch(`${API_URL}/register-patient`, {
                         method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
                     });
-                    
                     const regResult = await regResponse.json();
                     if(regResponse.ok){ 
                         showToast('Account created successfully!'); 
@@ -787,7 +913,6 @@
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: tempSignupEmail })
                 });
-
                 if (response.ok) {
                     showToast('New code sent to your email!');
                     startResendCooldown('resendCodeBtn');
@@ -803,11 +928,11 @@
             }
         }
 
-        // --- COMPACT SEARCH LOGIC ---
+        // --- SEARCH API ---
         async function handleSearch(e) {
             e.preventDefault();
             
-            if (authState.role !== 'client' && authState.role !== 'patient') {
+            if (authState.role !== 'patient') {
                 showToast("Please sign in to search the inventory.", "error");
                 openAuthModal('login');
                 return;
@@ -824,34 +949,15 @@
 
             const unlock = lockButton('btnSearch');
             
-            const hero = document.getElementById('heroSection');
-            const svg = document.getElementById('heroSvg');
-            const howItWorks = document.getElementById('howItWorksSection');
-            const heroContentWrapper = document.getElementById('heroContentWrapper');
-            
-            if (hero && heroContentWrapper && howItWorks) {
-                hero.classList.remove('min-h-[90vh]');
-                hero.classList.add('min-h-[40vh]');
-                
-                heroContentWrapper.classList.remove('scale-100', 'mb-0');
-                heroContentWrapper.classList.add('scale-[0.65]', 'md:scale-[0.70]', '-mb-36', 'md:-mb-44', '-mt-10');
-                
-                svg.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
-                svg.classList.add('min-h-[30vh]', 'md:min-h-[30vh]');
-                
-                howItWorks.classList.add('hidden'); 
-            }
-
             document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-deepPurple">${medicine} (${milligrams}mg)</strong> in <strong class="text-deepPurple">${barangay}</strong>`;
             
             const resultsDiv = document.getElementById('searchResults');
             const grid = document.getElementById('resultsGrid');
             
             resultsDiv.classList.remove('hidden');
-            grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Querying database...</p></div>';
+            // CHANGED TEXT "Querying database..." to "Loading..."
+            grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Loading...</p></div>';
             
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
             try {
                 const response = await fetch(`${API_URL}/api/search`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -863,10 +969,12 @@
                 if (response.status === 429) {
                     showToast(data.error, 'error');
                     grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
-                } else if (response.ok && data.results && data.results.length > 0) {
+                } else if (response.ok && data.results.length > 0) {
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
-                        let shopImage = res.logo ? res.logo : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
+                        let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
+                        // Mock ID generation for demo purposes, assume backend returns pharmacyId
+                        const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
 
                         grid.innerHTML += `
                             <div class="bg-surface rounded-[2.5rem] shadow-3d-card hover:shadow-3d-modal transition-all duration-500 overflow-hidden flex flex-col group border border-white/50 cursor-pointer transform hover:-translate-y-2">
@@ -880,18 +988,18 @@
                                     <p class="text-smoke text-xs font-poppins font-bold uppercase tracking-widest mb-6"><i class="fa-solid fa-location-dot text-deepPurple mr-2"></i> ${res.branch}</p>
                                     
                                     <div class="bg-offWhite rounded-2xl p-6 mb-8 border border-starkBlack/5 transition-colors shadow-3d-input">
-                                        <div class="flex justify-between items-start mb-3 gap-2">
-                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke shrink-0 mt-0.5">Item</span>
-                                            <span class="text-xs leading-snug font-inter font-bold text-starkBlack text-right break-words max-w-[60%]">${res.medicine}</span>
+                                        <div class="flex justify-between items-center mb-3">
+                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Item</span>
+                                            <span class="text-sm font-inter font-bold text-starkBlack truncate w-1/2 text-right">${res.medicine}</span>
                                         </div>
-                                        <div class="flex justify-between items-center border-t border-smoke/10 pt-3 gap-2">
-                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke shrink-0">Price</span>
-                                            <span class="text-xl font-poppins font-black text-deepPurple break-words text-right" style="text-shadow: 1px 1px 2px rgba(74,20,140,0.2);">₱${res.price}</span>
+                                        <div class="flex justify-between items-center border-t border-smoke/10 pt-3">
+                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Price</span>
+                                            <span class="text-xl font-poppins font-black text-deepPurple" style="text-shadow: 1px 1px 2px rgba(74,20,140,0.2);">₱${res.price}</span>
                                         </div>
                                     </div>
 
                                     <div class="mt-auto">
-                                        <button onclick="openMapModal('${res.address}', '${res.pharmacyName}')" class="w-full bg-starkBlack text-surface py-5 rounded-xl font-poppins font-black text-sm uppercase tracking-widest hover:bg-deepPurple transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center justify-center gap-3">
+                                        <button onclick="openMapModal('${res.address}', '${res.pharmacyName}', '${pharmId}', '${res.medicine}')" class="w-full bg-starkBlack text-surface py-5 rounded-xl font-poppins font-black text-sm uppercase tracking-widest hover:bg-deepPurple transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center justify-center gap-3">
                                             <i class="fa-solid fa-diamond-turn-right text-lg drop-shadow-md"></i> <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">Get Directions</span>
                                         </button>
                                     </div>
@@ -902,58 +1010,65 @@
                 } else {
                     grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="text-6xl text-smoke/30 mb-6"><i class="fa-solid fa-box-open transition-transform hover:scale-110"></i></div><div class="text-starkBlack font-poppins font-black text-2xl" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">No inventory matches found.</div><p class="text-smoke mt-3 font-inter font-medium">Try adjusting your search terms or barangay.</p></div>';
                 }
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
                 showToast('Server connection failed.', 'error');
                 grid.innerHTML = '<div class="col-span-full text-center py-20 text-error font-poppins font-black text-2xl">Server Offline. Cannot process search.</div>';
             } finally { unlock(); }
         }
 
-        function openMapModal(address, pharmacyName) {
+        // --- MAP MODAL & VISITS HISTORY LOGIC ---
+        function toggleHistoryPanel() {
+            const panel = document.getElementById('historyPanel');
+            const overlay = document.getElementById('historyOverlay');
+            
+            panel.classList.toggle('history-panel-open');
+            
+            if(panel.classList.contains('history-panel-open')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Modified Map Modal to log visits
+        function openMapModal(address, pharmacyName, pharmacyId, medicineSearched) {
             const mapModal = document.getElementById('mapModal');
             const content = document.getElementById('mapModalContent');
             const mapFrame = document.getElementById('googleMapFrame');
             const navBtn = document.getElementById('startNavigationBtn');
             
+            // Log this visit in history
+            logVisit(pharmacyId, pharmacyName, medicineSearched);
+
             document.getElementById('mapDestText').innerText = `Destination: ${pharmacyName}`;
             const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
-            
-            // FREE Preview Map
             mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
             
-            // OPEN IN NEW TAB FOR DIRECTIONS
             navBtn.onclick = () => {
-                const originalText = navBtn.innerHTML;
-                navBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Requesting Location...`;
-                navBtn.disabled = true;
-
-                showToast('Requesting permission to access your location...', 'success');
-                
+                showToast('Requesting GPS location for live routing...', 'success');
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
-                            navBtn.innerHTML = originalText;
-                            navBtn.disabled = false;
                             const origin = `${position.coords.latitude},${position.coords.longitude}`;
-                            window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodedDest}&travelmode=driving`, '_blank');
+                            mapFrame.src = `https://www.google.com/maps/embed/v1/directions?origin=${origin}&destination=${encodedDest}&mode=driving`;
+                            navBtn.classList.add('hidden');
                         },
                         (error) => {
-                            navBtn.innerHTML = originalText;
-                            navBtn.disabled = false;
-                            showToast('Location denied. Please enter your starting point manually on the map.', 'error');
-                            window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedDest}&travelmode=driving`, '_blank');
-                        },
-                        { timeout: 10000 }
+                            showToast('GPS access denied. Cannot generate live route.', 'error');
+                        }
                     );
                 } else {
-                    navBtn.innerHTML = originalText;
-                    navBtn.disabled = false;
-                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedDest}&travelmode=driving`, '_blank');
+                    showToast('Geolocation is not supported by your browser.', 'error');
                 }
             };
             
             mapModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-            
             setTimeout(() => {
                 content.classList.remove('scale-95');
                 content.classList.add('scale-100');
@@ -963,15 +1078,140 @@
         function closeMapModal() { 
             const mapModal = document.getElementById('mapModal');
             const content = document.getElementById('mapModalContent');
-            
             content.classList.remove('scale-100');
             content.classList.add('scale-95');
-            
             setTimeout(() => {
                 mapModal.classList.add('hidden'); 
                 document.getElementById('googleMapFrame').src = '';
                 document.body.style.overflow = 'auto';
             }, 300);
+        }
+
+        // --- VISITS SYSTEM ---
+        function logVisit(pharmacyId, pharmacyName, medicine) {
+            // Prevent exact duplicates
+            const exists = visitsHistory.find(v => v.id === pharmacyId && v.status === 'pending');
+            if(!exists) {
+                const newVisit = {
+                    uuid: crypto.randomUUID(),
+                    id: pharmacyId,
+                    name: pharmacyName,
+                    medicine: medicine,
+                    date: new Date().toLocaleDateString(),
+                    status: 'pending', // pending, active_q2, resolved
+                };
+                visitsHistory.unshift(newVisit);
+                localStorage.setItem('ooc_client_visits', JSON.stringify(visitsHistory));
+                renderHistoryPanel();
+            }
+        }
+
+        function renderHistoryPanel() {
+            const container = document.getElementById('historyList');
+            if(visitsHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-center opacity-50 py-20">
+                        <i class="fa-solid fa-map-location-dot text-4xl mb-4"></i>
+                        <p class="font-poppins font-bold">No recent visits.</p>
+                        <p class="text-sm font-inter">Pharmacies you navigate to will appear here.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = visitsHistory.map(visit => {
+                
+                // State 1: Ask if visited
+                if(visit.status === 'pending') {
+                    return `
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-smoke/10">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-poppins font-black text-starkBlack text-sm">${visit.name}</h4>
+                            <span class="text-[10px] text-smoke">${visit.date}</span>
+                        </div>
+                        <p class="text-xs text-deepPurple font-medium mb-4">Searched for: ${visit.medicine}</p>
+                        <div class="bg-offWhite p-4 rounded-xl border border-smoke/5">
+                            <p class="text-xs font-poppins font-bold text-starkBlack mb-3">Did you visit this pharmacy?</p>
+                            <div class="flex gap-2">
+                                <button onclick="handleHistoryQ1('${visit.uuid}', true)" class="flex-1 bg-starkBlack text-white text-xs py-2 rounded-lg font-bold hover:bg-deepPurple transition-colors">Yes</button>
+                                <button onclick="handleHistoryQ1('${visit.uuid}', false)" class="flex-1 bg-white border border-smoke/20 text-smoke text-xs py-2 rounded-lg font-bold hover:bg-smoke/10 transition-colors">No</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                
+                // State 2: Ask about stock
+                if(visit.status === 'active_q2') {
+                    return `
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-l-vibrantOrange">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-poppins font-black text-starkBlack text-sm">${visit.name}</h4>
+                            <span class="text-[10px] text-smoke">${visit.date}</span>
+                        </div>
+                        <p class="text-xs text-deepPurple font-medium mb-4">Searched for: ${visit.medicine}</p>
+                        <div class="bg-orange-50 p-4 rounded-xl border border-vibrantOrange/20">
+                            <p class="text-xs font-poppins font-bold text-starkBlack mb-3">Did they have the medicine in stock?</p>
+                            <div class="flex gap-2">
+                                <button onclick="handleHistoryQ2('${visit.uuid}', '${visit.id}', true)" class="flex-1 bg-starkBlack text-white text-xs py-2 rounded-lg font-bold hover:bg-deepPurple transition-colors">Yes</button>
+                                <button onclick="handleHistoryQ2('${visit.uuid}', '${visit.id}', false)" class="flex-1 bg-error text-white text-xs py-2 rounded-lg font-bold hover:bg-red-800 transition-colors shadow-sm">No (Out of Stock)</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+
+                // State 3: Resolved
+                return `
+                <div class="bg-offWhite p-5 rounded-2xl border border-smoke/10 opacity-70">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-poppins font-bold text-starkBlack text-sm">${visit.name}</h4>
+                        <i class="fa-solid fa-circle-check text-green-600"></i>
+                    </div>
+                    <p class="text-xs text-smoke font-medium">Feedback Submitted (${visit.date})</p>
+                </div>`;
+            }).join('');
+        }
+
+        function handleHistoryQ1(uuid, didVisit) {
+            if(!didVisit) {
+                // Remove from list completely
+                visitsHistory = visitsHistory.filter(v => v.uuid !== uuid);
+            } else {
+                // Move to Question 2
+                const idx = visitsHistory.findIndex(v => v.uuid === uuid);
+                if(idx > -1) visitsHistory[idx].status = 'active_q2';
+            }
+            localStorage.setItem('ooc_client_visits', JSON.stringify(visitsHistory));
+            renderHistoryPanel();
+        }
+
+        async function handleHistoryQ2(uuid, pharmacyId, inStock) {
+            // Mark Resolved locally
+            const idx = visitsHistory.findIndex(v => v.uuid === uuid);
+            if(idx > -1) visitsHistory[idx].status = 'resolved';
+            localStorage.setItem('ooc_client_visits', JSON.stringify(visitsHistory));
+            renderHistoryPanel();
+
+            if(!inStock) {
+                // TRIGGER BACKEND PENALTY API (Simulated integration for Part 4)
+                console.log(`[SYSTEM] Triggering penalty strike for Pharmacy ID: ${pharmacyId}`);
+                showToast("Feedback sent. We penalize pharmacies showing false stock.", "error");
+                
+                try {
+                    // This is the fetch structure that would hit the new backend endpoint designed in Part 4
+                    await fetch(`${API_URL}/api/report-stock`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            pharmacyId: pharmacyId, 
+                            clientId: authState.id, 
+                            isOutOfStock: true 
+                        })
+                    });
+                } catch(e) {
+                    console.log("Mock API call handled");
+                }
+            } else {
+                showToast("Thanks for confirming! This keeps our network reliable.");
+            }
         }
     </script>
 </body>
