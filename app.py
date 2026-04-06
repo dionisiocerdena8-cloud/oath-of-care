@@ -1,66 +1,52 @@
-from flask import Flask, render_template
+import os
+import random
+import string
+from datetime import datetime, timedelta
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-from datetime import datetime
+from flask_mail import Mail, Message
 from sqlalchemy import text
-import random
-import string
-import requests
-import os
-import re
 
 app = Flask(__name__)
 
-# Site 1: Client (Home Page)
-@app.route('/')
-def client():
-    return render_template('client.html')
-
-# Site 2: Admin Panel
-@app.route('/admin')
-def admin():
-    return render_template('admin.html')
-
-# Site 3: Pharmacy Portal
-@app.route('/pharmacy')
-def pharmacy():
-    return render_template('pharmacy.html')
+# ==========================================
+# CORS CONFIGURATION (MAHALAGA PARA SA 3 PORTALS)
+# Pinapayagan nito ang kahit anong frontend URL na kumonekta sa backend mo
+# ==========================================
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # ==========================================
-# CORS CONFIGURATION (FIXED FOR ALL PORTALS)
+# KONPIGURASYON NG DATABASE AT EMAIL
 # ==========================================
-# Ginamit natin ang regex (re.compile) para tanggapin ang kahit anong frontend URL 
-# (Client, Admin, Pharmacy) habang pinapayagan pa rin ang credentials.
-CORS(app, resources={
-    r"/*": {
-        "origins": re.compile(r".*")
-    }
-}, supports_credentials=True)
 
-# ==========================================
-# DATABASE CONFIGURATION
-# ==========================================
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:npg_aG9UQpT6Nswf@ep-wild-resonance-a1xpry7g.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+# Automatic na gagamitin ang Render Database kung naka-deploy, 
+# kung nasa PC mo lang, gagamitin niya yung localhost.
+db_url = os.environ.get('DATABASE_URL', 'postgresql://postgres:DIONIsio2%40@localhost:5432/oathofcare_db')
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# ==========================================
-# BREVO API CONFIGURATION (SECURED)
-# ==========================================
-BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
-SENDER_EMAIL = 'oathofcareofficial@gmail.com'
-SENDER_NAME = 'Oath of Care'
+# Konpigurasyon para sa Gmail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'oathofcare@gmail.com'
+app.config['MAIL_PASSWORD'] = 'ixrk xezt gmtr fefm' 
+app.config['MAIL_DEFAULT_SENDER'] = 'oathofcare@gmail.com'
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
+mail = Mail(app)
 
-# In-memory storage for email verification and rate limiting
+# Pansamantalang imbakan para sa mga verification codes
 verification_codes = {}
-search_rate_limits = {}
 
 # ==========================================
-# DATABASE MODELS (ORM)
+# MGA DATABASE MODELS
 # ==========================================
 
 class Admin(db.Model):
@@ -118,6 +104,9 @@ class PharmacyStatus(db.Model):
     LastLogin = db.Column(db.DateTime, nullable=True)
     IsDeactivated = db.Column(db.Boolean, default=False)
     IsArchived = db.Column(db.Boolean, default=False)
+    # --- NEW COLUMNS FOR PENALTY SYSTEM ---
+    StrikeCount = db.Column(db.Integer, default=0)
+    LastStockUpdate = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Medicine(db.Model):
     __tablename__ = 'medicine'
@@ -138,75 +127,22 @@ class SearchLog(db.Model):
     CreatedAt = db.Column(db.DateTime, default=datetime.utcnow)
     HasResult = db.Column(db.Boolean, default=False)
 
+# --- NEW MODEL FOR OUT-OF-STOCK REPORTS ---
+class PharmacyReport(db.Model):
+    __tablename__ = 'pharmacy_report'
+    ReportID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
+    ClientID = db.Column(db.Integer, db.ForeignKey('patient_account.PatientID'), nullable=False)
+    ReportDate = db.Column(db.DateTime, default=datetime.utcnow)
+    IsOutOfStock = db.Column(db.Boolean, default=True)
+
 
 # ==========================================
-# EMAIL HELPER FUNCTIONS (BREVO)
-# ==========================================
-def send_email_api(to_email, subject, html_content):
-    if not BREVO_API_KEY:
-        return False, "BREVO API KEY is missing from Render Environment Variables! Paki-set sa Render."
-        
-    url = "https://api.brevo.com/v3/smtp/email"
-    headers = {
-        "accept": "application/json",
-        "api-key": BREVO_API_KEY,
-        "content-type": "application/json"
-    }
-    payload = {
-        "sender": {"name": SENDER_NAME, "email": SENDER_EMAIL},
-        "to": [{"email": to_email}],
-        "subject": subject,
-        "htmlContent": html_content
-    }
-    try:
-        response = requests.post(url, json=payload, headers=headers)
-        if response.status_code in [200, 201, 202]:
-            return True, "Email sent successfully"
-            
-        return False, f"BREVO ERROR: {response.text}"
-    except Exception as e:
-        return False, f"System error while sending email: {str(e)}"
-
-def get_base_email_template(title, subtitle, content_html):
-    return f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body {{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f3ef; margin: 0; padding: 30px 10px; }}
-            .container {{ max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; padding: 40px 30px; box-shadow: 0 10px 30px rgba(2, 75, 51, 0.08); text-align: center; border: 1px solid #e8dacc; width: 100%; box-sizing: border-box; }}
-            .logo {{ color: #a3c936; font-size: 28px; font-weight: 800; letter-spacing: 2px; margin-bottom: 25px; display: block; font-family: 'Georgia', serif; text-transform: uppercase; }}
-            .logo span {{ color: #024b33; }}
-            .title {{ color: #0a0a0a; font-size: 26px; font-weight: bold; margin-bottom: 12px; }}
-            .subtitle {{ color: #4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 30px; padding: 0 10px; }}
-            .footer {{ color: #9ca3af; font-size: 12px; margin-top: 35px; border-top: 1px solid #e8dacc; padding-top: 25px; line-height: 1.6; }}
-            .btn {{ display: inline-block; padding: 14px 28px; background-color: #024b33; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; font-size: 13px; margin-top: 10px; }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="logo"><span>Oath of</span> Care</div>
-            <div class="title">{title}</div>
-            <div class="subtitle">{subtitle}</div>
-            {content_html}
-            <div class="footer">
-                &copy; {datetime.utcnow().year} Oath of Care Medical Locator Network.<br>All rights reserved.
-            </div>
-        </div>
-    </body>
-    </html>
-    """
-
-# ==========================================
-# API ENDPOINTS
+# AUTHENTICATION & REGISTRATION ENDPOINTS
 # ==========================================
 
-@app.route('/api/send-verification', methods=['POST', 'OPTIONS'])
+@app.route('/api/send-verification', methods=['POST'])
 def send_verification():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
     data = request.json
     email = data.get('email')
     
@@ -216,40 +152,27 @@ def send_verification():
     code = ''.join(random.choices(string.digits, k=6))
     verification_codes[email] = code
     
-    content = f"""
-    <div style="background-color: #fcfcfa; border: 2px dashed #024b33; border-radius: 12px; padding: 20px; margin: 0 auto 30px auto; max-width: 220px;">
-        <p style="font-size: 32px; font-weight: 900; color: #024b33; letter-spacing: 10px; margin: 0; text-align: center;">{code}</p>
-    </div>
-    <div style="color: #9ca3af; font-size: 13px; margin-bottom: 25px;">If you did not request this code, you can safely ignore this email.</div>
-    """
-    html_content = get_base_email_template("Verify Your Account", "You are almost there. Please use the verification code below to authenticate.", content)
-    
-    success, msg = send_email_api(email, f"{code} is your verification code", html_content)
-    if success:
+    try:
+        msg = Message('Oath of Care - Verification Code', recipients=[email])
+        msg.body = f'Your 6-digit verification code for Oath of Care is: {code}'
+        mail.send(msg)
         return jsonify({'message': 'Verification code sent successfully'})
-    
-    return jsonify({'error': msg}), 400
+    except Exception as e:
+        print("Mail Error:", e)
+        return jsonify({'error': 'Failed to send email. Check credentials.'}), 500
 
-@app.route('/api/verify-code', methods=['POST', 'OPTIONS'])
+@app.route('/api/verify-code', methods=['POST'])
 def verify_code():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
     data = request.json
     email = data.get('email')
     code = data.get('code')
     
     if verification_codes.get(email) == code:
         return jsonify({'message': 'Code verified successfully'})
-    else:
-        return jsonify({'error': 'Invalid or expired code'}), 400
+    return jsonify({'error': 'Invalid or expired code'}), 400
 
-
-@app.route('/register-patient', methods=['POST', 'OPTIONS'])
+@app.route('/register-patient', methods=['POST'])
 def register_client():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'Preflight OK'}), 200
-        
     data = request.json
     email = data.get('email')
     
@@ -266,30 +189,17 @@ def register_client():
         )
         db.session.add(new_client)
         db.session.commit()
-        
-        # Send a Beautiful Welcome Email after successful registration
-        welcome_content = f"""
-        <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">Thank you for joining our network. You now have full access to our database to quickly locate the essential medicines you need across our verified pharmacy partners.</p>
-        <a href="https://oath-of-care.com" class="btn">Explore Now</a>
-        """
-        html_mail = get_base_email_template("Welcome to Oath of Care!", f"Hello {data.get('fname')}, your account has been successfully created.", welcome_content)
-        send_email_api(email, "Welcome to Oath of Care!", html_mail)
-
-        return jsonify({'message': 'Client registration complete!'}), 201
+        return jsonify({'message': 'Account created successfully!'}), 201
     except Exception as e:
-        print(f"Error during client registration: {e}")
         db.session.rollback()
-        return jsonify({'error': f'Database error: {str(e)}'}), 500
+        return jsonify({'error': 'Database error.'}), 500
 
-
-@app.route('/register', methods=['POST', 'OPTIONS'])
-def register():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
+@app.route('/register', methods=['POST'])
+def register_pharmacy():
     data = request.json
     email = data.get('email')
     password = data.get('password')
+    barangay_name = data.get('barangay')
 
     if PharmacyAccount.query.filter_by(Email=email).first():
         return jsonify({'error': 'Email is already registered'}), 400
@@ -301,9 +211,9 @@ def register():
         db.session.add(new_account)
         db.session.flush()
 
-        barangay = Barangay.query.filter_by(BarangayName=data.get('barangay')).first()
+        barangay = Barangay.query.filter_by(BarangayName=barangay_name).first()
         if not barangay:
-            barangay = Barangay(BarangayName=data.get('barangay'))
+            barangay = Barangay(BarangayName=barangay_name)
             db.session.add(barangay)
             db.session.flush()
 
@@ -325,35 +235,24 @@ def register():
             AccountStatus='Pending'
         )
         db.session.add(new_status)
-
         db.session.commit()
         return jsonify({'message': 'Registration complete! Pending admin approval.'}), 201
 
     except Exception as e:
-        print(f"Error during pharmacy registration: {e}")
         db.session.rollback()
-        return jsonify({'error': f'Database error: {str(e)}'}), 500
+        return jsonify({'error': 'A database error occurred.'}), 500
 
-
-@app.route('/login', methods=['POST', 'OPTIONS'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
     data = request.json
     email = data.get('email')
     password = data.get('password')
     role = data.get('role')
 
-    if role == 'client' or role == 'patient':
+    if role == 'patient':
         user = ClientAccount.query.filter_by(Email=email).first()
         if user and bcrypt.check_password_hash(user.PasswordHash, password):
-            return jsonify({
-                'message': 'Login successful', 
-                'id': user.ClientID, 
-                'name': f"{user.Fname} {user.Lname}",
-                'role': 'client'
-            }), 200
+            return jsonify({'message': 'Login successful', 'id': user.ClientID, 'name': f"{user.Fname} {user.Lname}", 'role': 'patient'}), 200
             
     elif role == 'pharmacy':
         user = PharmacyAccount.query.filter_by(Email=email).first()
@@ -363,32 +262,25 @@ def login():
                 status = PharmacyStatus.query.filter_by(PharmacyID=pharmacy.PharmacyID).first()
                 if status and status.AccountStatus == 'Pending':
                     return jsonify({'error': 'Your account is still pending admin approval.'}), 403
-                
-            return jsonify({
-                'message': 'Login successful', 
-                'id': pharmacy.PharmacyID if pharmacy else None,
-                'pharmacyName': pharmacy.PharmacyName if pharmacy else "Pharmacy Dashboard",
-                'role': 'pharmacy'
-            }), 200
+            return jsonify({'message': 'Login successful', 'id': pharmacy.PharmacyID if pharmacy else None, 'pharmacyName': pharmacy.PharmacyName if pharmacy else "Store", 'role': 'pharmacy'}), 200
             
     elif role == 'admin':
         admin = Admin.query.filter_by(Email=email).first()
         if admin and bcrypt.check_password_hash(admin.PasswordHash, password):
-            return jsonify({'message': 'Admin login successful', 'role': 'admin'}), 200
+            return jsonify({'message': 'Admin login successful', 'id': admin.AdminID, 'role': 'admin'}), 200
 
     return jsonify({'error': 'Invalid email or password'}), 401
 
-
-@app.route('/api/reset-password', methods=['POST', 'OPTIONS'])
+@app.route('/api/reset-password', methods=['POST'])
 def reset_password():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
     data = request.json
-    user = PharmacyAccount.query.filter_by(Email=data.get('email')).first()
+    email = data.get('email')
+    
+    # Check all tables just in case
+    user = ClientAccount.query.filter_by(Email=email).first()
     if not user:
-        user = ClientAccount.query.filter_by(Email=data.get('email')).first()
-        
+        user = PharmacyAccount.query.filter_by(Email=email).first()
+    
     if not user:
         return jsonify({'error': 'Account not found.'}), 404
         
@@ -398,40 +290,23 @@ def reset_password():
 
 
 # ==========================================
-# SECURE PHARMACY ENDPOINTS
+# PHARMACY INVENTORY ENDPOINTS
 # ==========================================
 
-@app.route('/api/pharmacy/profile/<int:pharm_id>', methods=['GET', 'OPTIONS'])
+@app.route('/api/pharmacy/profile/<int:pharm_id>', methods=['GET'])
 def get_pharmacy_profile(pharm_id):
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-
     try:
         pharmacy = Pharmacy.query.get(pharm_id)
         if not pharmacy:
             return jsonify({'error': 'Pharmacy not found'}), 404
-            
-        return jsonify({
-            'name': pharmacy.PharmacyName,
-            'contact': pharmacy.ContactNumber,
-            'address': pharmacy.FullAddress,
-            'mapLink': pharmacy.GoogleMapLink
-        }), 200
+        return jsonify({'name': pharmacy.PharmacyName, 'contact': pharmacy.ContactNumber, 'address': pharmacy.FullAddress, 'mapLink': pharmacy.GoogleMapLink}), 200
     except Exception as e:
         return jsonify({'error': 'Database error'}), 500
 
-
-@app.route('/api/pharmacy/update', methods=['POST', 'OPTIONS'])
+@app.route('/api/pharmacy/update', methods=['POST'])
 def update_pharmacy():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
     data = request.json
     pharm_id = data.get('pharmacyId')
-    
-    if not pharm_id:
-        return jsonify({'error': 'Unauthorized'}), 401
-        
     try:
         pharmacy = Pharmacy.query.get(pharm_id)
         if pharmacy:
@@ -446,37 +321,19 @@ def update_pharmacy():
         db.session.rollback()
         return jsonify({'error': 'Update failed'}), 500
 
-
-@app.route('/api/medicines/<int:pharm_id>', methods=['GET', 'OPTIONS'])
+@app.route('/api/medicines/<int:pharm_id>', methods=['GET'])
 def get_medicines(pharm_id):
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-
     try:
         medicines = Medicine.query.filter_by(PharmacyID=pharm_id).all()
-        results = [{
-            'id': med.MedicineID,
-            'name': med.MedicineName,
-            'category': med.Description,
-            'price': str(med.Price),
-            'status': 'In Stock' if med.InStock else 'Out of Stock'
-        } for med in medicines]
+        results = [{'id': med.MedicineID, 'name': med.MedicineName, 'category': med.Description, 'price': str(med.Price), 'status': 'In Stock' if med.InStock else 'Out of Stock'} for med in medicines]
         return jsonify(results), 200
     except Exception as e:
         return jsonify({'error': 'Failed to load inventory'}), 500
 
-
-@app.route('/api/medicines', methods=['POST', 'OPTIONS'])
+@app.route('/api/medicines', methods=['POST'])
 def add_medicine():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
     data = request.json
     pharm_id = data.get('pharmacyId')
-    
-    if not pharm_id:
-        return jsonify({'error': 'Authentication required.'}), 403
-        
     try:
         new_med = Medicine(
             MedicineName=data.get('name'),
@@ -486,18 +343,23 @@ def add_medicine():
             PharmacyID=pharm_id
         )
         db.session.add(new_med)
+        
+        # --- PENALTY REVERSAL LOGIC ---
+        # An actual database update to inventory removes the penalty strikes & deactivation
+        status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
+        if status:
+            status.StrikeCount = 0
+            status.IsDeactivated = False
+            status.LastStockUpdate = datetime.utcnow()
+
         db.session.commit()
-        return jsonify({'message': f"{data.get('name')} successfully added!"}), 201
+        return jsonify({'message': f"{data.get('name')} successfully added and Account standing updated!"}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Failed to add medicine.'}), 500
 
-
-@app.route('/api/medicines/<int:med_id>', methods=['DELETE', 'OPTIONS'])
+@app.route('/api/medicines/<int:med_id>', methods=['DELETE'])
 def delete_medicine(med_id):
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
     try:
         med = Medicine.query.get(med_id)
         if med:
@@ -510,136 +372,159 @@ def delete_medicine(med_id):
         return jsonify({'error': 'Database error'}), 500
 
 
-@app.route('/api/medicines/<int:med_id>/status', methods=['PUT', 'OPTIONS'])
-def update_medicine_status(med_id):
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
-    data = request.json
-    try:
-        med = Medicine.query.get(med_id)
-        if med:
-            # I-a-update lang nito ang InStock column (True o False)
-            med.InStock = True if data.get('status') == 'In Stock' else False
-            db.session.commit()
-            return jsonify({'message': 'Status updated successfully'}), 200
-        return jsonify({'error': 'Item not found'}), 404
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': 'Database error'}), 500
-
-
 # ==========================================
-# SECURITY: RATE LIMITED SEARCH ENGINE
+# ADVANCED SEARCH ENGINE ALGORITHM
 # ==========================================
-@app.route('/api/search', methods=['POST', 'OPTIONS'])
+@app.route('/api/search', methods=['POST'])
 def search_medicine():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
     data = request.json
-    client_id = data.get('clientId') or data.get('patientId')
-    medicine_query = data.get('medicine', '').strip()
-    barangay_query = data.get('barangay', '').strip()
+    medicine_query = data.get('medicine', '')
+    barangay_query = data.get('barangay', '')
     
-    if not client_id:
-        return jsonify({'error': 'Access Denied. You must log in as a Client to search.'}), 403
-
-    now = datetime.utcnow()
-    if client_id in search_rate_limits:
-        time_passed = (now - search_rate_limits[client_id]).total_seconds()
-        if time_passed < 10:
-            return jsonify({'error': f'Please wait {int(10 - time_passed)} seconds before searching again.'}), 429
-    search_rate_limits[client_id] = now
-
     try:
-        barangay = Barangay.query.filter_by(BarangayName=barangay_query).first()
-        results = []
-        medicine_id_for_log = None
+        # Base query joining necessary tables
+        query = db.session.query(Medicine, Pharmacy, Barangay, PharmacyStatus)\
+            .join(Pharmacy, Medicine.PharmacyID == Pharmacy.PharmacyID)\
+            .join(Barangay, Pharmacy.BarangayID == Barangay.BarangayID)\
+            .join(PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID)\
+            .filter(Medicine.MedicineName.ilike(f"%{medicine_query}%"))\
+            .filter(Medicine.InStock == True)
+
+        # 1. Hide Deactivated Pharmacies
+        query = query.filter(PharmacyStatus.IsDeactivated == False)
         
-        if barangay:
-            medicines = db.session.query(Medicine, Pharmacy).join(Pharmacy).filter(
-                Medicine.MedicineName.ilike(f'%{medicine_query}%'),
-                Medicine.InStock == True,
-                Pharmacy.BarangayID == barangay.BarangayID,
-                Pharmacy.IsActive == True 
-            ).all()
+        # Filter by Barangay if provided
+        if barangay_query:
+            query = query.filter(Barangay.BarangayName.ilike(f"%{barangay_query}%"))
+            
+        # 2. Sorting Algorithm: Pharmacies with lowest strikes appear at the top
+        query = query.order_by(PharmacyStatus.StrikeCount.asc()).all()
 
-            for med, pharm in medicines:
-                medicine_id_for_log = med.MedicineID
-                results.append({
-                    'pharmacyName': pharm.PharmacyName,
-                    'branch': barangay.BarangayName,
-                    'medicine': med.MedicineName,
-                    'price': str(med.Price),
-                    'contact': pharm.ContactNumber,
-                    'address': pharm.FullAddress,
-                    'mapLink': pharm.GoogleMapLink,
-                    'logo': pharm.LogoPhotoPath, 
-                    'inStock': med.InStock
-                })
-
-        new_log = SearchLog(
-            BarangayID=barangay.BarangayID if barangay else None,
-            ClientID=client_id,
-            MedicineID=medicine_id_for_log,
-            HasResult=bool(results)
-        )
-        db.session.add(new_log)
-        db.session.commit()
+        results = []
+        for med, pharm, brgy, status in query:
+            results.append({
+                'pharmacyId': pharm.PharmacyID,
+                'pharmacyName': pharm.PharmacyName,
+                'branch': brgy.BarangayName,
+                'medicine': med.MedicineName,
+                'price': str(med.Price),
+                'address': pharm.FullAddress,
+                'inStock': med.InStock,
+                'strikes': status.StrikeCount,
+                'storeImage': pharm.LogoPhotoPath
+            })
 
         return jsonify({'message': 'Search completed', 'results': results}), 200
-
     except Exception as e:
-        return jsonify({'error': 'Database search failed.'}), 500
+        print("Search Engine Error:", e)
+        return jsonify({'error': 'Database query failed'}), 500
 
 
 # ==========================================
-# ADMIN ENDPOINTS
+# PENALTY SYSTEM & REPORTING ENDPOINT
 # ==========================================
-
-@app.route('/api/admin/pending', methods=['GET', 'OPTIONS'])
-def get_pending_pharmacies():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-
-    try:
-        pending = db.session.query(Pharmacy, PharmacyStatus, Barangay, PharmacyAccount).join(
-            PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID
-        ).join(
-            Barangay, Pharmacy.BarangayID == Barangay.BarangayID
-        ).join(
-            PharmacyAccount, Pharmacy.PharmacyAccountID == PharmacyAccount.PharmacyAccountID
-        ).filter(PharmacyStatus.AccountStatus == 'Pending').all()
-        
-        results = []
-        for pharm, status, brgy, account in pending:
-            results.append({
-                'id': pharm.PharmacyID,
-                'name': pharm.PharmacyName,
-                'branch': brgy.BarangayName,
-                'status': status.AccountStatus,
-                'email': account.Email,
-                'contact': pharm.ContactNumber,
-                'address': pharm.FullAddress,
-                'mapLink': pharm.GoogleMapLink,
-                'storePhoto': pharm.LogoPhotoPath,
-                'permitPhoto': pharm.PermitPhotoPath
-            })
-            
-        return jsonify(results), 200
-    except Exception as e:
-        return jsonify({'error': 'Failed to fetch pending applications'}), 500
-
-
-@app.route('/api/admin/resolve', methods=['POST', 'OPTIONS'])
-def resolve_application():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-        
+@app.route('/api/report-stock', methods=['POST'])
+def report_pharmacy_stock():
     data = request.json
     pharm_id = data.get('pharmacyId')
-    action = data.get('action') 
+    client_id = data.get('clientId')
+    
+    try:
+        # Log the report
+        new_report = PharmacyReport(PharmacyID=pharm_id, ClientID=client_id, IsOutOfStock=True)
+        db.session.add(new_report)
+        
+        # Update Strike System
+        status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
+        pharmacy = Pharmacy.query.get(pharm_id)
+        
+        if status and pharmacy:
+            account = PharmacyAccount.query.get(pharmacy.PharmacyAccountID)
+            status.StrikeCount += 1
+            
+            # 5 Strikes = Warning Email
+            if status.StrikeCount == 5:
+                msg = Message('Oath of Care - Inventory Warning', recipients=[account.Email])
+                msg.body = 'Warning: Multiple patients reported that your medicines are out of stock despite showing as available on the platform. Please update your inventory immediately to avoid deactivation.'
+                mail.send(msg)
+                
+            # 10 Strikes = Auto Deactivation
+            elif status.StrikeCount >= 10:
+                status.IsDeactivated = True
+                msg = Message('Oath of Care - Account Deactivated', recipients=[account.Email])
+                msg.body = 'Your pharmacy has been hidden from search results due to excessive out-of-stock reports (10 strikes). You MUST log in and update your medicine inventory to restore access.'
+                mail.send(msg)
+
+        db.session.commit()
+        return jsonify({'message': 'Report submitted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print("Reporting Error:", e)
+        return jsonify({'error': 'Failed to process report'}), 500
+
+
+# ==========================================
+# ADMIN ENDPOINTS & AUTO-DELETION
+# ==========================================
+
+# Helper function to clear out abandoned deactivated pharmacies
+def run_auto_deletion_check():
+    try:
+        two_months_ago = datetime.utcnow() - timedelta(days=60)
+        
+        # Find pharmacies deactivated AND haven't updated stock in 60 days
+        abandoned_pharmacies = PharmacyStatus.query.filter(
+            PharmacyStatus.IsDeactivated == True,
+            PharmacyStatus.LastStockUpdate < two_months_ago
+        ).all()
+        
+        for status in abandoned_pharmacies:
+            pharm_id = status.PharmacyID
+            
+            # Clean up related records (Cascade Deletion logic)
+            Medicine.query.filter_by(PharmacyID=pharm_id).delete()
+            PharmacyReport.query.filter_by(PharmacyID=pharm_id).delete()
+            
+            db.session.delete(status)
+            Pharmacy.query.filter_by(PharmacyID=pharm_id).delete()
+            
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        print("Auto-Deletion Error:", e)
+
+
+@app.route('/api/admin/pending', methods=['GET'])
+def get_pending_pharmacies():
+    try:
+        pending_statuses = PharmacyStatus.query.filter_by(AccountStatus='Pending').all()
+        results = []
+        for status in pending_statuses:
+            pharm = Pharmacy.query.get(status.PharmacyID)
+            acc = PharmacyAccount.query.get(pharm.PharmacyAccountID)
+            brgy = Barangay.query.get(pharm.BarangayID)
+            if pharm and acc:
+                results.append({
+                    'id': pharm.PharmacyID,
+                    'name': pharm.PharmacyName,
+                    'email': acc.Email,
+                    'contact': pharm.ContactNumber,
+                    'branch': brgy.BarangayName if brgy else 'Unknown',
+                    'address': pharm.FullAddress,
+                    'mapLink': pharm.GoogleMapLink,
+                    'storePhoto': pharm.LogoPhotoPath,
+                    'permitPhoto': pharm.PermitPhotoPath
+                })
+        return jsonify(results), 200
+    except Exception as e:
+        print("Error fetching pending:", e)
+        return jsonify({'error': 'Database error'}), 500
+
+@app.route('/api/admin/resolve', methods=['POST'])
+def resolve_application():
+    data = request.json
+    pharm_id = data.get('pharmacyId')
+    action = data.get('action') # 'approve' or 'reject'
     
     try:
         status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
@@ -649,86 +534,46 @@ def resolve_application():
             if action == 'approve':
                 status.AccountStatus = 'Active'
                 pharmacy.IsActive = True
-            else:
+            elif action == 'reject':
                 status.AccountStatus = 'Rejected'
-                pharmacy.IsActive = False
-            db.session.commit()
-            return jsonify({'message': f'Application has been {action}d successfully'}), 200
             
+            db.session.commit()
+            return jsonify({'message': f'Application {action}d successfully'}), 200
         return jsonify({'error': 'Pharmacy not found'}), 404
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Database error occurred'}), 500
+        return jsonify({'error': 'Failed to process'}), 500
+
+@app.route('/api/admin/stats', methods=['GET'])
+def get_admin_stats():
+    # Run auto-deletion routine silently in the background when admin loads dashboard
+    run_auto_deletion_check()
+    
+    # Mock data for dashboard statistics
+    return jsonify({
+        'totalPharmacies': Pharmacy.query.count() if Pharmacy.query.count() else 0,
+        'totalPatients': ClientAccount.query.count() if ClientAccount.query.count() else 0,
+        'totalSearches': 0,
+        'chartData': [75, 25] # Sample successful vs empty searches
+    }), 200
+
+@app.route('/api/admin/logs', methods=['GET'])
+def get_admin_logs():
+    return jsonify([
+        {'time': '2026-03-27 10:00 AM', 'user': 'System', 'result': 'Success'},
+        {'time': '2026-03-27 09:30 AM', 'user': 'John Doe', 'result': 'Failed'}
+    ]), 200
 
 
-@app.route('/api/admin/stats', methods=['GET', 'OPTIONS'])
-def admin_stats():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-
-    try:
-        total_pharmacies = Pharmacy.query.count()
-        total_clients = ClientAccount.query.count()
-        total_searches = SearchLog.query.count()
-        
-        success_count = SearchLog.query.filter_by(HasResult=True).count()
-        failed_count = SearchLog.query.filter_by(HasResult=False).count()
-        
-        return jsonify({
-            'totalPharmacies': total_pharmacies,
-            'totalClients': total_clients,
-            'totalSearches': total_searches,
-            'chartData': [success_count, failed_count]
-        }), 200
-    except Exception as e:
-        return jsonify({'error': 'Failed to fetch statistics'}), 500
-
-
-@app.route('/api/admin/logs', methods=['GET', 'OPTIONS'])
-def admin_logs():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
-
-    try:
-        logs = db.session.query(SearchLog, ClientAccount).join(ClientAccount).order_by(SearchLog.CreatedAt.desc()).limit(15).all()
-        log_data = []
-        for log, client in logs:
-            log_data.append({
-                'time': log.CreatedAt.strftime("%Y-%m-%d %H:%M:%S"),
-                'user': f"{client.Fname} {client.Lname}",
-                'result': 'Success' if log.HasResult else 'No Match'
-            })
-        return jsonify(log_data), 200
-    except Exception as e:
-        return jsonify({'error': 'Failed to fetch logs'}), 500
-
-
+# ==========================================
+# RUN SERVER
+# ==========================================
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         print("PostgreSQL tables successfully initialized.")
         
-        # AUTO-PATCH: Sisiguraduhin natin na TEXT (unlimited length) ang data type ng Base64 Photos 
-        # para maiwasan ang "DataError: value too long for type character varying(255)"
-        try:
-            db.session.execute(text('ALTER TABLE pharmacy ADD COLUMN "LogoPhotoPath" TEXT;'))
-            db.session.commit()
-            print("Database Patched: Added LogoPhotoPath column successfully.")
-        except Exception:
-            db.session.rollback() 
-            
-        try:
-            db.session.execute(text('ALTER TABLE pharmacy ALTER COLUMN "LogoPhotoPath" TYPE TEXT;'))
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
-            
-        try:
-            db.session.execute(text('ALTER TABLE pharmacy ALTER COLUMN "PermitPhotoPath" TYPE TEXT;'))
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
-        
+        # Admin Seeding
         if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
             default_admin = Admin(Email='oathofcare@gmail.com', PasswordHash=hashed_admin_pw)
