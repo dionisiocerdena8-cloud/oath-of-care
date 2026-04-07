@@ -2,27 +2,24 @@ import os
 import random
 import string
 from datetime import datetime, timedelta
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail, Message
 from sqlalchemy import text
 
-app = Flask(__name__)
+# Setup Flask to look for HTML files in the 'templates' folder
+app = Flask(__name__, template_folder='templates', static_folder='static')
 
 # ==========================================
-# CORS CONFIGURATION (MAHALAGA PARA SA 3 PORTALS)
-# Pinapayagan nito ang kahit anong frontend URL na kumonekta sa backend mo
+# CORS CONFIGURATION
 # ==========================================
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # ==========================================
 # KONPIGURASYON NG DATABASE AT EMAIL
 # ==========================================
-
-# Automatic na gagamitin ang Render Database kung naka-deploy, 
-# kung nasa PC mo lang, gagamitin niya yung localhost.
 db_url = os.environ.get('DATABASE_URL', 'postgresql://postgres:DIONIsio2%40@localhost:5432/oathofcare_db')
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
@@ -42,13 +39,11 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 mail = Mail(app)
 
-# Pansamantalang imbakan para sa mga verification codes
 verification_codes = {}
 
 # ==========================================
 # MGA DATABASE MODELS
 # ==========================================
-
 class Admin(db.Model):
     __tablename__ = 'admin'
     AdminID = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -104,7 +99,6 @@ class PharmacyStatus(db.Model):
     LastLogin = db.Column(db.DateTime, nullable=True)
     IsDeactivated = db.Column(db.Boolean, default=False)
     IsArchived = db.Column(db.Boolean, default=False)
-    # --- NEW COLUMNS FOR PENALTY SYSTEM ---
     StrikeCount = db.Column(db.Integer, default=0)
     LastStockUpdate = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -127,7 +121,6 @@ class SearchLog(db.Model):
     CreatedAt = db.Column(db.DateTime, default=datetime.utcnow)
     HasResult = db.Column(db.Boolean, default=False)
 
-# --- NEW MODEL FOR OUT-OF-STOCK REPORTS ---
 class PharmacyReport(db.Model):
     __tablename__ = 'pharmacy_report'
     ReportID = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -136,18 +129,34 @@ class PharmacyReport(db.Model):
     ReportDate = db.Column(db.DateTime, default=datetime.utcnow)
     IsOutOfStock = db.Column(db.Boolean, default=True)
 
+# ==========================================
+# WEB PORTAL ROUTES (PARA SA RAILWAY)
+# ==========================================
+
+# 1. Client Portal Route (Root URL: /)
+@app.route('/')
+def serve_client_portal():
+    return render_template('client.html')
+
+# 2. Pharmacy Portal Route (/pharmacy)
+@app.route('/pharmacy')
+def serve_pharmacy_portal():
+    return render_template('pharmacy.html')
+
+# 3. Admin Portal Route (/admin)
+@app.route('/admin')
+def serve_admin_portal():
+    return render_template('admin.html')
+
 
 # ==========================================
 # AUTHENTICATION & REGISTRATION ENDPOINTS
 # ==========================================
-
 @app.route('/api/send-verification', methods=['POST'])
 def send_verification():
     data = request.json
     email = data.get('email')
-    
-    if not email:
-        return jsonify({'error': 'Email is required'}), 400
+    if not email: return jsonify({'error': 'Email is required'}), 400
         
     code = ''.join(random.choices(string.digits, k=6))
     verification_codes[email] = code
@@ -237,7 +246,6 @@ def register_pharmacy():
         db.session.add(new_status)
         db.session.commit()
         return jsonify({'message': 'Registration complete! Pending admin approval.'}), 201
-
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'A database error occurred.'}), 500
@@ -275,8 +283,6 @@ def login():
 def reset_password():
     data = request.json
     email = data.get('email')
-    
-    # Check all tables just in case
     user = ClientAccount.query.filter_by(Email=email).first()
     if not user:
         user = PharmacyAccount.query.filter_by(Email=email).first()
@@ -288,17 +294,14 @@ def reset_password():
     db.session.commit()
     return jsonify({'message': 'Password has been successfully reset.'}), 200
 
-
 # ==========================================
 # PHARMACY INVENTORY ENDPOINTS
 # ==========================================
-
 @app.route('/api/pharmacy/profile/<int:pharm_id>', methods=['GET'])
 def get_pharmacy_profile(pharm_id):
     try:
         pharmacy = Pharmacy.query.get(pharm_id)
-        if not pharmacy:
-            return jsonify({'error': 'Pharmacy not found'}), 404
+        if not pharmacy: return jsonify({'error': 'Pharmacy not found'}), 404
         return jsonify({'name': pharmacy.PharmacyName, 'contact': pharmacy.ContactNumber, 'address': pharmacy.FullAddress, 'mapLink': pharmacy.GoogleMapLink}), 200
     except Exception as e:
         return jsonify({'error': 'Database error'}), 500
@@ -344,8 +347,7 @@ def add_medicine():
         )
         db.session.add(new_med)
         
-        # --- PENALTY REVERSAL LOGIC ---
-        # An actual database update to inventory removes the penalty strikes & deactivation
+        # Penalty reversal logic
         status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
         if status:
             status.StrikeCount = 0
@@ -382,7 +384,6 @@ def search_medicine():
     barangay_query = data.get('barangay', '')
     
     try:
-        # Base query joining necessary tables
         query = db.session.query(Medicine, Pharmacy, Barangay, PharmacyStatus)\
             .join(Pharmacy, Medicine.PharmacyID == Pharmacy.PharmacyID)\
             .join(Barangay, Pharmacy.BarangayID == Barangay.BarangayID)\
@@ -390,14 +391,11 @@ def search_medicine():
             .filter(Medicine.MedicineName.ilike(f"%{medicine_query}%"))\
             .filter(Medicine.InStock == True)
 
-        # 1. Hide Deactivated Pharmacies
         query = query.filter(PharmacyStatus.IsDeactivated == False)
         
-        # Filter by Barangay if provided
         if barangay_query:
             query = query.filter(Barangay.BarangayName.ilike(f"%{barangay_query}%"))
             
-        # 2. Sorting Algorithm: Pharmacies with lowest strikes appear at the top
         query = query.order_by(PharmacyStatus.StrikeCount.asc()).all()
 
         results = []
@@ -430,11 +428,9 @@ def report_pharmacy_stock():
     client_id = data.get('clientId')
     
     try:
-        # Log the report
         new_report = PharmacyReport(PharmacyID=pharm_id, ClientID=client_id, IsOutOfStock=True)
         db.session.add(new_report)
         
-        # Update Strike System
         status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
         pharmacy = Pharmacy.query.get(pharm_id)
         
@@ -442,13 +438,11 @@ def report_pharmacy_stock():
             account = PharmacyAccount.query.get(pharmacy.PharmacyAccountID)
             status.StrikeCount += 1
             
-            # 5 Strikes = Warning Email
             if status.StrikeCount == 5:
                 msg = Message('Oath of Care - Inventory Warning', recipients=[account.Email])
                 msg.body = 'Warning: Multiple patients reported that your medicines are out of stock despite showing as available on the platform. Please update your inventory immediately to avoid deactivation.'
                 mail.send(msg)
                 
-            # 10 Strikes = Auto Deactivation
             elif status.StrikeCount >= 10:
                 status.IsDeactivated = True
                 msg = Message('Oath of Care - Account Deactivated', recipients=[account.Email])
@@ -466,13 +460,9 @@ def report_pharmacy_stock():
 # ==========================================
 # ADMIN ENDPOINTS & AUTO-DELETION
 # ==========================================
-
-# Helper function to clear out abandoned deactivated pharmacies
 def run_auto_deletion_check():
     try:
         two_months_ago = datetime.utcnow() - timedelta(days=60)
-        
-        # Find pharmacies deactivated AND haven't updated stock in 60 days
         abandoned_pharmacies = PharmacyStatus.query.filter(
             PharmacyStatus.IsDeactivated == True,
             PharmacyStatus.LastStockUpdate < two_months_ago
@@ -480,11 +470,8 @@ def run_auto_deletion_check():
         
         for status in abandoned_pharmacies:
             pharm_id = status.PharmacyID
-            
-            # Clean up related records (Cascade Deletion logic)
             Medicine.query.filter_by(PharmacyID=pharm_id).delete()
             PharmacyReport.query.filter_by(PharmacyID=pharm_id).delete()
-            
             db.session.delete(status)
             Pharmacy.query.filter_by(PharmacyID=pharm_id).delete()
             
@@ -492,7 +479,6 @@ def run_auto_deletion_check():
     except Exception as e:
         db.session.rollback()
         print("Auto-Deletion Error:", e)
-
 
 @app.route('/api/admin/pending', methods=['GET'])
 def get_pending_pharmacies():
@@ -524,7 +510,7 @@ def get_pending_pharmacies():
 def resolve_application():
     data = request.json
     pharm_id = data.get('pharmacyId')
-    action = data.get('action') # 'approve' or 'reject'
+    action = data.get('action')
     
     try:
         status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
@@ -546,15 +532,12 @@ def resolve_application():
 
 @app.route('/api/admin/stats', methods=['GET'])
 def get_admin_stats():
-    # Run auto-deletion routine silently in the background when admin loads dashboard
     run_auto_deletion_check()
-    
-    # Mock data for dashboard statistics
     return jsonify({
         'totalPharmacies': Pharmacy.query.count() if Pharmacy.query.count() else 0,
         'totalPatients': ClientAccount.query.count() if ClientAccount.query.count() else 0,
         'totalSearches': 0,
-        'chartData': [75, 25] # Sample successful vs empty searches
+        'chartData': [75, 25] 
     }), 200
 
 @app.route('/api/admin/logs', methods=['GET'])
@@ -564,7 +547,6 @@ def get_admin_logs():
         {'time': '2026-03-27 09:30 AM', 'user': 'John Doe', 'result': 'Failed'}
     ]), 200
 
-
 # ==========================================
 # RUN SERVER
 # ==========================================
@@ -573,7 +555,6 @@ if __name__ == '__main__':
         db.create_all()
         print("PostgreSQL tables successfully initialized.")
         
-        # Admin Seeding
         if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
             hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
             default_admin = Admin(Email='oathofcare@gmail.com', PasswordHash=hashed_admin_pw)
