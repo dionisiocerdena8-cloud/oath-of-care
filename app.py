@@ -20,7 +20,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 # ==========================================
 # KONPIGURASYON NG DATABASE AT EMAIL
 # ==========================================
-db_url = os.environ.get('DATABASE_URL', 'postgresql://postgres:DIONIsio2%40@localhost:5432/oathofcare_db')
+db_url = os.environ.get('DATABASE_URL', 'postgresql://neondb_owner:npg_aG9UQpT6Nswf@ep-wild-resonance-a1xpry7g-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require')
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
