@@ -213,7 +213,7 @@
     <!-- Main Content Area -->
     <main class="flex-grow pt-24 flex flex-col relative z-10">
 
-        <!-- ================= HERO & SEARCH SECTION (Added ID & Transitions) ================= -->
+        <!-- ================= HERO & SEARCH SECTION ================= -->
         <section id="heroSection" class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden transition-all duration-[800ms] ease-in-out">
             <!-- Background Elements -->
             <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
@@ -222,15 +222,15 @@
             <div class="absolute top-[-10%] left-[-15%] w-[70vw] max-w-[800px] h-[70vw] max-h-[800px] bg-deepPurple rounded-full blur-[150px] z-[-2] opacity-50 pointer-events-none"></div>
             
             <!-- The massive gold curve -->
-            <svg class="absolute bottom-0 left-0 w-full min-h-[40vh] md:min-h-[55vh] z-[-1] drop-shadow-2xl" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <svg id="heroCurve" class="absolute bottom-0 left-0 w-full min-h-[40vh] md:min-h-[55vh] z-[-1] drop-shadow-2xl transition-all duration-[800ms] ease-in-out" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <path d="M0 400C300 400 450 150 800 250C1150 350 1300 50 1440 0V600H0V400Z" fill="#FF9800"/>
             </svg>
 
-            <!-- ================= NEW BACKGROUND 3D CAPSULES ================= -->
-            <div class="capsule-3d capsule-orange top-[15%] left-[10%] hidden md:block" style="--base-rot: 35deg; animation-delay: 0s;"></div>
-            <div class="capsule-3d capsule-purple top-[40%] right-[12%] hidden lg:block" style="--base-rot: -25deg; animation-delay: 1.5s; transform: scale(1.2);"></div>
-            <div class="capsule-3d capsule-purple bottom-[30%] left-[15%] hidden md:block" style="--base-rot: 60deg; animation-delay: 3s; transform: scale(0.8);"></div>
-            <div class="capsule-3d capsule-orange top-[20%] right-[25%] hidden xl:block" style="--base-rot: -50deg; animation-delay: 2s; transform: scale(0.9); opacity: 0.6;"></div>
+            <!-- ================= MOVED 3D CAPSULES TO CENTER (To prevent hitting store) ================= -->
+            <div class="capsule-3d capsule-orange top-[20%] left-[25%] hidden md:block" style="--base-rot: 35deg; animation-delay: 0s;"></div>
+            <div class="capsule-3d capsule-purple top-[30%] right-[30%] hidden lg:block" style="--base-rot: -25deg; animation-delay: 1.5s; transform: scale(1.2);"></div>
+            <div class="capsule-3d capsule-purple bottom-[40%] left-[35%] hidden md:block" style="--base-rot: 60deg; animation-delay: 3s; transform: scale(0.8);"></div>
+            <div class="capsule-3d capsule-orange top-[15%] right-[40%] hidden xl:block" style="--base-rot: -50deg; animation-delay: 2s; transform: scale(0.9); opacity: 0.6;"></div>
 
             <!-- ================= REAL PHARMACY STORE VECTOR ILLUSTRATIONS ================= -->
             <!-- Left Store -->
@@ -375,7 +375,7 @@
             </div>
         </section>
 
-        <!-- ================= HOW IT WORKS SECTION (Added ID & Transitions) ================= -->
+        <!-- ================= HOW IT WORKS SECTION ================= -->
         <section id="howItWorksSection" class="py-24 bg-surface relative z-10 border-t border-smoke/10 transition-all duration-[800ms] overflow-hidden opacity-100 max-h-[2000px]">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="text-center mb-20 group">
@@ -746,18 +746,18 @@
             // Restore the animations back to original pag na-logout
             const hero = document.getElementById('heroSection');
             const howItWorks = document.getElementById('howItWorksSection');
+            const heroCurve = document.getElementById('heroCurve');
+            
             if (hero) {
                 hero.classList.add('min-h-[90vh]');
-                hero.classList.remove('min-h-[45vh]');
+                hero.classList.remove('min-h-[40vh]');
+            }
+            if (heroCurve) {
+                heroCurve.style.minHeight = '';
+                heroCurve.classList.add('min-h-[40vh]', 'md:min-h-[55vh]');
             }
             if (howItWorks) {
-                howItWorks.classList.remove('hidden');
-                setTimeout(() => {
-                    howItWorks.style.maxHeight = '2000px';
-                    howItWorks.style.opacity = '1';
-                    howItWorks.style.paddingTop = '6rem';
-                    howItWorks.style.paddingBottom = '6rem';
-                }, 10);
+                howItWorks.style.display = 'block';
             }
 
             showToast('Signed out successfully.');
@@ -822,7 +822,7 @@
         async function handleLoginSubmit(e) {
             e.preventDefault();
             const unlock = lockButton('btnLoginSubmit');
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
             try {
@@ -849,7 +849,7 @@
 
         async function handleSignupStep1(e) {
             e.preventDefault();
-            tempSignupEmail = document.getElementById('regEmail').value;
+            tempSignupEmail = document.getElementById('regEmail').value.trim();
             const unlock = lockButton('btnSignup1Submit');
 
             try {
@@ -872,7 +872,7 @@
 
         async function handleSignupStep2(e) {
             e.preventDefault();
-            const code = document.getElementById('regCode').value;
+            const code = document.getElementById('regCode').value.trim();
             const unlock = lockButton('btnSignup2Submit');
             
             try {
@@ -884,8 +884,8 @@
                 if(response.ok) {
                     if (resendTimer) clearInterval(resendTimer);
                     const data = {
-                        fname: document.getElementById('regFname').value,
-                        lname: document.getElementById('regLname').value,
+                        fname: document.getElementById('regFname').value.trim(),
+                        lname: document.getElementById('regLname').value.trim(),
                         email: tempSignupEmail,
                         password: document.getElementById('regPassword').value
                     };
@@ -911,7 +911,7 @@
         async function handleForgotRequest(e) {
             e.preventDefault();
             const unlock = lockButton('btnForgotSubmit');
-            const email = document.getElementById('forgotEmail').value;
+            const email = document.getElementById('forgotEmail').value.trim();
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -984,9 +984,9 @@
                 return;
             }
 
-            const medicine = document.getElementById('searchMedicine').value;
-            const milligrams = document.getElementById('searchMg').value;
-            const barangay = document.getElementById('searchBarangayInput').value;
+            const medicine = document.getElementById('searchMedicine').value.trim();
+            const milligrams = document.getElementById('searchMg').value.trim();
+            const barangay = document.getElementById('searchBarangayInput').value.trim();
 
             if(!barangay) {
                 showToast("Please select a Barangay.", "error");
@@ -1009,27 +1009,32 @@
                     body: JSON.stringify({ medicine, milligrams, barangay, patientId: authState.id })
                 });
                 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 
                 if (response.status === 429) {
                     showToast(data.error, 'error');
                     grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
-                } else if (response.ok && data.results.length > 0) {
+                } else if (response.ok && data.results && data.results.length > 0) {
                     
-                    // UI ADAPTATION MAGIC (Pumapaliit ang taas at nawawala ang how it works!)
+                    // UI ADAPTATION MAGIC: Instantly hide "How it works" and shrink Hero
                     const hero = document.getElementById('heroSection');
+                    const heroCurve = document.getElementById('heroCurve');
                     const howItWorks = document.getElementById('howItWorksSection');
                     
                     if (hero) {
                         hero.classList.remove('min-h-[90vh]');
-                        hero.classList.add('min-h-[45vh]');
+                        hero.classList.add('min-h-[40vh]'); // Shrink hero
+                    }
+                    if (heroCurve) {
+                        heroCurve.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
+                        heroCurve.style.minHeight = '15vh'; // Shrink the wave
                     }
                     if (howItWorks) {
-                        howItWorks.style.maxHeight = '0px';
-                        howItWorks.style.opacity = '0';
-                        howItWorks.style.paddingTop = '0px';
-                        howItWorks.style.paddingBottom = '0px';
-                        setTimeout(() => howItWorks.classList.add('hidden'), 800);
+                        howItWorks.style.display = 'none'; // Instant hide
                     }
 
                     grid.innerHTML = ''; 
@@ -1075,11 +1080,11 @@
                 } else {
                     grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="text-6xl text-smoke/30 mb-6"><i class="fa-solid fa-box-open transition-transform hover:scale-110"></i></div><div class="text-starkBlack font-poppins font-black text-2xl" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">No inventory matches found.</div><p class="text-smoke mt-3 font-inter font-medium">Try adjusting your search terms or barangay.</p></div>';
                 }
-                // Delay para gumanda scroll kasabay ng hide animation
                 setTimeout(() => {
                     resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 200);
+                }, 100);
             } catch (error) {
+                console.error("Search API Error:", error);
                 showToast('Server connection failed.', 'error');
                 grid.innerHTML = '<div class="col-span-full text-center py-20 text-error font-poppins font-black text-2xl">Server Offline. Cannot process search.</div>';
             } finally { unlock(); }
