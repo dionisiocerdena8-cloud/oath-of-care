@@ -142,6 +142,14 @@
         
         /* Sliding Panel for History */
         .history-panel-open { transform: translateX(0) !important; box-shadow: -20px 0 50px rgba(0,0,0,0.2); }
+
+        /* Rotating 3D Text Badge */
+        @keyframes spin-slow {
+            100% { transform: rotate(360deg); }
+        }
+        .rotating-badge {
+            animation: spin-slow 12s linear infinite;
+        }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen">
@@ -213,8 +221,8 @@
     <!-- Main Content Area -->
     <main class="flex-grow pt-24 flex flex-col relative z-10">
 
-        <!-- ================= HERO & SEARCH SECTION ================= -->
-        <section id="heroSection" class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden transition-all duration-[800ms] ease-in-out">
+        <!-- ================= HERO & SEARCH SECTION (Fix 3: Pinaliit yung taas papuntang min-h-[50vh]) ================= -->
+        <section id="heroSection" class="relative min-h-[50vh] flex flex-col justify-center items-center pt-10 pb-10 overflow-hidden transition-all duration-[800ms] ease-in-out">
             <!-- Background Elements -->
             <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
             
@@ -299,6 +307,22 @@
                 
                 <!-- System Heading -->
                 <div class="text-center w-full max-w-[1400px] mx-auto flex flex-col items-center mb-8 group cursor-default relative mt-4 md:mt-8">
+                    <!-- Fix 4: Pinalitan ang z-index ng badge at linagyan ng pointer-events-none para di na humarang -->
+                    <div class="absolute -top-12 md:-top-16 right-2 md:-right-6 lg:-right-16 w-32 h-32 md:w-40 md:h-40 flex items-center justify-center opacity-95 pointer-events-none -z-10">
+                        <svg class="rotating-badge w-full h-full text-deepPurple" viewBox="0 0 100 100" style="filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.15));">
+                            <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" fill="transparent" />
+                            <text class="font-poppins font-black text-[8.5px] uppercase" fill="currentColor">
+                                <textPath href="#circlePath" startOffset="0%" textLength="238" lengthAdjust="spacing">
+                                    • VERIFIED PHARMACY &amp; MEDICINE LOCATOR
+                                </textPath>
+                            </text>
+                        </svg>
+                        <!-- Raw Capsule Icon sa gitna -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fa-solid fa-capsules text-vibrantOrange text-2xl md:text-3xl drop-shadow-md"></i>
+                        </div>
+                    </div>
+
                     <h1 class="flex flex-col items-center transition-transform duration-500 group-hover:scale-[1.02] relative z-10">
                         <span class="font-poppins font-black text-starkBlack text-lg sm:text-xl md:text-2xl lg:text-[1.5rem] leading-none mb-2 md:mb-3 relative z-20 uppercase tracking-widest" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.15);">Your Trusted</span>
                         <span class="font-serif font-bold text-starkBlack text-[1.5rem] sm:text-3xl md:text-4xl lg:text-[3.5rem] xl:text-[4.2rem] leading-[1.05] tracking-tighter whitespace-nowrap relative z-10" style="text-shadow: 4px 8px 15px rgba(0,0,0,0.15);">Pharmacy and Medicine Locator.</span>
@@ -375,7 +399,7 @@
             </div>
         </section>
 
-        <!-- ================= HOW IT WORKS SECTION ================= -->
+        <!-- ================= HOW IT WORKS SECTION (Fix 2: May id="howItWorksSection" na ito para ma-hide sa JS) ================= -->
         <section id="howItWorksSection" class="py-24 bg-surface relative z-10 border-t border-smoke/10 transition-all duration-[800ms] overflow-hidden opacity-100 max-h-[2000px]">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="text-center mb-20 group">
@@ -749,7 +773,7 @@
             const heroCurve = document.getElementById('heroCurve');
             
             if (hero) {
-                hero.classList.add('min-h-[90vh]');
+                hero.classList.add('min-h-[50vh]');
                 hero.classList.remove('min-h-[40vh]');
             }
             if (heroCurve) {
@@ -757,6 +781,7 @@
                 heroCurve.classList.add('min-h-[40vh]', 'md:min-h-[55vh]');
             }
             if (howItWorks) {
+                howItWorks.classList.remove('hidden');
                 howItWorks.style.display = 'block';
             }
 
@@ -993,6 +1018,9 @@
                 return;
             }
 
+            // PARA MATAGO YUNG HOW IT WORKS
+            document.getElementById('howItWorksSection').classList.add('hidden');
+
             const unlock = lockButton('btnSearch');
             
             document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-deepPurple">${medicine} (${milligrams}mg)</strong> in <strong class="text-deepPurple">${barangay}</strong>`;
@@ -1004,9 +1032,12 @@
             grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Querying database...</p></div>';
             
             try {
+                // PINAGSAMA NATIN YUNG MEDICINE AT MILLIGRAMS PARA BASAHIN NG LUMA MONG BACKEND
+                const combinedMedicineQuery = `${medicine} ${milligrams}`.trim();
+
                 const response = await fetch(`${API_URL}/api/search`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ medicine, milligrams, barangay, patientId: authState.id })
+                    body: JSON.stringify({ medicine: combinedMedicineQuery, barangay: barangay, patientId: authState.id })
                 });
                 
                 if (!response.ok) {
@@ -1020,21 +1051,17 @@
                     grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
                 } else if (response.ok && data.results && data.results.length > 0) {
                     
-                    // UI ADAPTATION MAGIC: Instantly hide "How it works" and shrink Hero
+                    // UI ADAPTATION MAGIC: Shrink Hero
                     const hero = document.getElementById('heroSection');
                     const heroCurve = document.getElementById('heroCurve');
-                    const howItWorks = document.getElementById('howItWorksSection');
                     
                     if (hero) {
-                        hero.classList.remove('min-h-[90vh]');
+                        hero.classList.remove('min-h-[50vh]');
                         hero.classList.add('min-h-[40vh]'); // Shrink hero
                     }
                     if (heroCurve) {
                         heroCurve.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
                         heroCurve.style.minHeight = '15vh'; // Shrink the wave
-                    }
-                    if (howItWorks) {
-                        howItWorks.style.display = 'none'; // Instant hide
                     }
 
                     grid.innerHTML = ''; 
