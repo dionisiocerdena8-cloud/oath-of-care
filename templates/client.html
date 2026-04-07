@@ -181,7 +181,6 @@
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
                     <span id="navUserName" class="font-inter font-bold text-smoke text-sm hidden md:block"></span>
                     
-                    <!-- NEW: My Visits Button -->
                     <button onclick="toggleHistoryPanel()" class="font-poppins font-bold text-deepPurple hover:text-vibrantOrange hover:scale-105 transition-all duration-300 text-sm uppercase tracking-widest flex items-center gap-2">
                         <i class="fa-solid fa-clock-rotate-left"></i> My Visits
                     </button>
@@ -215,7 +214,7 @@
     <main class="flex-grow pt-24 flex flex-col relative z-10">
 
         <!-- ================= HERO & SEARCH SECTION ================= -->
-        <section class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden">
+        <section id="heroSection" class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden transition-all duration-[800ms] ease-in-out">
             <!-- Background Elements -->
             <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
             
@@ -233,26 +232,66 @@
             <div class="capsule-3d capsule-purple bottom-[30%] left-[15%] hidden md:block" style="--base-rot: 60deg; animation-delay: 3s; transform: scale(0.8);"></div>
             <div class="capsule-3d capsule-orange top-[20%] right-[25%] hidden xl:block" style="--base-rot: -50deg; animation-delay: 2s; transform: scale(0.9); opacity: 0.6;"></div>
 
-            <!-- ================= ISOMETRIC STORE BACKGROUND SVGs ================= -->
+            <!-- ================= DETAILED PHARMACY STORE SVG ================= -->
             <!-- Left Store -->
-            <div class="absolute bottom-[20%] left-[-5%] lg:left-[2%] opacity-[0.07] pointer-events-none z-[-1] transform -rotate-2">
-                <svg width="350" height="350" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 20L180 60V140L100 180L20 140V60L100 20Z" fill="#09090b"/>
-                    <path d="M100 20L180 60V140L100 100V20Z" fill="#4A148C" opacity="0.8"/>
-                    <path d="M20 60L100 100V180L20 140V60Z" fill="#FF9800" opacity="0.6"/>
-                    <!-- Medical Cross -->
-                    <rect x="45" y="95" width="30" height="10" fill="white" transform="skewY(26)"/>
-                    <rect x="55" y="85" width="10" height="30" fill="white" transform="skewY(26)"/>
+            <div class="absolute bottom-[10%] left-[-2%] lg:left-[5%] opacity-[0.25] pointer-events-none z-[-1] transform -rotate-3 transition-opacity duration-500">
+                <svg width="250" height="250" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ground shadow -->
+                    <ellipse cx="200" cy="350" rx="160" ry="20" fill="#09090b" opacity="0.15"/>
+                    <!-- Main Building Body -->
+                    <rect x="80" y="100" width="240" height="250" fill="#FFFFFF" rx="8" stroke="#E4E4E7" stroke-width="4"/>
+                    <!-- Store Awning -->
+                    <path d="M 60 140 L 340 140 L 320 100 L 80 100 Z" fill="#4A148C"/>
+                    <path d="M 60 140 L 340 140 L 340 150 L 60 150 Z" fill="#311B92"/>
+                    <!-- Main Signboard -->
+                    <rect x="150" y="30" width="100" height="80" fill="#FFFFFF" rx="10" stroke="#4A148C" stroke-width="8"/>
+                    <!-- Medical Cross inside Signboard -->
+                    <rect x="185" y="45" width="30" height="50" fill="#FF9800" rx="4"/>
+                    <rect x="175" y="55" width="50" height="30" fill="#FF9800" rx="4"/>
+                    <!-- Glass Front / Windows / Doors -->
+                    <rect x="100" y="170" width="80" height="180" fill="#E0F2FE" rx="4" stroke="#D4D4D8" stroke-width="2"/>
+                    <rect x="220" y="170" width="80" height="180" fill="#E0F2FE" rx="4" stroke="#D4D4D8" stroke-width="2"/>
+                    <!-- Light Reflection on Glass -->
+                    <path d="M 100 190 L 180 170 L 180 200 L 100 220 Z" fill="#FFFFFF" opacity="0.6"/>
+                    <path d="M 220 190 L 300 170 L 300 200 L 220 220 Z" fill="#FFFFFF" opacity="0.6"/>
+                    <!-- Door Handles -->
+                    <rect x="165" y="250" width="6" height="30" fill="#4A148C" rx="3"/>
+                    <rect x="229" y="250" width="6" height="30" fill="#4A148C" rx="3"/>
+                    <!-- Decorative Plant outside store -->
+                    <circle cx="70" cy="320" r="25" fill="#10B981"/>
+                    <circle cx="90" cy="330" r="20" fill="#059669"/>
+                    <rect x="65" y="340" width="30" height="25" fill="#B45309" rx="2"/>
                 </svg>
             </div>
+            
             <!-- Right Store -->
-            <div class="absolute top-[15%] right-[-5%] lg:right-[2%] opacity-[0.07] pointer-events-none z-[-1] transform scale-x-[-1] rotate-2">
-                <svg width="300" height="300" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 20L180 60V140L100 180L20 140V60L100 20Z" fill="#09090b"/>
-                    <path d="M100 20L180 60V140L100 100V20Z" fill="#4A148C" opacity="0.8"/>
-                    <path d="M20 60L100 100V180L20 140V60Z" fill="#FF9800" opacity="0.6"/>
-                    <rect x="45" y="95" width="30" height="10" fill="white" transform="skewY(26)"/>
-                    <rect x="55" y="85" width="10" height="30" fill="white" transform="skewY(26)"/>
+            <div class="absolute top-[15%] right-[-5%] lg:right-[2%] opacity-[0.25] pointer-events-none z-[-1] transform scale-x-[-1] rotate-3 transition-opacity duration-500">
+                <svg width="250" height="250" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ground shadow -->
+                    <ellipse cx="200" cy="350" rx="160" ry="20" fill="#09090b" opacity="0.15"/>
+                    <!-- Main Building Body -->
+                    <rect x="80" y="100" width="240" height="250" fill="#FFFFFF" rx="8" stroke="#E4E4E7" stroke-width="4"/>
+                    <!-- Store Awning -->
+                    <path d="M 60 140 L 340 140 L 320 100 L 80 100 Z" fill="#4A148C"/>
+                    <path d="M 60 140 L 340 140 L 340 150 L 60 150 Z" fill="#311B92"/>
+                    <!-- Main Signboard -->
+                    <rect x="150" y="30" width="100" height="80" fill="#FFFFFF" rx="10" stroke="#4A148C" stroke-width="8"/>
+                    <!-- Medical Cross inside Signboard -->
+                    <rect x="185" y="45" width="30" height="50" fill="#FF9800" rx="4"/>
+                    <rect x="175" y="55" width="50" height="30" fill="#FF9800" rx="4"/>
+                    <!-- Glass Front / Windows / Doors -->
+                    <rect x="100" y="170" width="80" height="180" fill="#E0F2FE" rx="4" stroke="#D4D4D8" stroke-width="2"/>
+                    <rect x="220" y="170" width="80" height="180" fill="#E0F2FE" rx="4" stroke="#D4D4D8" stroke-width="2"/>
+                    <!-- Light Reflection on Glass -->
+                    <path d="M 100 190 L 180 170 L 180 200 L 100 220 Z" fill="#FFFFFF" opacity="0.6"/>
+                    <path d="M 220 190 L 300 170 L 300 200 L 220 220 Z" fill="#FFFFFF" opacity="0.6"/>
+                    <!-- Door Handles -->
+                    <rect x="165" y="250" width="6" height="30" fill="#4A148C" rx="3"/>
+                    <rect x="229" y="250" width="6" height="30" fill="#4A148C" rx="3"/>
+                    <!-- Decorative Plant outside store -->
+                    <circle cx="70" cy="320" r="25" fill="#10B981"/>
+                    <circle cx="90" cy="330" r="20" fill="#059669"/>
+                    <rect x="65" y="340" width="30" height="25" fill="#B45309" rx="2"/>
                 </svg>
             </div>
 
@@ -260,27 +299,20 @@
                 
                 <!-- System Heading -->
                 <div class="text-center w-full max-w-[1400px] mx-auto flex flex-col items-center mb-8 group cursor-default relative mt-4 md:mt-8">
-                    <!-- Rotating badge removed as requested -->
                     <h1 class="flex flex-col items-center transition-transform duration-500 group-hover:scale-[1.02] relative z-10">
-                        <!-- Lifted Up 'Your Trusted' using positive margin bottom -->
                         <span class="font-poppins font-black text-starkBlack text-lg sm:text-xl md:text-2xl lg:text-[1.5rem] leading-none mb-2 md:mb-3 relative z-20 uppercase tracking-widest" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.15);">Your Trusted</span>
-                        <!-- Main Title -->
                         <span class="font-serif font-bold text-starkBlack text-[1.5rem] sm:text-3xl md:text-4xl lg:text-[3.5rem] xl:text-[4.2rem] leading-[1.05] tracking-tighter whitespace-nowrap relative z-10" style="text-shadow: 4px 8px 15px rgba(0,0,0,0.15);">Pharmacy and Medicine Locator.</span>
                     </h1>
                     <p class="text-lg md:text-xl text-smoke font-inter font-medium max-w-2xl mt-6 transition-transform duration-500 group-hover:translate-y-2 relative z-10">
                         Locate essential medicines instantly. Professional network of verified pharmacies. 
-                        <!-- Increased margin-top for account required -->
                         <span class="font-black text-starkBlack block mt-5 md:mt-7 drop-shadow-md text-xl md:text-2xl">Account required to search.</span>
                     </p>
                 </div>
 
                 <!-- Critical Search Layout -->
                 <form onsubmit="handleSearch(event)" class="w-full max-w-[1150px] flex flex-col items-center mt-6">
-                    
-                    <!-- Row 1: The Inputs wrapped in a sleek pill container with 3D Shadow -->
                     <div class="glass-pill rounded-[2.5rem] p-5 md:p-7 flex flex-col lg:flex-row items-end gap-5 md:gap-4 w-full relative z-40 shadow-3d-pill">
                         
-                        <!-- Medicine Name -->
                         <div class="flex-grow w-full lg:w-auto relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
                             <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Medicine Name</label>
                             <div class="relative rounded-full">
@@ -290,7 +322,6 @@
                             </div>
                         </div>
 
-                        <!-- Milligrams (mg) -->
                         <div class="w-full lg:w-52 xl:w-60 relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
                             <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Milligrams (mg)</label>
                             <div class="relative rounded-full">
@@ -300,7 +331,6 @@
                             </div>
                         </div>
 
-                        <!-- Barangay Select -->
                         <div class="w-full lg:w-[24rem] xl:w-[28rem] relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50" id="customDropdownContainer">
                             <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors group-focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Barangay</label>
                             <div class="relative rounded-full">
@@ -333,7 +363,6 @@
                         </div>
                     </div>
 
-                    <!-- Row 2: Search Button -->
                     <div class="mt-10 flex justify-center w-full relative z-10">
                         <button type="submit" id="btnSearch" 
                             class="group/btn bg-starkBlack text-surface font-poppins font-black text-base md:text-lg px-12 py-5 rounded-[2rem] shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active uppercase tracking-widest flex items-center justify-center gap-4 w-full sm:w-auto min-w-[250px] transition-all duration-300">
@@ -347,7 +376,7 @@
         </section>
 
         <!-- ================= HOW IT WORKS SECTION ================= -->
-        <section class="py-24 bg-surface relative z-10 border-t border-smoke/10">
+        <section id="howItWorksSection" class="py-24 bg-surface relative z-10 border-t border-smoke/10 transition-all duration-[800ms] overflow-hidden opacity-100 max-h-[2000px]">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="text-center mb-20 group">
                     <h2 class="text-sm font-poppins font-bold uppercase tracking-[0.3em] text-vibrantOrange mb-3 transition-transform group-hover:-translate-y-1" style="text-shadow: 1px 1px 2px rgba(255,152,0,0.2);">User Journey</h2>
@@ -411,7 +440,6 @@
                         <h2 class="text-4xl font-poppins font-black text-starkBlack" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Available Pharmacies</h2>
                         <p class="text-smoke font-inter font-medium mt-3 text-lg" id="searchQueryText">Showing results for your search.</p>
                     </div>
-                    <!-- CHANGED TEXT HERE -->
                     <div class="text-xs font-bold text-surface uppercase tracking-[0.2em] flex items-center gap-2 bg-deepPurple px-5 py-3 rounded-full shadow-3d-btn cursor-default hover:-translate-y-1 transition-transform duration-300">
                         <i class="fa-solid fa-circle text-[8px] text-vibrantOrange animate-pulse"></i> LIVE INVENTORY
                     </div>
@@ -586,8 +614,8 @@
 
     <!-- Core Logic -->
     <script>
-        // DYNAMIC API URL PARA HINDI MAG-ERROR KAHIT ANONG DOMAIN GAMITIN
-        const API_URL = window.location.origin;
+        // DYNAMIC API URL (Fix 3: Babalik sa dynamic origin para hindi ma-disconnect sa server)
+        const API_URL = 'https://oath-of-care-production.up.railway.app';
         
         // State
         let authState = JSON.parse(localStorage.getItem('ooc_client_user')) || { id: null, role: null, name: null };
@@ -713,6 +741,23 @@
                 selectedText.innerText = 'Select Barangay...';
                 selectedText.classList.add('text-smoke/60');
                 selectedText.classList.remove('text-starkBlack');
+            }
+
+            // NA-FIX: Restore the animations back to original pag na-logout!
+            const hero = document.getElementById('heroSection');
+            const howItWorks = document.getElementById('howItWorksSection');
+            if (hero) {
+                hero.classList.add('min-h-[90vh]');
+                hero.classList.remove('min-h-[45vh]');
+            }
+            if (howItWorks) {
+                howItWorks.classList.remove('hidden');
+                setTimeout(() => {
+                    howItWorks.style.maxHeight = '2000px';
+                    howItWorks.style.opacity = '1';
+                    howItWorks.style.paddingTop = '6rem';
+                    howItWorks.style.paddingBottom = '6rem';
+                }, 10);
             }
 
             showToast('Signed out successfully.');
@@ -956,7 +1001,7 @@
             const grid = document.getElementById('resultsGrid');
             
             resultsDiv.classList.remove('hidden');
-            grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Loading...</p></div>';
+            grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Querying database...</p></div>';
             
             try {
                 const response = await fetch(`${API_URL}/api/search`, {
@@ -970,10 +1015,32 @@
                     showToast(data.error, 'error');
                     grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
                 } else if (response.ok && data.results.length > 0) {
+                    
+                    // NA-FIX: UI ADAPTATION MAGIC (Pumapaliit ang taas at nawawala ang how it works!)
+                    const hero = document.getElementById('heroSection');
+                    const howItWorks = document.getElementById('howItWorksSection');
+                    
+                    if (hero) {
+                        hero.classList.remove('min-h-[90vh]');
+                        hero.classList.add('min-h-[45vh]');
+                    }
+                    if (howItWorks) {
+                        howItWorks.style.maxHeight = '0px';
+                        howItWorks.style.opacity = '0';
+                        howItWorks.style.paddingTop = '0px';
+                        howItWorks.style.paddingBottom = '0px';
+                        setTimeout(() => howItWorks.classList.add('hidden'), 800);
+                    }
+
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
                         let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
                         const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
+
+                        // NA-FIX: Prevent Javascript SyntaxErrors kapag may apostrophe sa database (ex. "St. John's")
+                        const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
 
                         grid.innerHTML += `
                             <div class="bg-surface rounded-[2.5rem] shadow-3d-card hover:shadow-3d-modal transition-all duration-500 overflow-hidden flex flex-col group border border-white/50 cursor-pointer transform hover:-translate-y-2">
@@ -998,7 +1065,8 @@
                                     </div>
 
                                     <div class="mt-auto">
-                                        <button onclick="openMapModal('${res.address}', '${res.pharmacyName}', '${pharmId}', '${res.medicine}')" class="w-full bg-starkBlack text-surface py-5 rounded-xl font-poppins font-black text-sm uppercase tracking-widest hover:bg-deepPurple transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center justify-center gap-3">
+                                        <!-- NA-FIX: Nabuo ulit ang apat na nawawalang variables sa Map Modal! -->
+                                        <button onclick="openMapModal('${safeAddress}', '${safeName}', '${pharmId}', '${safeMedicine}')" class="w-full bg-starkBlack text-surface py-5 rounded-xl font-poppins font-black text-sm uppercase tracking-widest hover:bg-deepPurple transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center justify-center gap-3">
                                             <i class="fa-solid fa-diamond-turn-right text-lg drop-shadow-md"></i> <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">Get Directions</span>
                                         </button>
                                     </div>
@@ -1009,7 +1077,10 @@
                 } else {
                     grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="text-6xl text-smoke/30 mb-6"><i class="fa-solid fa-box-open transition-transform hover:scale-110"></i></div><div class="text-starkBlack font-poppins font-black text-2xl" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">No inventory matches found.</div><p class="text-smoke mt-3 font-inter font-medium">Try adjusting your search terms or barangay.</p></div>';
                 }
-                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Delay para gumanda scroll kasabay ng hide animation
+                setTimeout(() => {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 200);
             } catch (error) {
                 showToast('Server connection failed.', 'error');
                 grid.innerHTML = '<div class="col-span-full text-center py-20 text-error font-poppins font-black text-2xl">Server Offline. Cannot process search.</div>';
@@ -1034,6 +1105,7 @@
             }
         }
 
+        // NA-FIX: Nandito na ulit yung complete parameters
         function openMapModal(address, pharmacyName, pharmacyId, medicineSearched) {
             const mapModal = document.getElementById('mapModal');
             const content = document.getElementById('mapModalContent');
