@@ -213,7 +213,7 @@
     <!-- Main Content Area -->
     <main class="flex-grow pt-24 flex flex-col relative z-10">
 
-        <!-- ================= HERO & SEARCH SECTION ================= -->
+        <!-- ================= HERO & SEARCH SECTION (Added ID & Transitions) ================= -->
         <section id="heroSection" class="relative min-h-[90vh] flex flex-col justify-center items-center pt-10 pb-20 overflow-hidden transition-all duration-[800ms] ease-in-out">
             <!-- Background Elements -->
             <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
@@ -232,7 +232,7 @@
             <div class="capsule-3d capsule-purple bottom-[30%] left-[15%] hidden md:block" style="--base-rot: 60deg; animation-delay: 3s; transform: scale(0.8);"></div>
             <div class="capsule-3d capsule-orange top-[20%] right-[25%] hidden xl:block" style="--base-rot: -50deg; animation-delay: 2s; transform: scale(0.9); opacity: 0.6;"></div>
 
-            <!-- ================= DETAILED PHARMACY STORE SVG ================= -->
+            <!-- ================= REAL PHARMACY STORE VECTOR ILLUSTRATIONS ================= -->
             <!-- Left Store -->
             <div class="absolute bottom-[10%] left-[-2%] lg:left-[5%] opacity-[0.25] pointer-events-none z-[-1] transform -rotate-3 transition-opacity duration-500">
                 <svg width="250" height="250" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -375,7 +375,7 @@
             </div>
         </section>
 
-        <!-- ================= HOW IT WORKS SECTION ================= -->
+        <!-- ================= HOW IT WORKS SECTION (Added ID & Transitions) ================= -->
         <section id="howItWorksSection" class="py-24 bg-surface relative z-10 border-t border-smoke/10 transition-all duration-[800ms] overflow-hidden opacity-100 max-h-[2000px]">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="text-center mb-20 group">
@@ -614,7 +614,7 @@
 
     <!-- Core Logic -->
     <script>
-        // DYNAMIC API URL (Fix 3: Babalik sa dynamic origin para hindi ma-disconnect sa server)
+        // DYNAMIC API URL (Fixed to point to Railway so it always works)
         const API_URL = 'https://oath-of-care-production.up.railway.app';
         
         // State
@@ -743,7 +743,7 @@
                 selectedText.classList.remove('text-starkBlack');
             }
 
-            // NA-FIX: Restore the animations back to original pag na-logout!
+            // Restore the animations back to original pag na-logout
             const hero = document.getElementById('heroSection');
             const howItWorks = document.getElementById('howItWorksSection');
             if (hero) {
@@ -1016,7 +1016,7 @@
                     grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
                 } else if (response.ok && data.results.length > 0) {
                     
-                    // NA-FIX: UI ADAPTATION MAGIC (Pumapaliit ang taas at nawawala ang how it works!)
+                    // UI ADAPTATION MAGIC (Pumapaliit ang taas at nawawala ang how it works!)
                     const hero = document.getElementById('heroSection');
                     const howItWorks = document.getElementById('howItWorksSection');
                     
@@ -1037,7 +1037,6 @@
                         let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
                         const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
 
-                        // NA-FIX: Prevent Javascript SyntaxErrors kapag may apostrophe sa database (ex. "St. John's")
                         const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
@@ -1065,7 +1064,6 @@
                                     </div>
 
                                     <div class="mt-auto">
-                                        <!-- NA-FIX: Nabuo ulit ang apat na nawawalang variables sa Map Modal! -->
                                         <button onclick="openMapModal('${safeAddress}', '${safeName}', '${pharmId}', '${safeMedicine}')" class="w-full bg-starkBlack text-surface py-5 rounded-xl font-poppins font-black text-sm uppercase tracking-widest hover:bg-deepPurple transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center justify-center gap-3">
                                             <i class="fa-solid fa-diamond-turn-right text-lg drop-shadow-md"></i> <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">Get Directions</span>
                                         </button>
@@ -1105,7 +1103,6 @@
             }
         }
 
-        // NA-FIX: Nandito na ulit yung complete parameters
         function openMapModal(address, pharmacyName, pharmacyId, medicineSearched) {
             const mapModal = document.getElementById('mapModal');
             const content = document.getElementById('mapModalContent');
