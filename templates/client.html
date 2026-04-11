@@ -1000,123 +1000,131 @@
         }
 
         // --- SEARCH API ---
-        async function handleSearch(e) {
-            e.preventDefault();
-            
-            if (authState.role !== 'patient') {
-                showToast("Please sign in to search the inventory.", "error");
-                openAuthModal('login');
-                return;
-            }
+       async function handleSearch(e) {
+    e.preventDefault();
+    
+    if (authState.role !== 'patient') {
+        showToast("Please sign in to search the inventory.", "error");
+        openAuthModal('login');
+        return;
+    }
 
-            const medicine = document.getElementById('searchMedicine').value.trim();
-            const milligrams = document.getElementById('searchMg').value.trim();
-            const barangay = document.getElementById('searchBarangayInput').value.trim();
+    const medicine = document.getElementById('searchMedicine').value.trim();
+    const milligrams = document.getElementById('searchMg').value.trim();
+    const barangay = document.getElementById('searchBarangayInput').value.trim();
 
-            if(!barangay) {
-                showToast("Please select a Barangay.", "error");
-                return;
-            }
+    if(!barangay) {
+        showToast("Please select a Barangay.", "error");
+        return;
+    }
 
-            // PARA MATAGO YUNG HOW IT WORKS
-            document.getElementById('howItWorksSection').classList.add('hidden');
+    document.getElementById('howItWorksSection').classList.add('hidden');
 
-            const unlock = lockButton('btnSearch');
-            
-            document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-deepPurple">${medicine} (${milligrams}mg)</strong> in <strong class="text-deepPurple">${barangay}</strong>`;
-            
-            const resultsDiv = document.getElementById('searchResults');
-            const grid = document.getElementById('resultsGrid');
-            
-            resultsDiv.classList.remove('hidden');
-            grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Querying database...</p></div>';
-            
-            try {
-                // PINAGSAMA NATIN YUNG MEDICINE AT MILLIGRAMS PARA BASAHIN NG LUMA MONG BACKEND
-                const combinedMedicineQuery = `${medicine} ${milligrams}`.trim();
+    const unlock = lockButton('btnSearch');
+    document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-deepPurple">${medicine} (${milligrams}mg)</strong> in <strong class="text-deepPurple">${barangay}</strong>`;
+    
+    const resultsDiv = document.getElementById('searchResults');
+    const grid = document.getElementById('resultsGrid');
+    
+    resultsDiv.classList.remove('hidden');
+    grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Querying database...</p></div>';
+    
+    try {
+        const combinedMedicineQuery = `${medicine} ${milligrams}`.trim();
 
-                const response = await fetch(`${API_URL}/api/search`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ medicine: combinedMedicineQuery, barangay: barangay, patientId: authState.id })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (response.status === 429) {
-                    showToast(data.error, 'error');
-                    grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
-                } else if (response.ok && data.results && data.results.length > 0) {
-                    
-                    // UI ADAPTATION MAGIC: Shrink Hero
-                    const hero = document.getElementById('heroSection');
-                    const heroCurve = document.getElementById('heroCurve');
-                    
-                    if (hero) {
-                        hero.classList.remove('min-h-[50vh]');
-                        hero.classList.add('min-h-[40vh]'); // Shrink hero
-                    }
-                    if (heroCurve) {
-                        heroCurve.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
-                        heroCurve.style.minHeight = '15vh'; // Shrink the wave
-                    }
-
-                    grid.innerHTML = ''; 
-                    data.results.forEach(res => {
-                        let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
-                        const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
-
-                        const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                        const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                        const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-
-                        grid.innerHTML += `
-                            <div class="bg-surface rounded-[2.5rem] shadow-3d-card hover:shadow-3d-modal transition-all duration-500 overflow-hidden flex flex-col group border border-white/50 cursor-pointer transform hover:-translate-y-2">
-                                <div class="h-56 overflow-hidden relative rounded-t-[2.5rem] shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]">
-                                    <div class="absolute inset-0 bg-starkBlack/10 group-hover:bg-transparent transition-colors z-10"></div>
-                                    <span class="absolute top-5 right-5 z-20 bg-vibrantOrange text-starkBlack px-4 py-2 rounded-xl text-xs font-poppins font-black uppercase tracking-widest shadow-3d-btn">IN STOCK</span>
-                                    <img src="${shopImage}" alt="Pharmacy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
-                                </div>
-                                <div class="p-8 md:p-10 flex flex-col flex-grow">
-                                    <h3 class="text-2xl font-poppins font-black text-starkBlack mb-2 line-clamp-1" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">${res.pharmacyName}</h3>
-                                    <p class="text-smoke text-xs font-poppins font-bold uppercase tracking-widest mb-6"><i class="fa-solid fa-location-dot text-deepPurple mr-2"></i> ${res.branch}</p>
-                                    
-                                    <div class="bg-offWhite rounded-2xl p-6 mb-8 border border-starkBlack/5 transition-colors shadow-3d-input">
-                                        <div class="flex justify-between items-center mb-3">
-                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Item</span>
-                                            <span class="text-sm font-inter font-bold text-starkBlack truncate w-1/2 text-right">${res.medicine}</span>
-                                        </div>
-                                        <div class="flex justify-between items-center border-t border-smoke/10 pt-3">
-                                            <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Price</span>
-                                            <span class="text-xl font-poppins font-black text-deepPurple" style="text-shadow: 1px 1px 2px rgba(74,20,140,0.2);">₱${res.price}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-auto">
-                                        <button onclick="openMapModal('${safeAddress}', '${safeName}', '${pharmId}', '${safeMedicine}')" class="w-full bg-starkBlack text-surface py-5 rounded-xl font-poppins font-black text-sm uppercase tracking-widest hover:bg-deepPurple transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center justify-center gap-3">
-                                            <i class="fa-solid fa-diamond-turn-right text-lg drop-shadow-md"></i> <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">Get Directions</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="text-6xl text-smoke/30 mb-6"><i class="fa-solid fa-box-open transition-transform hover:scale-110"></i></div><div class="text-starkBlack font-poppins font-black text-2xl" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">No inventory matches found.</div><p class="text-smoke mt-3 font-inter font-medium">Try adjusting your search terms or barangay.</p></div>';
-                }
-                setTimeout(() => {
-                    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-            } catch (error) {
-                console.error("Search API Error:", error);
-                showToast('Server connection failed.', 'error');
-                grid.innerHTML = '<div class="col-span-full text-center py-20 text-error font-poppins font-black text-2xl">Server Offline. Cannot process search.</div>';
-            } finally { unlock(); }
+        const response = await fetch(`${API_URL}/api/search`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ medicine: combinedMedicineQuery, barangay: barangay, patientId: authState.id })
+        });
+        
+        // Parse muna ang JSON bago tayo mag check ng response status para makuha ang error message ng backend
+        const data = await response.json();
+        
+        if (response.status === 429) {
+            showToast(data.error, 'error');
+            grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
+            return; // Stop execution
         }
 
+        if (!response.ok) {
+            // Throw error kasama ang actual message mula sa Flask backend
+            throw new Error(data.error || `HTTP Error ${response.status}`);
+        }
+        
+        if (data.results && data.results.length > 0) {
+            
+            // UI ADAPTATION MAGIC: Shrink Hero
+            const hero = document.getElementById('heroSection');
+            const heroCurve = document.getElementById('heroCurve');
+            
+            if (hero) {
+                hero.classList.remove('min-h-[50vh]');
+                hero.classList.add('min-h-[40vh]');
+            }
+            if (heroCurve) {
+                heroCurve.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
+                heroCurve.style.minHeight = '15vh';
+            }
+
+            grid.innerHTML = ''; 
+            data.results.forEach(res => {
+                let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
+                const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
+
+                // FIX: Gamitin ang '&quot;' imbis na """ para maiwasan ang Syntax Error
+                const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+                grid.innerHTML += `
+                    <div class="bg-surface rounded-[2.5rem] shadow-3d-card hover:shadow-3d-modal transition-all duration-500 overflow-hidden flex flex-col group border border-white/50 cursor-pointer transform hover:-translate-y-2">
+                        <div class="h-56 overflow-hidden relative rounded-t-[2.5rem] shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]">
+                            <div class="absolute inset-0 bg-starkBlack/10 group-hover:bg-transparent transition-colors z-10"></div>
+                            <span class="absolute top-5 right-5 z-20 bg-vibrantOrange text-starkBlack px-4 py-2 rounded-xl text-xs font-poppins font-black uppercase tracking-widest shadow-3d-btn">IN STOCK</span>
+                            <img src="${shopImage}" alt="Pharmacy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        </div>
+                        <div class="p-8 md:p-10 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-poppins font-black text-starkBlack mb-2 line-clamp-1" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">${safeName}</h3>
+                            <p class="text-smoke text-xs font-poppins font-bold uppercase tracking-widest mb-6"><i class="fa-solid fa-location-dot text-deepPurple mr-2"></i> ${res.branch}</p>
+                            
+                            <div class="bg-offWhite rounded-2xl p-6 mb-8 border border-starkBlack/5 transition-colors shadow-3d-input">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Item</span>
+                                    <span class="text-sm font-inter font-bold text-starkBlack truncate w-1/2 text-right">${safeMedicine}</span>
+                                </div>
+                                <div class="flex justify-between items-center border-t border-smoke/10 pt-3">
+                                    <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Price</span>
+                                    <span class="text-xl font-poppins font-black text-deepPurple" style="text-shadow: 1px 1px 2px rgba(74,20,140,0.2);">₱${res.price}</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-auto">
+                                <button onclick="openMapModal('${safeAddress}', '${safeName}', '${pharmId}', '${safeMedicine}')" class="w-full bg-starkBlack text-surface py-5 rounded-xl font-poppins font-black text-sm uppercase tracking-widest hover:bg-deepPurple transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center justify-center gap-3">
+                                    <i class="fa-solid fa-diamond-turn-right text-lg drop-shadow-md"></i> <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">Get Directions</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="text-6xl text-smoke/30 mb-6"><i class="fa-solid fa-box-open transition-transform hover:scale-110"></i></div><div class="text-starkBlack font-poppins font-black text-2xl" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">No inventory matches found.</div><p class="text-smoke mt-3 font-inter font-medium">Try adjusting your search terms or barangay.</p></div>';
+        }
+        
+        setTimeout(() => {
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+        
+    } catch (error) {
+        console.error("Search API Error:", error);
+        
+        // I-display natin kung ano specifically ang nag-crash
+        showToast('System encounterd an issue.', 'error');
+        grid.innerHTML = `<div class="col-span-full text-center py-20 text-error font-poppins font-black text-2xl">Error: ${error.message}</div>`;
+    } finally { 
+        unlock(); 
+    }
+}
         // --- MAP MODAL & VISITS HISTORY LOGIC ---
         function toggleHistoryPanel() {
             const panel = document.getElementById('historyPanel');
