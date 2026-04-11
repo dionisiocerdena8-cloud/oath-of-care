@@ -27,6 +27,13 @@ if db_url.startswith("postgres://"):
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# FIX: IDINAGDAG ITO PARA HINDI MAMATAY ANG CONNECTION SA NEON DB (SERVERLESS POOLING FIX)
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,       # I-che-check muna kung buhay ang connection bago mag-query
+    'pool_recycle': 300,         # I-re-refresh ang connection every 5 mins
+    'pool_timeout': 20,          # Bibigyan ng 20 secs para makakuha ng connection
+}
+
 # Konpigurasyon para sa Gmail
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -133,17 +140,14 @@ class PharmacyReport(db.Model):
 # WEB PORTAL ROUTES (PARA SA RAILWAY)
 # ==========================================
 
-# 1. Client Portal Route (Root URL: /)
 @app.route('/')
 def serve_client_portal():
     return render_template('client.html')
 
-# 2. Pharmacy Portal Route (/pharmacy)
 @app.route('/pharmacy')
 def serve_pharmacy_portal():
     return render_template('pharmacy.html')
 
-# 3. Admin Portal Route (/admin)
 @app.route('/admin')
 def serve_admin_portal():
     return render_template('admin.html')
@@ -414,8 +418,10 @@ def search_medicine():
 
         return jsonify({'message': 'Search completed', 'results': results}), 200
     except Exception as e:
-        print("Search Engine Error:", e)
-        return jsonify({'error': 'Database query failed'}), 500
+        # FIX: IBABATO NA NATIN YUNG ACTUAL ERROR PAPUNTA SA FRONTEND PARA MAKITA NATIN KUNG MAY MALI SA TABLE OR COLUMN
+        error_msg = str(e)
+        print("Search Engine Error:", error_msg)
+        return jsonify({'error': f"{error_msg}"}), 500
 
 
 # ==========================================
