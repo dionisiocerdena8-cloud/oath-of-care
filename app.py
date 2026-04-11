@@ -27,11 +27,11 @@ if db_url.startswith("postgres://"):
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# FIX: IDINAGDAG ITO PARA HINDI MAMATAY ANG CONNECTION SA NEON DB (SERVERLESS POOLING FIX)
+# SERVERLESS POOLING FIX (Keep-Alive para hindi mag-offline)
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_pre_ping': True,       # I-che-check muna kung buhay ang connection bago mag-query
-    'pool_recycle': 300,         # I-re-refresh ang connection every 5 mins
-    'pool_timeout': 20,          # Bibigyan ng 20 secs para makakuha ng connection
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+    'pool_timeout': 20,
 }
 
 # Konpigurasyon para sa Gmail
@@ -137,9 +137,8 @@ class PharmacyReport(db.Model):
     IsOutOfStock = db.Column(db.Boolean, default=True)
 
 # ==========================================
-# WEB PORTAL ROUTES (PARA SA RAILWAY)
+# WEB PORTAL ROUTES
 # ==========================================
-
 @app.route('/')
 def serve_client_portal():
     return render_template('client.html')
@@ -418,7 +417,6 @@ def search_medicine():
 
         return jsonify({'message': 'Search completed', 'results': results}), 200
     except Exception as e:
-        # FIX: IBABATO NA NATIN YUNG ACTUAL ERROR PAPUNTA SA FRONTEND PARA MAKITA NATIN KUNG MAY MALI SA TABLE OR COLUMN
         error_msg = str(e)
         print("Search Engine Error:", error_msg)
         return jsonify({'error': f"{error_msg}"}), 500
@@ -554,19 +552,35 @@ def get_admin_logs():
     ]), 200
 
 # ==========================================
-# RUN SERVER
+# RUN SERVER & INITIALIZE DATABASE (MAY AUTO-PATCHER)
 # ==========================================
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        print("PostgreSQL tables successfully initialized.")
-        
-        if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
-            hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
-            default_admin = Admin(Email='oathofcare@gmail.com', PasswordHash=hashed_admin_pw)
-            db.session.add(default_admin)
-            db.session.commit()
-            print("Default admin created: oathofcare@gmail.com / admin123")
+with app.app_context():
+    db.create_all()
+    print("PostgreSQL tables successfully initialized.")
+    
+    # === DATABASE AUTO-PATCHER ===
+    # Inaayos nito yung missing columns sa live database mo nang hindi binubura ang data
+    try:
+        db.session.execute(text('ALTER TABLE pharmacy_status ADD COLUMN "StrikeCount" INTEGER DEFAULT 0;'))
+        db.session.commit()
+        print("FIX: Successfully added StrikeCount column.")
+    except Exception:
+        db.session.rollback() # Ignored kapag existing na yung column
 
+    try:
+        db.session.execute(text('ALTER TABLE pharmacy_status ADD COLUMN "LastStockUpdate" TIMESTAMP;'))
+        db.session.commit()
+        print("FIX: Successfully added LastStockUpdate column.")
+    except Exception:
+        db.session.rollback() # Ignored kapag existing na yung column
+        
+    if not Admin.query.filter_by(Email='oathofcare@gmail.com').first():
+        hashed_admin_pw = bcrypt.generate_password_hash('admin123').decode('utf-8')
+        default_admin = Admin(Email='oathofcare@gmail.com', PasswordHash=hashed_admin_pw)
+        db.session.add(default_admin)
+        db.session.commit()
+        print("Default admin created: oathofcare@gmail.com / admin123")
+
+if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port, debug=False)
