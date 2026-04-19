@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 from flask_mail import Mail, Message
 from sqlalchemy import text, func
 from collections import defaultdict
+import threading # Idinagdag para sa background email sending
 
 # Setup Flask to look for HTML files in the 'templates' folder
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -35,7 +36,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_timeout': 20,
 }
 
-# Konpigurasyon para sa Gmail
+# Konpigurasyon para sa Gmail (Isaalang-alang ang paglipat sa isang mas matibay na serbisyo kung nagkakaroon ng isyu ang Brevo)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -48,6 +49,15 @@ bcrypt = Bcrypt(app)
 mail = Mail(app)
 
 verification_codes = {}
+
+# --- HELPER FUNCTION PARA SA ASYNC EMAILS ---
+def send_async_email(app, msg):
+    with app.app_context():
+        try:
+            mail.send(msg)
+            print(f"Tagumpay na naipadala ang email kay: {msg.recipients}")
+        except Exception as e:
+            print(f"Error sa pagpapadala ng email: {e}")
 
 # ==========================================
 # MGA DATABASE MODELS
@@ -93,6 +103,7 @@ class Pharmacy(db.Model):
     IsActive = db.Column(db.Boolean, default=False)
     OpenTime = db.Column(db.String(50), nullable=True)
     CloseTime = db.Column(db.String(50), nullable=True)
+    # TANDAAN: Para ma-save ang 'Operating Days', kailangan itong idagdag sa database schema mo (hal. OperatingDays = db.Column(db.String(100))).
     BarangayID = db.Column(db.Integer, db.ForeignKey('barangay.BarangayID'), nullable=False)
     PharmacyAccountID = db.Column(db.Integer, db.ForeignKey('pharmacy_account.PharmacyAccountID'), nullable=False)
     medicines = db.relationship('Medicine', backref='pharmacy', lazy=True)
@@ -107,8 +118,8 @@ class PharmacyStatus(db.Model):
     LastLogin = db.Column(db.DateTime, nullable=True)
     IsDeactivated = db.Column(db.Boolean, default=False)
     IsArchived = db.Column(db.Boolean, default=False)
-    StrikeCount = db.Column(db.Integer, default=0) # Active penalties
-    TotalLifetimeStrikes = db.Column(db.Integer, default=0) # Never resets (for admin report)
+    StrikeCount = db.Column(db.Integer, default=0) # Aktibong penalty (nagrereset pag may update)
+    TotalLifetimeStrikes = db.Column(db.Integer, default=0) # Hindi nagrereset na total 'No' para sa admin report
     LastStockUpdate = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Medicine(db.Model):
@@ -119,7 +130,7 @@ class Medicine(db.Model):
     Price = db.Column(db.Numeric(10, 2), nullable=False)
     IsPrescriptionRequired = db.Column(db.Boolean, default=False)
     InStock = db.Column(db.Boolean, default=True)
-    StrikeCount = db.Column(db.Integer, default=0) # Strike for specific medicine
+    StrikeCount = db.Column(db.Integer, default=0) # Strike para sa partikular na gamot
     PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
 
 class SearchLog(db.Model):
@@ -139,7 +150,7 @@ class PharmacyReport(db.Model):
     ReportDate = db.Column(db.DateTime, default=datetime.utcnow)
     IsOutOfStock = db.Column(db.Boolean, default=True)
 
-# NEW TABLE for detailed analytics (Views and Clicks)
+# BAGONG TABLE para sa detalyadong analytics (Views at Clicks)
 class PharmacyVisibilityLog(db.Model):
     __tablename__ = 'pharmacy_visibility_log'
     LogID = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -170,18 +181,22 @@ def serve_admin_portal():
 def send_verification():
     data = request.json
     email = data.get('email')
-    if not email: return jsonify({'error': 'Email is required'}), 400
+    if not email: return jsonify({'error': 'Kinakailangan ang Email'}), 400
         
     code = ''.join(random.choices(string.digits, k=6))
     verification_codes[email] = code
     
     try:
         msg = Message('Oath of Care - Verification Code', recipients=[email])
-        msg.body = f'Your 6-digit verification code for Oath of Care is: {code}'
-        mail.send(msg)
-        return jsonify({'message': 'Verification code sent successfully'})
+        msg.body = f'Ang iyong 6-digit verification code para sa Oath of Care ay: {code}'
+        
+        # Ipadala ang email nang asynchronous para maiwasan ang timeout
+        threading.Thread(target=send_async_email, args=(app, msg)).start()
+        
+        return jsonify({'message': 'Tagumpay na naipadala ang verification code'})
     except Exception as e:
-        return jsonify({'error': 'Failed to send email. Check credentials.'}), 500
+        print("Mail Error:", e)
+        return jsonify({'error': 'Nabigong ipadala ang email. Suriin ang mga kredensyal o ang status ng server.'}), 500
 
 @app.route('/api/verify-code', methods=['POST'])
 def verify_code():
@@ -189,8 +204,8 @@ def verify_code():
     email = data.get('email')
     code = data.get('code')
     if verification_codes.get(email) == code:
-        return jsonify({'message': 'Code verified successfully'})
-    return jsonify({'error': 'Invalid or expired code'}), 400
+        return jsonify({'message': 'Tagumpay na na-verify ang code'})
+    return jsonify({'error': 'Imbalido o expired na code'}), 400
 
 @app.route('/register-patient', methods=['POST'])
 def register_client():
@@ -198,7 +213,7 @@ def register_client():
     email = data.get('email')
     
     if ClientAccount.query.filter_by(Email=email).first():
-        return jsonify({'error': 'Email is already registered as a client'}), 400
+        return jsonify({'error': 'Rehistrado na ang email na ito bilang isang kliyente'}), 400
 
     hashed_pw = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
     try:
@@ -210,10 +225,10 @@ def register_client():
         )
         db.session.add(new_client)
         db.session.commit()
-        return jsonify({'message': 'Account created successfully!'}), 201
+        return jsonify({'message': 'Tagumpay na nagawa ang account!'}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Database error.'}), 500
+        return jsonify({'error': 'May error sa database.'}), 500
 
 @app.route('/register', methods=['POST'])
 def register_pharmacy():
@@ -223,7 +238,7 @@ def register_pharmacy():
     barangay_name = data.get('barangay')
 
     if PharmacyAccount.query.filter_by(Email=email).first():
-        return jsonify({'error': 'Email is already registered'}), 400
+        return jsonify({'error': 'Rehistrado na ang email na ito'}), 400
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -256,10 +271,10 @@ def register_pharmacy():
         new_status = PharmacyStatus(PharmacyID=new_pharmacy.PharmacyID, AccountStatus='Pending')
         db.session.add(new_status)
         db.session.commit()
-        return jsonify({'message': 'Registration complete! Pending admin approval.'}), 201
+        return jsonify({'message': 'Kumpleto na ang pagpaparehistro! Naghihintay ng pag-apruba mula sa admin.'}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'A database error occurred.'}), 500
+        return jsonify({'error': 'Nagkaroon ng error sa database.'}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -271,7 +286,7 @@ def login():
     if role == 'patient':
         user = ClientAccount.query.filter_by(Email=email).first()
         if user and bcrypt.check_password_hash(user.PasswordHash, password):
-            return jsonify({'message': 'Login successful', 'id': user.ClientID, 'name': f"{user.Fname} {user.Lname}", 'role': 'patient'}), 200
+            return jsonify({'message': 'Matagumpay na nag-login', 'id': user.ClientID, 'name': f"{user.Fname} {user.Lname}", 'role': 'patient'}), 200
             
     elif role == 'pharmacy':
         user = PharmacyAccount.query.filter_by(Email=email).first()
@@ -280,15 +295,15 @@ def login():
             if pharmacy:
                 status = PharmacyStatus.query.filter_by(PharmacyID=pharmacy.PharmacyID).first()
                 if status and status.AccountStatus == 'Pending':
-                    return jsonify({'error': 'Your account is still pending admin approval.'}), 403
-            return jsonify({'message': 'Login successful', 'id': pharmacy.PharmacyID if pharmacy else None, 'pharmacyName': pharmacy.PharmacyName if pharmacy else "Store", 'role': 'pharmacy'}), 200
+                    return jsonify({'error': 'Ang iyong account ay kasalukuyang naghihintay pa ng pag-apruba ng admin.'}), 403
+            return jsonify({'message': 'Matagumpay na nag-login', 'id': pharmacy.PharmacyID if pharmacy else None, 'pharmacyName': pharmacy.PharmacyName if pharmacy else "Store", 'role': 'pharmacy'}), 200
             
     elif role == 'admin':
         admin = Admin.query.filter_by(Email=email).first()
         if admin and bcrypt.check_password_hash(admin.PasswordHash, password):
-            return jsonify({'message': 'Admin login successful', 'id': admin.AdminID, 'role': 'admin'}), 200
+            return jsonify({'message': 'Matagumpay na nag-login bilang Admin', 'id': admin.AdminID, 'role': 'admin'}), 200
 
-    return jsonify({'error': 'Invalid email or password'}), 401
+    return jsonify({'error': 'Mali ang email o password'}), 401
 
 @app.route('/api/reset-password', methods=['POST'])
 def reset_password():
@@ -298,11 +313,11 @@ def reset_password():
     if not user:
         user = PharmacyAccount.query.filter_by(Email=email).first()
     if not user:
-        return jsonify({'error': 'Account not found.'}), 404
+        return jsonify({'error': 'Hindi natagpuan ang account.'}), 404
         
     user.PasswordHash = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
     db.session.commit()
-    return jsonify({'message': 'Password has been successfully reset.'}), 200
+    return jsonify({'message': 'Matagumpay na na-reset ang password.'}), 200
 
 # ==========================================
 # PHARMACY INVENTORY & EDIT ENDPOINTS
@@ -311,7 +326,7 @@ def reset_password():
 def get_pharmacy_profile(pharm_id):
     try:
         pharmacy = Pharmacy.query.get(pharm_id)
-        if not pharmacy: return jsonify({'error': 'Pharmacy not found'}), 404
+        if not pharmacy: return jsonify({'error': 'Hindi natagpuan ang Pharmacy'}), 404
         return jsonify({'name': pharmacy.PharmacyName, 'contact': pharmacy.ContactNumber, 'address': pharmacy.FullAddress, 'mapLink': pharmacy.GoogleMapLink, 'openTime': pharmacy.OpenTime, 'closeTime': pharmacy.CloseTime}), 200
     except Exception as e:
         return jsonify({'error': 'Database error'}), 500
@@ -330,11 +345,11 @@ def update_pharmacy():
             pharmacy.OpenTime = data.get('openTime')
             pharmacy.CloseTime = data.get('closeTime')
             db.session.commit()
-            return jsonify({'message': 'Profile updated successfully!'}), 200
-        return jsonify({'error': 'Pharmacy not found'}), 404
+            return jsonify({'message': 'Tagumpay na na-update ang profile!'}), 200
+        return jsonify({'error': 'Hindi natagpuan ang Pharmacy'}), 404
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Update failed'}), 500
+        return jsonify({'error': 'Nabigo ang pag-update'}), 500
 
 @app.route('/api/medicines/<int:pharm_id>', methods=['GET'])
 def get_medicines(pharm_id):
@@ -343,7 +358,7 @@ def get_medicines(pharm_id):
         results = [{'id': med.MedicineID, 'name': med.MedicineName, 'category': med.Description, 'price': str(med.Price), 'status': 'In Stock' if med.InStock else 'Out of Stock'} for med in medicines]
         return jsonify(results), 200
     except Exception as e:
-        return jsonify({'error': 'Failed to load inventory'}), 500
+        return jsonify({'error': 'Nabigong i-load ang inventory'}), 500
 
 @app.route('/api/medicines', methods=['POST'])
 def add_medicine():
@@ -363,14 +378,14 @@ def add_medicine():
         if status:
             if status.IsDeactivated:
                 status.IsDeactivated = False
-                status.StrikeCount = 0 # Reset penalty upon update (Reactivation)
+                status.StrikeCount = 0 # Magre-reset ang penalty kapag nag-update (Reactivation)
             status.LastStockUpdate = datetime.utcnow()
 
         db.session.commit()
-        return jsonify({'message': f"{data.get('name')} successfully added!"}), 201
+        return jsonify({'message': f"Tagumpay na naidagdag ang {data.get('name')} at na-update ang standing ng Account!"}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Failed to add medicine.'}), 500
+        return jsonify({'error': 'Nabigong idagdag ang gamot.'}), 500
 
 @app.route('/api/medicines/<int:med_id>/status', methods=['PUT'])
 def update_med_status(med_id):
@@ -379,31 +394,31 @@ def update_med_status(med_id):
         med = Medicine.query.get(med_id)
         if med:
             med.InStock = (data.get('status') == 'In Stock')
-            med.StrikeCount = 0 # Reset specific medicine strike if updated manually
+            med.StrikeCount = 0 # I-reset ang strike ng partikular na gamot kung mano-manong in-update
             status = PharmacyStatus.query.filter_by(PharmacyID=med.PharmacyID).first()
             if status:
                 if status.IsDeactivated:
                     status.IsDeactivated = False
-                    status.StrikeCount = 0 # Reset penalty upon update
+                    status.StrikeCount = 0 # I-reset ang penalty kapag nag-update
                 status.LastStockUpdate = datetime.utcnow()
             db.session.commit()
             return jsonify({'success': True}), 200
-        return jsonify({'error': 'Not found'}), 404
+        return jsonify({'error': 'Hindi natagpuan'}), 404
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Update failed'}), 500
+        return jsonify({'error': 'Nabigo ang pag-update'}), 500
 
 @app.route('/api/medicines/<int:med_id>', methods=['PUT', 'DELETE'])
 def handle_medicine(med_id):
     try:
         med = Medicine.query.get(med_id)
         if not med:
-            return jsonify({'error': 'Not found'}), 404
+            return jsonify({'error': 'Hindi natagpuan'}), 404
             
         if request.method == 'DELETE':
             db.session.delete(med)
             db.session.commit()
-            return jsonify({'message': 'Deleted successfully'}), 200
+            return jsonify({'message': 'Tagumpay na nabura'}), 200
             
         if request.method == 'PUT':
             data = request.json
@@ -464,14 +479,14 @@ def search_medicine():
                 'contactNumber': pharm.ContactNumber
             })
             
-            # LOG VISIBILITY FOR ANALYTICS (Appeared in Search)
+            # LOG VISIBILITY PARA SA ANALYTICS (Appeared in Search)
             try:
                 vis_log = PharmacyVisibilityLog(PharmacyID=pharm.PharmacyID, Action='Appeared', MedicineName=med.MedicineName)
                 db.session.add(vis_log)
             except Exception: pass
 
         db.session.commit()
-        return jsonify({'message': 'Search completed', 'results': results}), 200
+        return jsonify({'message': 'Tapos na ang paghahanap', 'results': results}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -496,8 +511,8 @@ def report_pharmacy_stock():
     data = request.json
     pharm_id = data.get('pharmacyId')
     client_id = data.get('clientId')
-    is_out_of_stock = data.get('isOutOfStock', True) # Default true if old frontend
-    medicine_name = data.get('medicineName') # Frontend must pass this
+    is_out_of_stock = data.get('isOutOfStock', True) # Default true kung lumang frontend
+    medicine_name = data.get('medicineName') # Kinakailangan ipasa ito ng frontend
     
     try:
         new_report = PharmacyReport(PharmacyID=pharm_id, ClientID=client_id, IsOutOfStock=is_out_of_stock)
@@ -509,44 +524,44 @@ def report_pharmacy_stock():
         if status and pharmacy and is_out_of_stock:
             account = PharmacyAccount.query.get(pharmacy.PharmacyAccountID)
             
-            # 1. SPECIFIC MEDICINE PENALTY (5 Warning / 10 Auto-OOS)
+            # 1. PENALTY PARA SA PARTIKULAR NA GAMOT (5 Warning / 10 Auto-OOS)
             if medicine_name:
                 medicine = Medicine.query.filter(Medicine.PharmacyID == pharm_id, Medicine.MedicineName == medicine_name).first()
                 if medicine:
                     medicine.StrikeCount = getattr(medicine, 'StrikeCount', 0) + 1
                     if medicine.StrikeCount == 5:
-                        msg = Message('Oath of Care - Inventory Warning', recipients=[account.Email])
-                        msg.body = f'Warning: Your medicine "{medicine.MedicineName}" has received 5 out-of-stock reports from patients. Please update your inventory.'
-                        mail.send(msg)
+                        msg = Message('Oath of Care - Babala sa Inventory', recipients=[account.Email])
+                        msg.body = f'Babala: Ang iyong gamot na "{medicine.MedicineName}" ay nakatanggap ng 5 ulat na walang stock mula sa mga pasyente. Mangyaring i-update ang iyong inventory.'
+                        threading.Thread(target=send_async_email, args=(app, msg)).start()
                     elif medicine.StrikeCount >= 10:
                         medicine.InStock = False
-                        medicine.StrikeCount = 0 # Reset specific medicine strike
-                        msg = Message('Oath of Care - Medicine Auto-Disabled', recipients=[account.Email])
-                        msg.body = f'Notice: "{medicine.MedicineName}" has received 10 out-of-stock reports and was automatically marked OUT OF STOCK to protect network reliability.'
-                        mail.send(msg)
+                        medicine.StrikeCount = 0 # I-reset ang strike ng partikular na gamot
+                        msg = Message('Oath of Care - Awtomatikong Na-disable ang Gamot', recipients=[account.Email])
+                        msg.body = f'Paunawa: Ang "{medicine.MedicineName}" ay nakatanggap ng 10 ulat na walang stock at awtomatikong minarkahan bilang OUT OF STOCK upang protektahan ang pagiging maasahan ng network.'
+                        threading.Thread(target=send_async_email, args=(app, msg)).start()
 
-            # 2. PHARMACY TOTAL PENALTY (20 Warning / 30 Deactivation)
+            # 2. KABUUANG PENALTY PARA SA PHARMACY (20 Warning / 30 Deactivation)
             status.StrikeCount += 1
             status.TotalLifetimeStrikes = getattr(status, 'TotalLifetimeStrikes', 0) + 1
             
             if status.StrikeCount == 20:
-                msg = Message('Oath of Care - Critical Account Warning', recipients=[account.Email])
-                msg.body = 'CRITICAL WARNING: Your pharmacy accumulated 20 out-of-stock reports. 10 more reports will result in temporary account deactivation.'
-                mail.send(msg)
+                msg = Message('Oath of Care - Kritikal na Babala sa Account', recipients=[account.Email])
+                msg.body = 'KRITIKAL NA BABALA: Ang iyong pharmacy ay nakaipon ng 20 ulat na walang stock. Ang 10 karagdagang ulat ay magreresulta sa pansamantalang pag-deactivate ng account.'
+                threading.Thread(target=send_async_email, args=(app, msg)).start()
                 
             elif status.StrikeCount >= 30:
                 status.IsDeactivated = True
-                status.StrikeCount = 0 # Will reset actively upon deactivation, so when they reactivate it's clean.
-                msg = Message('Oath of Care - Account Deactivated', recipients=[account.Email])
-                msg.body = 'Your pharmacy has been deactivated due to 30 out-of-stock reports. You must log in and manually update your inventory to restore visibility in searches.'
-                mail.send(msg)
+                status.StrikeCount = 0 # Aktibong magre-reset kapag na-deactivate, kaya malinis ito kapag sila ay nag-reactivate.
+                msg = Message('Oath of Care - Na-deactivate ang Account', recipients=[account.Email])
+                msg.body = 'Ang iyong pharmacy ay na-deactivate dahil sa 30 ulat na walang stock. Kinakailangan mong mag-login at mano-manong i-update ang iyong inventory upang maibalik ang visibility sa mga paghahanap.'
+                threading.Thread(target=send_async_email, args=(app, msg)).start()
 
         db.session.commit()
-        return jsonify({'message': 'Report processed successfully'}), 200
+        return jsonify({'message': 'Tagumpay na naproseso ang ulat'}), 200
     except Exception as e:
         db.session.rollback()
         print("Reporting Error:", e)
-        return jsonify({'error': 'Failed to process report'}), 500
+        return jsonify({'error': 'Nabigong iproseso ang ulat'}), 500
 
 
 # ==========================================
@@ -607,7 +622,7 @@ def get_pharmacy_analytics(pharm_id):
         }), 200
     except Exception as e:
         print("Analytics Error:", e)
-        return jsonify({'error': 'Failed to load analytics'}), 500
+        return jsonify({'error': 'Nabigong i-load ang analytics'}), 500
 
 
 # ==========================================
@@ -615,10 +630,11 @@ def get_pharmacy_analytics(pharm_id):
 # ==========================================
 def run_auto_deletion_check():
     try:
-        two_months_ago = datetime.utcnow() - timedelta(days=60) # Note: Used 60 days in code previously
+        # BURA PARA SA 3 BUWAN (90 araw) NA DEACTIVATION
+        three_months_ago = datetime.utcnow() - timedelta(days=90)
         abandoned_pharmacies = PharmacyStatus.query.filter(
             PharmacyStatus.IsDeactivated == True,
-            PharmacyStatus.LastStockUpdate < two_months_ago
+            PharmacyStatus.LastStockUpdate < three_months_ago
         ).all()
         
         for status in abandoned_pharmacies:
@@ -633,7 +649,7 @@ def run_auto_deletion_check():
     except Exception as e:
         db.session.rollback()
 
-# ... other admin endpoints (get_pending_pharmacies, resolve_application) remain unchanged ...
+# ... iba pang admin endpoints (get_pending_pharmacies, resolve_application) nananatiling hindi nababago ...
 
 # ==========================================
 # RUN SERVER & INITIALIZE DATABASE
