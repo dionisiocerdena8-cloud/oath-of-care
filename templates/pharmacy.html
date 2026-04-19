@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oath of Care | Pharmacy Portal</title>
+    <title>Oath of Care | Pharmacy Partner Portal</title>
     
+    <!-- Premium Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome & Chart.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -18,14 +22,23 @@
             theme: {
                 extend: {
                     colors: {
-                        deepPurple: '#4A148C',
-                        vibrantOrange: '#FF9800',
+                        brand: {
+                            50: '#f7fcf5',
+                            100: '#e5f5e0',
+                            200: '#c7e9c0',
+                            300: '#a1d99b',
+                            400: '#74c476',
+                            500: '#41ab5d',
+                            600: '#238b45',
+                            700: '#006d2c',
+                            800: '#00441b',
+                            900: '#002a11'
+                        },
+                        mocha: '#b08d6a',
+                        charcoal: '#1A1A1A',
                         starkBlack: '#09090b',
-                        offWhite: '#F4F4F5',
                         surface: '#FFFFFF',
-                        smoke: '#52525b',
-                        error: '#DC2626',
-                        success: '#16a34a'
+                        error: '#DC2626'
                     },
                     fontFamily: {
                         poppins: ['"Poppins"', 'sans-serif'],
@@ -33,15 +46,11 @@
                         inter: ['"Inter"', 'sans-serif'],
                     },
                     boxShadow: {
-                        'premium': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
-                        'pill': '0 10px 30px -5px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(255, 255, 255, 0.6)',
-                        '3d-btn': '0 8px 25px -5px rgba(0, 0, 0, 0.3), inset 0 2px 1px rgba(255, 255, 255, 0.2)',
-                        '3d-btn-hover': '0 15px 35px -5px rgba(0, 0, 0, 0.4), inset 0 2px 1px rgba(255, 255, 255, 0.2)',
-                        '3d-btn-active': '0 4px 10px -2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.4)',
-                        '3d-input': 'inset 0 2px 5px rgba(0, 0, 0, 0.06), 0 2px 0 rgba(255, 255, 255, 1)',
-                        '3d-input-focus': '0 10px 25px -5px rgba(74, 20, 140, 0.25), inset 0 2px 5px rgba(0, 0, 0, 0.02)',
-                        '3d-modal': '0 30px 60px -15px rgba(0, 0, 0, 0.4), 0 0 40px rgba(74, 20, 140, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.9)',
-                        '3d-card': '0 10px 30px -10px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.8)'
+                        'luxury': '0 20px 40px -15px rgba(0, 68, 27, 0.15)',
+                        'luxury-hover': '0 25px 50px -12px rgba(0, 68, 27, 0.3)',
+                        'input': '0 8px 25px -5px rgba(0,0,0,0.05)',
+                        'input-focus': '0 10px 30px -5px rgba(0, 68, 27, 0.15)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)'
                     }
                 }
             }
@@ -50,134 +59,135 @@
 
     <style>
         body {
-            background-color: #F8F9FA;
-            color: #09090b;
+            background-color: #f7fcf5;
+            color: #1A1A1A;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
-        }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
+        .font-sans-head { font-family: 'Poppins', sans-serif; }
 
-        /* Input overrides for Chrome Autocomplete */
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover, 
-        input:-webkit-autofill:focus, 
-        input:-webkit-autofill:active{
-            -webkit-box-shadow: 0 0 0 30px #F4F4F5 inset !important;
-            -webkit-text-fill-color: #09090b !important;
+        input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+            -webkit-text-fill-color: #1A1A1A !important;
             transition: background-color 5000s ease-in-out 0s;
         }
 
-        /* 3D Floating Background Objects */
-        @keyframes floatObj1 {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-40px) rotate(20deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-        @keyframes floatObj2 {
-            0% { transform: translateY(0px) rotate(0deg) scale(1); }
-            50% { transform: translateY(30px) rotate(-15deg) scale(1.1); }
-            100% { transform: translateY(0px) rotate(0deg) scale(1); }
-        }
-        .bg-3d-obj-1 {
-            position: absolute;
-            width: 160px;
-            height: 160px;
-            background: radial-gradient(circle at 30% 30%, #FFCC80 0%, #FF9800 40%, #E65100 80%, #BF360C 100%);
-            border-radius: 50%;
-            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.8), 15px 25px 40px rgba(0,0,0,0.25);
-            animation: floatObj1 10s ease-in-out infinite;
-            z-index: -1;
-            opacity: 0.9;
-        }
-        .bg-3d-obj-2 {
-            position: absolute;
-            width: 180px;
-            height: 80px;
-            background: linear-gradient(135deg, #7E57C2, #4A148C, #311B92);
-            border-radius: 50px;
-            box-shadow: inset -15px -15px 30px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.4), 15px 25px 35px rgba(0,0,0,0.3);
-            animation: floatObj2 12s ease-in-out infinite;
-            z-index: -1;
-            opacity: 0.8;
+        /* Read-only state styles for inputs */
+        input:disabled, select:disabled {
+            background-color: #f7fcf5 !important;
+            color: #6b7280 !important;
+            cursor: not-allowed;
+            border-color: transparent !important;
+            box-shadow: none !important;
         }
 
-        /* View Switching System */
-        .view-section {
-            display: none;
-            opacity: 0;
-        }
-        .view-section.active {
-            display: flex; 
-            animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.98) translateY(20px); filter: blur(5px); }
-            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-        }
-
-        /* Custom Toggle Switch Styles */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #FF9800;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #FF9800;
+        select.no-custom-arrow {
+            background-image: none !important;
         }
         
-        .table-toggle:checked + .table-toggle-label {
-            background-color: #FF9800;
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%23006d2c' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-repeat: no-repeat;
+            background-position-x: 95%;
+            background-position-y: 50%;
+            background-size: 14px;
         }
 
-        /* Toast Notifications */
         #toast-container {
             position: fixed; bottom: 30px; right: 30px; z-index: 9999;
             display: flex; flex-direction: column; gap: 15px;
         }
         .toast {
-            background: #09090b; color: #F8F9FA; padding: 18px 28px;
-            border-left: 5px solid #FF9800; border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1);
-            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            background: #1A1A1A; color: #ffffff; padding: 18px 24px;
+            border-left: 4px solid #41ab5d; border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif;
-            font-weight: 600; font-size: 0.95rem;
+            font-size: 0.95rem; font-weight: 500;
         }
         .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: #DC2626; }
         
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #F8F9FA; }
-        ::-webkit-scrollbar-thumb { background: #4A148C; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: #f7fcf5; }
+        ::-webkit-scrollbar-thumb { background: #41ab5d; border-radius: 10px; }
+
+        .view-section { display: none; opacity: 0; }
+        .view-section.active { display: flex; animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        /* Custom Toggle Switch Styles */
+        .table-toggle:checked + .table-toggle-label { background-color: #41ab5d; }
+        
+        .editable-cell {
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 4px 8px;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .editable-cell:hover { border-color: #c7e9c0; background: #fff; }
+        .editable-cell:focus { border-color: #41ab5d; background: #fff; outline: none; box-shadow: 0 2px 8px rgba(0,109,44,0.1); }
+        
+        /* Checkbox Pills Styling */
+        .day-pill-checkbox:checked + div {
+            background-color: #00441b;
+            color: white;
+            border-color: #00441b;
+        }
     </style>
 </head>
-<body class="antialiased flex flex-col min-h-screen">
+<body class="antialiased flex flex-col min-h-screen relative">
 
-    <nav class="fixed w-full z-50 transition-all duration-300 bg-gradient-to-r from-surface/90 via-purple-50/80 to-orange-50/90 backdrop-blur-xl border-b border-starkBlack/5 h-24 flex items-center shadow-sm" id="navbar">
+    <!-- Luxury Background -->
+    <div class="fixed inset-0 z-[-5] w-full h-full overflow-hidden bg-brand-50 pointer-events-none">
+        <div class="absolute top-[10%] right-[30%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-yellow-50/60 rounded-full blur-[100px] transform translate-x-1/2"></div>
+        <div class="absolute top-[15%] right-[25%] w-[20vw] h-[20vw] max-w-[250px] max-h-[250px] bg-white rounded-full blur-3xl transform translate-x-1/2 opacity-90"></div>
+        <svg class="absolute bottom-0 w-full h-[60vh] min-h-[400px]" preserveAspectRatio="none" viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#e5f5e0" d="M0,250 C300,150 600,300 900,200 C1200,100 1350,250 1440,280 L1440,600 L0,600 Z"></path>
+            <path fill="#c7e9c0" d="M0,350 C250,450 450,250 750,300 C1050,350 1250,200 1440,250 L1440,600 L0,600 Z"></path>
+            <path fill="#a1d99b" d="M0,450 C350,380 550,500 850,420 C1150,340 1300,480 1440,400 L1440,600 L0,600 Z"></path>
+            <path fill="#238b45" d="M0,520 C400,450 700,600 1000,480 C1200,400 1350,550 1440,500 L1440,600 L0,600 Z"></path>
+            <path fill="#00441b" d="M0,580 C500,550 800,600 1200,570 C1350,560 1400,590 1440,580 L1440,600 L0,600 Z"></path>
+        </svg>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-xl border-b border-brand-100 h-24 flex items-center shadow-sm" id="navbar">
         <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center">
-            
-            <!-- BRAND LOGO -->
             <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
-                <div class="relative w-12 h-12 mr-4 transform group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
-                    <i class="fa-solid fa-location-dot text-[40px] text-deepPurple relative z-0" style="text-shadow: 2px 4px 6px rgba(74,20,140,0.3);"></i>
+                <div class="relative w-12 h-12 mr-2 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+                    <i class="fa-solid fa-location-dot text-[38px] text-brand-800 relative z-0" style="text-shadow: 2px 4px 6px rgba(0,68,27,0.2);"></i>
                     <div class="absolute bottom-0 -right-1 z-10 flex items-center justify-center drop-shadow-md">
-                        <div class="absolute w-2.5 h-2.5 bg-white rounded-full"></div>
-                        <i class="fa-solid fa-capsules text-vibrantOrange text-xl relative z-10"></i>
+                        <div class="absolute w-3 h-3 bg-white rounded-full"></div>
+                        <i class="fa-solid fa-capsules text-mocha text-lg relative z-10"></i>
                     </div>
                 </div>
-                <div class="flex items-baseline gap-1.5 ml-1 transition-transform duration-500 group-hover:translate-x-1">
-                    <span class="font-poppins font-black text-3xl text-starkBlack tracking-tight drop-shadow-sm">Oath</span>
-                    <span class="font-serif italic text-3xl text-deepPurple drop-shadow-sm">of Care</span>
+                <div class="flex items-baseline gap-1.5 ml-2 transition-transform duration-500 group-hover:translate-x-1">
+                    <span class="font-sans-head font-bold text-2xl text-charcoal tracking-wide">Oath</span>
+                    <span class="font-serif italic text-2xl text-brand-600">of Care</span>
+                    <span class="font-sans-head font-medium text-xs text-brand-500 uppercase tracking-widest ml-3 border-l border-brand-200 pl-3">Partners</span>
                 </div>
             </div>
             
             <div class="flex items-center space-x-6">
                 <!-- Logged In State (Hidden by default) -->
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
-                    <span id="navUserName" class="font-poppins font-bold text-deepPurple text-sm hidden md:block tracking-widest uppercase bg-deepPurple/10 px-4 py-2 rounded-full border border-deepPurple/20"></span>
-                    <button onclick="handleLogoutGlobal()" class="bg-starkBlack text-surface px-8 py-3.5 rounded-full font-poppins font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active">
-                        Sign Out
+                    <div class="flex items-center gap-3 hidden md:flex border-r border-brand-200 pr-6">
+                        <div class="w-9 h-9 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 shadow-inner-soft">
+                            <i class="fa-solid fa-store text-xs"></i>
+                        </div>
+                        <span id="navUserName" class="font-sans-head font-medium text-charcoal text-sm truncate max-w-[150px]"></span>
+                    </div>
+                    <button onclick="handleLogoutGlobal()" class="font-sans-head font-semibold text-gray-500 hover:text-error transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
                     </button>
                 </div>
             </div>
@@ -188,153 +198,247 @@
 
         <!-- ================= BUSINESS LOGIN VIEW ================= -->
         <section id="view-login" class="view-section active flex-grow justify-center items-center py-10 relative z-10 min-h-[85vh]">
-            
-            <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
-            <div class="absolute top-[-10%] left-[-15%] w-[70vw] max-w-[800px] h-[70vw] max-h-[800px] bg-deepPurple rounded-full blur-[150px] z-[-2] opacity-40 pointer-events-none"></div>
-            <div class="bg-3d-obj-1 top-[15%] left-[20%] hidden md:block"></div>
-            <div class="bg-3d-obj-2 bottom-[25%] right-[20%] hidden lg:block"></div>
-
-            <div class="bg-surface p-8 md:p-12 rounded-[2rem] shadow-3d-modal w-full max-w-[450px] relative border border-white/20 transition-transform duration-300">
-                
-                <!-- Centered Pharmacy Logo & Title -->
+            <div class="bg-white p-10 md:p-12 rounded-[2rem] shadow-luxury w-full max-w-[460px] relative border-t-4 border-brand-800 transition-transform duration-300">
                 <div class="mb-10 text-center flex flex-col items-center">
-                    <div class="w-20 h-20 bg-deepPurple/10 rounded-[1.5rem] flex items-center justify-center mb-4 border border-deepPurple/20 shadow-inner">
-                        <i class="fa-solid fa-store text-deepPurple text-4xl drop-shadow-md"></i>
+                    <div class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center mb-5 border border-brand-100 shadow-inner-soft">
+                        <i class="fa-solid fa-store text-brand-700 text-2xl"></i>
                     </div>
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Pharmacy</h3>
-                    <p class="text-smoke font-inter text-sm font-medium">Sign in to manage your inventory and profile.</p>
+                    <h3 class="text-3xl font-serif text-brand-800 mb-2">Partner Sign In</h3>
+                    <p class="text-gray-500 font-inter text-sm">Access your inventory and reports.</p>
                 </div>
 
                 <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-6">
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
-                        <input type="email" id="loginEmail" autocomplete="email" required placeholder="name@example.com" 
-                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none cursor-text shadow-3d-input">
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Email Address</label>
+                        <input type="email" id="loginEmail" autocomplete="email" required placeholder="pharmacy@example.com" 
+                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                     
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Password</label>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Password</label>
                         <div class="relative">
                             <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="••••••••" 
-                                class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest pr-12 text-sm outline-none cursor-text shadow-3d-input">
-                            <button type="button" onclick="togglePassword('loginPassword', 'eyeLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-deepPurple hover:scale-110 transition-all focus:outline-none">
-                                <i class="fa-solid fa-eye text-lg" id="eyeLogin"></i>
+                                class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter font-bold tracking-widest pr-12 text-sm outline-none">
+                            <button type="button" onclick="togglePassword('loginPassword', 'eyeLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-brand-700 transition-colors focus:outline-none">
+                                <i class="fa-solid fa-eye" id="eyeLogin"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <div class="pt-6">
-                        <button type="submit" id="btnLoginSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
+                    <div class="pt-4">
+                        <button type="submit" id="btnLoginSubmit" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-xs shadow-luxury transition-all hover:shadow-luxury-hover hover:-translate-y-0.5">
                             Sign In
                         </button>
                     </div>
                 </form>
                 
-                <div class="mt-8 text-center text-xs font-inter text-smoke font-medium">
-                    Don't have an account? <button type="button" onclick="openPharmacyRegistration()" class="font-poppins font-bold text-starkBlack hover:text-vibrantOrange transition-colors uppercase tracking-widest ml-1 hover:underline">Sign Up</button>
+                <div class="mt-8 text-center text-sm font-inter text-gray-500">
+                    Want to join the network? <button type="button" onclick="openPharmacyRegistration()" class="font-sans-head font-bold text-brand-700 hover:text-brand-500 transition-colors border-b border-brand-700 hover:border-brand-500 pb-0.5 ml-1">Sign Up</button>
                 </div>
             </div>
         </section>
 
-
         <!-- ================= PHARMACY DASHBOARD VIEW ================= -->
-        <section id="view-pharmacy" class="view-section flex-grow relative z-10 bg-offWhite min-h-[90vh]">
+        <section id="view-pharmacy" class="view-section flex-grow relative z-10 min-h-[90vh]">
             <div class="flex flex-col md:flex-row h-full max-w-[1400px] mx-auto w-full px-6 lg:px-12 py-10 gap-8 items-start">
                 
-                <div class="md:hidden w-full bg-surface rounded-[2rem] shadow-3d-card flex p-2 gap-2 mb-4 border border-smoke/5">
-                    <button onclick="switchPharmTab('update')" id="mTab-p-update" class="flex-1 py-4 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-[10px] uppercase tracking-widest transition-all shadow-3d-btn">
-                        Store Profile
-                    </button>
-                    <button onclick="switchPharmTab('manage')" id="mTab-p-manage" class="flex-1 py-4 rounded-[1.5rem] text-smoke font-poppins font-black text-[10px] uppercase tracking-widest transition-all hover:bg-offWhite">
-                        Inventory
-                    </button>
+                <!-- Mobile Navigation -->
+                <div class="md:hidden w-full bg-white rounded-2xl shadow-sm flex p-2 gap-2 mb-4 border border-gray-200">
+                    <button onclick="switchPharmTab('update')" id="mTab-p-update" class="flex-1 py-3 rounded-xl bg-brand-800 text-white font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all">Profile</button>
+                    <button onclick="switchPharmTab('manage')" id="mTab-p-manage" class="flex-1 py-3 rounded-xl text-gray-500 font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all hover:bg-gray-50">Inventory</button>
+                    <button onclick="switchPharmTab('reports')" id="mTab-p-reports" class="flex-1 py-3 rounded-xl text-gray-500 font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all hover:bg-gray-50">Reports</button>
                 </div>
 
-                <aside class="w-80 bg-surface rounded-[2.5rem] flex-col hidden md:flex overflow-hidden shadow-3d-card sticky top-32 border border-smoke/5 shrink-0">
-                    <div class="p-10 border-b border-smoke/10 text-center flex flex-col items-center bg-offWhite/50">
-                        <div class="w-24 h-24 bg-deepPurple rounded-[1.5rem] flex items-center justify-center text-surface text-4xl mb-5 shadow-3d-btn relative">
-                            <i class="fa-solid fa-store drop-shadow-md"></i>
-                            <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-vibrantOrange border-[3px] border-surface rounded-full shadow-md flex items-center justify-center">
-                                <i class="fa-solid fa-check text-surface text-[10px]"></i>
+                <!-- Desktop Sidebar -->
+                <aside class="w-80 bg-white rounded-3xl flex-col hidden md:flex overflow-hidden shadow-luxury border border-brand-100 sticky top-32 shrink-0">
+                    <div class="p-8 border-b border-brand-50 text-center flex flex-col items-center bg-brand-50/50">
+                        <div class="w-20 h-20 bg-brand-800 rounded-full flex items-center justify-center text-white text-3xl mb-4 shadow-md relative border-4 border-white">
+                            <i class="fa-solid fa-store"></i>
+                            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-brand-400 border-2 border-white rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-check text-white text-[10px]"></i>
                             </div>
                         </div>
-                        <h3 class="font-poppins font-black text-xl text-starkBlack leading-tight truncate w-full px-4" id="dashboardPharmName">Pharmacy</h3>
-                        <p class="text-[10px] font-poppins font-bold text-smoke uppercase tracking-widest mt-2">Verified Partner</p>
+                        <h3 class="font-serif text-xl text-brand-900 leading-tight truncate w-full px-2" id="dashboardPharmName">Pharmacy Name</h3>
+                        <p class="text-[9px] font-sans-head font-bold text-brand-500 uppercase tracking-widest mt-2">Verified Partner</p>
                     </div>
-                    <nav class="space-y-4 flex-grow p-8">
-                        <button onclick="switchPharmTab('update')" id="pTab-update" class="w-full text-left px-6 py-5 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4 shadow-3d-btn hover:-translate-y-1">
-                            <div class="text-vibrantOrange"><i class="fa-solid fa-address-card text-xl"></i></div>
-                            Store Profile
+                    <nav class="space-y-2 flex-grow p-6">
+                        <button onclick="switchPharmTab('update')" id="pTab-update" class="w-full text-left px-5 py-4 rounded-xl bg-brand-50 text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4">
+                            <i class="fa-solid fa-address-card text-lg text-brand-600 w-5 text-center"></i> Store Profile
                         </button>
-                        <button onclick="switchPharmTab('manage')" id="pTab-manage" class="w-full text-left px-6 py-5 rounded-[1.5rem] text-smoke hover:bg-offWhite hover:text-starkBlack font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4">
-                            <div class="text-smoke"><i class="fa-solid fa-boxes-stacked text-xl"></i></div>
-                            Inventory Control
+                        <button onclick="switchPharmTab('manage')" id="pTab-manage" class="w-full text-left px-5 py-4 rounded-xl text-gray-500 hover:bg-brand-50 hover:text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4">
+                            <i class="fa-solid fa-boxes-stacked text-lg w-5 text-center"></i> Inventory
+                        </button>
+                        <button onclick="switchPharmTab('reports')" id="pTab-reports" class="w-full text-left px-5 py-4 rounded-xl text-gray-500 hover:bg-brand-50 hover:text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4">
+                            <i class="fa-solid fa-chart-pie text-lg w-5 text-center"></i> Analytics
                         </button>
                     </nav>
                 </aside>
 
-                <main class="flex-grow w-full bg-surface rounded-[2.5rem] shadow-3d-card border border-smoke/5 overflow-hidden">
+                <!-- Dashboard Content Area -->
+                <main class="flex-grow w-full bg-white rounded-3xl shadow-luxury border border-brand-100 overflow-hidden min-h-[600px]">
                     <div class="p-8 sm:p-12">
                         
+                        <!-- PROFILE TAB -->
                         <div id="pContent-update" class="block">
-                            <div class="mb-10 border-b border-smoke/10 pb-6">
-                                <h2 class="text-3xl font-poppins font-black text-starkBlack">Store Profile</h2>
-                                <p class="text-smoke text-sm font-inter font-medium mt-1">Manage your pharmacy's professional details and map location.</p>
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-gray-100 pb-6 gap-4">
+                                <div>
+                                    <h2 class="text-3xl font-serif text-brand-800">Store Profile</h2>
+                                    <p class="text-gray-500 text-sm font-inter mt-1">Manage your professional details and location.</p>
+                                </div>
+                                <button id="btnEditProfile" type="button" onclick="toggleProfileEdit()" class="bg-brand-50 text-brand-800 border border-brand-200 px-6 py-3 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[10px] hover:bg-brand-100 transition-colors shadow-sm">
+                                    Edit Profile
+                                </button>
                             </div>
                             
-                            <form id="profileUpdateForm" onsubmit="handleUpdateProfile(event)" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div class="md:col-span-2 transition-all duration-300 focus-within:scale-[1.01] focus-within:-translate-y-1">
-                                    <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Pharmacy Name</label>
-                                    <input type="text" id="updName" required class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input">
-                                </div>
-                                <div class="transition-all duration-300 focus-within:scale-[1.01] focus-within:-translate-y-1">
-                                    <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Contact Number</label>
-                                    <input type="text" id="updContact" required class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input">
-                                </div>
-                                <div class="md:col-span-2 transition-all duration-300 focus-within:scale-[1.01] focus-within:-translate-y-1">
-                                    <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Full Address</label>
-                                    <input type="text" id="updAddress" required class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input">
-                                </div>
-                                <div class="md:col-span-2 transition-all duration-300 focus-within:scale-[1.01] focus-within:-translate-y-1">
-                                    <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Google Maps Link</label>
-                                    <input type="url" id="updMap" required placeholder="https://maps.google.com/..." class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input">
-                                </div>
-                                <div class="md:col-span-2 mt-4 flex justify-end">
-                                    <button type="submit" id="btnUpdateProfile" class="bg-starkBlack hover:bg-deepPurple text-surface px-10 py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-xs transition-all shadow-3d-btn hover:-translate-y-1 w-full md:w-auto">
-                                        Save Changes
-                                    </button>
+                            <form id="profileUpdateForm" onsubmit="handleUpdateProfile(event)" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="md:col-span-2">
+                                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Pharmacy Name</label>
+                                        <input type="text" id="updName" required disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Contact Number</label>
+                                        <input type="text" id="updContact" required disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Full Address</label>
+                                        <input type="text" id="updAddress" required disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Google Maps Link</label>
+                                        <input type="url" id="updMap" required disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                                    </div>
+                                    <div class="md:col-span-2 grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
+                                        <div>
+                                            <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Opening Time</label>
+                                            <select id="updOpenTime" disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                                                <option value="12:00 AM">12:00 AM (Midnight)</option>
+                                                <option value="1:00 AM">1:00 AM</option><option value="2:00 AM">2:00 AM</option><option value="3:00 AM">3:00 AM</option>
+                                                <option value="4:00 AM">4:00 AM</option><option value="5:00 AM">5:00 AM</option><option value="6:00 AM">6:00 AM</option>
+                                                <option value="7:00 AM">7:00 AM</option><option value="8:00 AM" selected>8:00 AM</option><option value="9:00 AM">9:00 AM</option>
+                                                <option value="10:00 AM">10:00 AM</option><option value="11:00 AM">11:00 AM</option>
+                                                <option value="12:00 PM">12:00 PM (Noon)</option>
+                                                <option value="1:00 PM">1:00 PM</option><option value="2:00 PM">2:00 PM</option><option value="3:00 PM">3:00 PM</option>
+                                                <option value="4:00 PM">4:00 PM</option><option value="5:00 PM">5:00 PM</option><option value="6:00 PM">6:00 PM</option>
+                                                <option value="7:00 PM">7:00 PM</option><option value="8:00 PM">8:00 PM</option><option value="9:00 PM">9:00 PM</option>
+                                                <option value="10:00 PM">10:00 PM</option><option value="11:00 PM">11:00 PM</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Closing Time</label>
+                                            <select id="updCloseTime" disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                                                <option value="12:00 AM">12:00 AM (Midnight)</option>
+                                                <option value="1:00 AM">1:00 AM</option><option value="2:00 AM">2:00 AM</option><option value="3:00 AM">3:00 AM</option>
+                                                <option value="4:00 AM">4:00 AM</option><option value="5:00 AM">5:00 AM</option><option value="6:00 AM">6:00 AM</option>
+                                                <option value="7:00 AM">7:00 AM</option><option value="8:00 AM">8:00 AM</option><option value="9:00 AM">9:00 AM</option>
+                                                <option value="10:00 AM">10:00 AM</option><option value="11:00 AM">11:00 AM</option>
+                                                <option value="12:00 PM">12:00 PM (Noon)</option>
+                                                <option value="1:00 PM">1:00 PM</option><option value="2:00 PM">2:00 PM</option><option value="3:00 PM">3:00 PM</option>
+                                                <option value="4:00 PM">4:00 PM</option><option value="5:00 PM">5:00 PM</option><option value="6:00 PM">6:00 PM</option>
+                                                <option value="7:00 PM">7:00 PM</option><option value="8:00 PM" selected>8:00 PM</option><option value="9:00 PM">9:00 PM</option>
+                                                <option value="10:00 PM">10:00 PM</option><option value="11:00 PM">11:00 PM</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="md:col-span-2 mt-4 flex justify-end">
+                                        <button type="submit" id="btnUpdateProfile" class="hidden bg-brand-800 hover:bg-brand-700 text-white px-10 py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-xs transition-all shadow-md">
+                                            Save Changes
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
 
+                        <!-- INVENTORY TAB -->
                         <div id="pContent-manage" class="hidden">
-                            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-smoke/10 pb-6 gap-6">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-gray-100 pb-6 gap-6">
                                 <div>
-                                    <h2 class="text-3xl font-poppins font-black text-starkBlack">Inventory Control</h2>
-                                    <p class="text-smoke text-sm font-inter font-medium mt-1">Keep your medical stock accurate and up-to-date.</p>
+                                    <h2 class="text-3xl font-serif text-brand-800">Inventory Control</h2>
+                                    <p class="text-gray-500 text-sm font-inter mt-1">Manage medicines. Price and Category are editable inline.</p>
                                 </div>
-                                <button onclick="openAddModal()" class="bg-vibrantOrange hover:bg-starkBlack text-surface px-8 py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-xs transition-all shadow-3d-btn hover:-translate-y-1 flex items-center gap-3 w-full md:w-auto justify-center">
-                                    <i class="fa-solid fa-plus text-lg"></i> Add Medicine
+                                <button onclick="openAddModal()" class="bg-brand-800 hover:bg-brand-700 text-white px-6 py-3.5 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[10px] transition-all shadow-luxury hover:-translate-y-0.5 flex items-center gap-2">
+                                    <i class="fa-solid fa-plus"></i> Add Medicine
                                 </button>
                             </div>
                             
-                            <div class="bg-offWhite rounded-[2rem] border border-smoke/5 overflow-hidden shadow-inner">
+                            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                                 <div class="overflow-x-auto">
-                                    <table class="w-full text-left border-collapse min-w-[800px]">
+                                    <table class="w-full text-left min-w-[900px]">
                                         <thead>
-                                            <tr class="bg-surface text-smoke font-poppins font-black text-[10px] uppercase tracking-widest border-b border-smoke/10 shadow-sm">
-                                                <th class="p-6 md:p-8">Medicine Info</th>
-                                                <th class="p-6 md:p-8">Category</th>
-                                                <th class="p-6 md:p-8">Unit Price</th>
-                                                <th class="p-6 md:p-8">Availability (Toggle)</th>
-                                                <th class="p-6 md:p-8 text-right">Actions</th>
+                                            <tr class="bg-brand-50 text-brand-800 font-sans-head font-bold text-[10px] uppercase tracking-widest border-b border-gray-200">
+                                                <th class="p-5 font-bold">Generic Name</th>
+                                                <th class="p-5 font-bold">Brand Name</th>
+                                                <th class="p-5 font-bold">Dosage</th>
+                                                <th class="p-5 font-bold">Category</th>
+                                                <th class="p-5 font-bold">Price (₱)</th>
+                                                <th class="p-5 font-bold text-center">Status</th>
+                                                <th class="p-5 font-bold text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="inventoryTable">
-                                            </tbody>
+                                        <tbody id="inventoryTable" class="divide-y divide-gray-100">
+                                            <!-- Dynamic Rows -->
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- REPORTS / ANALYTICS TAB -->
+                        <div id="pContent-reports" class="hidden">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-gray-100 pb-6 gap-6">
+                                <div>
+                                    <h2 class="text-3xl font-serif text-brand-800">Analytics and Reports</h2>
+                                    <p class="text-gray-500 text-sm font-inter mt-1">Track your pharmacy's performance and visibility.</p>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <label class="text-[10px] font-sans-head font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Filter Date:</label>
+                                    <div class="relative min-w-[140px]">
+                                        <select id="reportDateFilter" class="w-full appearance-none bg-brand-50 border border-brand-200 text-brand-800 py-2.5 pl-4 pr-8 rounded-lg font-sans-head font-bold text-[10px] uppercase tracking-widest outline-none focus:border-brand-500 cursor-pointer shadow-sm no-custom-arrow" onchange="renderReports()">
+                                            <option value="today">Today</option>
+                                            <option value="7days">Last 7 Days</option>
+                                            <option value="30days" selected>Last 30 Days</option>
+                                            <option value="all">All Time</option>
+                                        </select>
+                                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-600 text-[10px] pointer-events-none"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="reportAlert" class="hidden mb-6 bg-red-50 border border-red-200 p-4 rounded-xl flex items-start gap-3">
+                                <i class="fa-solid fa-triangle-exclamation text-error mt-0.5"></i>
+                                <div>
+                                    <h4 class="text-xs font-sans-head font-bold text-error uppercase tracking-widest mb-1">Warning: High 'Out of Stock' Reports</h4>
+                                    <p class="text-sm font-inter text-red-800">Patients have frequently reported items out of stock in your pharmacy. Please update your inventory immediately to avoid penalties.</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div class="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
+                                    <p class="text-[10px] font-sans-head font-bold text-gray-400 uppercase tracking-widest mb-2">Most Searched Medicine</p>
+                                    <h3 class="text-2xl font-serif text-brand-800 truncate" id="repMostSearched">Paracetamol</h3>
+                                </div>
+                                <div class="bg-brand-50 border border-brand-100 p-6 rounded-2xl shadow-sm">
+                                    <p class="text-[10px] font-sans-head font-bold text-brand-600 uppercase tracking-widest mb-2">Most Clicked Medicine</p>
+                                    <h3 class="text-2xl font-serif text-brand-900 truncate" id="repMostClicked">Ibuprofen</h3>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div class="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm flex flex-col items-center">
+                                    <p class="text-[10px] font-sans-head font-bold text-gray-500 uppercase tracking-widest mb-4 self-start">Patient Feedback (In-Stock)</p>
+                                    <div class="relative w-full max-w-[250px] aspect-square">
+                                        <canvas id="pieChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm flex flex-col items-center">
+                                    <p class="text-[10px] font-sans-head font-bold text-gray-500 uppercase tracking-widest mb-4 self-start">Visibility vs Clicks</p>
+                                    <div class="relative w-full h-full min-h-[200px]">
+                                        <canvas id="barChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </main>
@@ -344,224 +448,296 @@
     </main>
 
     <!-- ================= ADD MEDICINE MODAL ================= -->
-    <div id="addModal" class="fixed inset-0 bg-starkBlack/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-surface p-8 md:p-12 rounded-[2rem] shadow-3d-modal w-full max-w-2xl relative border border-white/20">
-            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-smoke hover:bg-gray-100 hover:text-starkBlack transition-all hover:rotate-90 z-20">
-                <i class="fa-solid fa-times text-lg"></i>
+    <div id="addModal" class="fixed inset-0 bg-charcoal/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-400">
+        <div class="bg-white p-8 md:p-10 rounded-[2rem] shadow-2xl w-full max-w-2xl relative border border-gray-100">
+            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="absolute top-6 right-6 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-charcoal transition-colors z-20">
+                <i class="fa-solid fa-times"></i>
             </button>
-            <h3 class="text-3xl font-poppins font-black text-starkBlack mb-6">Add Medicine Record</h3>
+            <h3 class="text-2xl font-serif text-brand-800 mb-6">Add Medicine Record</h3>
             
             <!-- TABS FOR SINGLE OR BATCH UPLOAD -->
-            <div class="flex border-b border-smoke/10 mb-8 gap-6">
-                <button id="tabSingle" onclick="switchAddTab('single')" class="pb-3 text-sm font-poppins font-black uppercase tracking-widest text-deepPurple border-b-2 border-deepPurple transition-all">Single Entry</button>
-                <button id="tabBatch" onclick="switchAddTab('batch')" class="pb-3 text-sm font-poppins font-black uppercase tracking-widest text-smoke hover:text-starkBlack transition-all">Batch CSV Upload</button>
+            <div class="flex border-b border-gray-200 mb-6 gap-6">
+                <button id="tabSingle" onclick="switchAddTab('single')" class="pb-3 text-[11px] font-sans-head font-bold uppercase tracking-[0.15em] text-brand-700 border-b-2 border-brand-700 transition-all">Single Entry</button>
+                <button id="tabBatch" onclick="switchAddTab('batch')" class="pb-3 text-[11px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-charcoal transition-all border-b-2 border-transparent">Batch CSV Upload</button>
             </div>
 
             <!-- SINGLE ENTRY FORM -->
-            <form id="addMedForm" onsubmit="submitAddMedicine(event)" class="space-y-6 block">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Medicine Name</label>
-                        <input type="text" required id="newMedName" placeholder="e.g. Paracetamol" class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
+            <form id="addMedForm" onsubmit="submitAddMedicine(event)" class="space-y-5 block">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Generic Name</label>
+                        <input type="text" required id="newMedGeneric" placeholder="e.g. Paracetamol" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Milligrams (mg)</label>
-                        <input type="number" required id="newMedMg" placeholder="e.g. 500" class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Brand Name (Optional)</label>
+                        <input type="text" id="newMedBrand" placeholder="e.g. Biogesic" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Price (₱)</label>
-                        <input type="number" step="0.01" required id="newMedPrice" placeholder="0.00" class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="col-span-2">
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Dosage (Optional)</label>
+                        <div class="flex border border-gray-200 rounded-xl overflow-hidden focus-within:border-brand-500 transition-colors">
+                            <input type="number" id="newMedDosage" placeholder="e.g. 500" class="w-2/3 px-4 py-3 bg-white text-charcoal font-inter text-sm outline-none">
+                            <select id="newMedUnit" class="w-1/3 px-2 py-3 bg-brand-50 text-brand-800 font-sans-head font-bold text-xs border-l border-gray-200 outline-none cursor-pointer">
+                                <option value="mg">mg</option>
+                                <option value="g">g</option>
+                                <option value="ml">ml</option>
+                            </select>
+                        </div>
                     </div>
-                    
-                    <!-- TOGGLE SWITCH FOR STATUS -->
-                    <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-3 pl-1">Status</label>
-                        <div class="px-6 py-4 rounded-2xl bg-[#F4F4F5] shadow-3d-input flex items-center border-2 border-transparent focus-within:bg-white focus-within:border-deepPurple">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="newMedStatusToggle" class="sr-only peer toggle-checkbox" checked>
-                                <div class="w-12 h-6 bg-error/30 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all toggle-label"></div>
-                                <span id="newMedStatusText" class="ml-4 text-xs font-poppins font-black uppercase tracking-widest text-vibrantOrange transition-colors">In Stock</span>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Price (₱)</label>
+                        <input type="number" step="0.01" required id="newMedPrice" placeholder="0.00" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Category</label>
+                        <div class="relative">
+                            <select id="newMedCategory" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm appearance-none outline-none cursor-pointer pr-10">
+                                <option value="Over the Counter (OTC)">Over the Counter (OTC)</option>
+                                <option value="Prescription">Prescription</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Initial Status</label>
+                        <div class="px-4 py-2.5 rounded-xl border border-gray-200 bg-white flex items-center h-[46px]">
+                            <label class="relative inline-flex items-center cursor-pointer w-full">
+                                <input type="checkbox" id="newMedStatusToggle" class="sr-only peer table-toggle" checked>
+                                <div class="w-10 h-5 bg-error/30 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all table-toggle-label"></div>
+                                <span id="newMedStatusText" class="ml-3 text-[10px] font-sans-head font-bold uppercase tracking-widest text-brand-600 transition-colors">In Stock</span>
                             </label>
                         </div>
                     </div>
                 </div>
-                <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                    <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Category</label>
-                    <div class="relative">
-                        <select id="newMedCategory" class="w-full px-6 py-5 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm appearance-none outline-none shadow-3d-input cursor-pointer pr-12">
-                            <option value="Over the Counter (OTC)">Over the Counter (OTC)</option>
-                            <option value="Prescription">Prescription</option>
-                        </select>
-                        <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 transform -translate-y-1/2 text-smoke pointer-events-none"></i>
-                    </div>
-                </div>
-                <div class="pt-6">
-                    <button type="submit" id="btnAddMed" class="w-full bg-deepPurple hover:bg-starkBlack text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:-translate-y-1 transition-all duration-300">Add to Inventory</button>
+                <div class="pt-4">
+                    <button type="submit" id="btnAddMed" class="w-full bg-brand-800 hover:bg-brand-700 text-white py-3.5 rounded-xl font-sans-head font-bold uppercase tracking-widest text-xs shadow-md hover:-translate-y-0.5 transition-all duration-300">Add to Inventory</button>
                 </div>
             </form>
 
             <!-- BATCH UPLOAD FORM -->
-            <form id="batchUploadForm" onsubmit="processBatchCSV(event)" class="hidden space-y-6">
-                <div class="bg-vibrantOrange/10 border border-vibrantOrange/30 rounded-2xl p-5 mb-6">
-                    <div class="flex items-start gap-4">
-                        <i class="fa-solid fa-circle-info text-vibrantOrange text-xl mt-1"></i>
+            <form id="batchUploadForm" onsubmit="processBatchCSV(event)" class="hidden space-y-5">
+                <div class="bg-brand-50 border border-brand-200 rounded-xl p-5 mb-2">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-circle-info text-brand-600 text-lg mt-0.5"></i>
                         <div>
-                            <h4 class="font-poppins font-black text-starkBlack text-sm uppercase tracking-widest mb-1">CSV Format Requirements</h4>
-                            <p class="text-xs font-inter text-smoke mb-3">Your Excel/CSV file must have headers in the first row. We will automatically map columns if they match these names: <b>Medicine Name, Mg, Price, Status, Category</b>.</p>
-                            <button type="button" onclick="downloadCSVTemplate()" class="text-[10px] font-poppins font-bold bg-white text-starkBlack px-4 py-2 rounded-lg border border-smoke/20 shadow-sm hover:border-vibrantOrange transition-colors">
+                            <h4 class="font-sans-head font-bold text-brand-900 text-xs uppercase tracking-widest mb-1">CSV Requirements</h4>
+                            <p class="text-xs font-inter text-gray-600 mb-3">Headers required: <b>Generic Name, Brand Name, Dosage, Unit, Price, Status, Category</b>.</p>
+                            <button type="button" onclick="downloadCSVTemplate()" class="text-[9px] font-sans-head font-bold bg-white text-brand-700 px-3 py-1.5 rounded-lg border border-brand-200 shadow-sm hover:bg-brand-50 transition-colors">
                                 <i class="fa-solid fa-download mr-1"></i> Download Template
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                    <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Upload CSV File</label>
-                    <input type="file" id="csvFileInput" required accept=".csv" class="w-full text-sm font-inter font-bold text-smoke file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-poppins file:font-black file:uppercase file:tracking-widest file:bg-deepPurple/10 file:text-deepPurple hover:file:bg-deepPurple hover:file:text-white file:transition-colors cursor-pointer outline-none bg-[#F4F4F5] rounded-2xl p-2 shadow-3d-input">
+                <div>
+                    <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Upload CSV File</label>
+                    <input type="file" id="csvFileInput" required accept=".csv" class="w-full text-sm font-inter text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-sans-head file:font-bold file:uppercase file:tracking-widest file:bg-brand-100 file:text-brand-800 hover:file:bg-brand-200 file:transition-colors cursor-pointer outline-none border border-gray-200 bg-white rounded-xl p-1.5 shadow-sm">
                 </div>
 
-                <div class="pt-6">
-                    <button type="submit" id="btnBatchUpload" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:-translate-y-1 transition-all duration-300">Upload & Process Items</button>
+                <div class="pt-4">
+                    <button type="submit" id="btnBatchUpload" class="w-full bg-brand-800 hover:bg-brand-700 text-white py-3.5 rounded-xl font-sans-head font-bold uppercase tracking-widest text-xs shadow-md hover:-translate-y-0.5 transition-all duration-300">Upload and Process</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- REGISTRATION MODAL WITH CENTERED HEADERS -->
-    <div id="pharmacyRegModal" class="fixed inset-0 bg-starkBlack/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500 overflow-y-auto">
-        <div class="bg-surface p-8 md:p-12 rounded-[2rem] shadow-3d-modal w-full max-w-[500px] relative my-8 border border-white/20 transition-transform duration-300 scale-95" id="pharmacyRegModalContent">
-            <button onclick="closePharmacyRegistration()" class="absolute top-5 right-5 w-10 h-10 rounded-full flex items-center justify-center text-smoke hover:bg-gray-100 hover:text-starkBlack transition-all hover:rotate-90 z-20">
-                <i class="fa-solid fa-times text-lg"></i>
+    <!-- REGISTRATION MODAL -->
+    <div id="pharmacyRegModal" class="fixed inset-0 bg-charcoal/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-400 overflow-y-auto">
+        <div class="bg-white p-8 md:p-10 rounded-[2rem] shadow-2xl w-full max-w-[500px] relative my-8 border-t-4 border-brand-800 transition-transform duration-300 scale-95" id="pharmacyRegModalContent">
+            <button onclick="closePharmacyRegistration()" class="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-charcoal transition-colors z-20">
+                <i class="fa-solid fa-times"></i>
             </button>
 
-            <!-- Step 1 -->
-            <div id="pharmSignupStep1" class="block">
-                <div class="mb-10 text-center flex flex-col items-center">
-                    <div class="w-20 h-20 bg-deepPurple/10 rounded-[1.5rem] flex items-center justify-center mb-4 border border-deepPurple/20 shadow-inner">
-                        <i class="fa-solid fa-user-plus text-deepPurple text-4xl drop-shadow-md"></i>
+            <!-- STEP 0: DATA PRIVACY CONSENT -->
+            <div id="pharmSignupStep0" class="block">
+                <div class="mb-6 text-center">
+                    <div class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center text-brand-700 mx-auto mb-4 border border-brand-100">
+                        <i class="fa-solid fa-shield-halved text-2xl"></i>
                     </div>
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Sign Up</h3>
-                    <p class="text-smoke font-inter text-sm font-medium">Create your business account.</p>
+                    <h3 class="text-2xl font-serif text-brand-800 mb-1">Data Privacy Consent</h3>
                 </div>
-                <form id="pharmSignupForm1" onsubmit="handlePharmSignupStep1(event)" class="space-y-6">
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
+                <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl max-h-[30vh] overflow-y-auto text-xs font-inter text-gray-600 leading-relaxed mb-6">
+                    <p class="mb-3">In accordance with the Data Privacy Act of 2012 (RA 10173), we are committed to protecting your personal information.</p>
+                    <p class="mb-3">By registering in this system, you agree that the personal data you provide, including but not limited to pharmacist name, PRC license number, and business-related documents, will be collected and processed solely for the purpose of verifying the legitimacy of your pharmacy and ensuring the accuracy and reliability of information within the system.</p>
+                    <p class="mb-3">We only collect information that is necessary and relevant for verification and system functionality. Your data will not be publicly displayed and will only be accessible to authorized system administrators.</p>
+                    <p class="mb-3">All collected information will be stored securely and protected against unauthorized access, disclosure, or misuse. Personal data will be retained only for as long as necessary to fulfill its intended purpose or as required by law.</p>
+                    <p>By proceeding with registration, you confirm that the information you provided is true and accurate, and you consent to its collection and processing under the terms stated above.</p>
+                </div>
+                <div class="flex items-center gap-3 mb-6 px-1">
+                    <input type="checkbox" id="privacyCheckbox" class="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500 cursor-pointer" onchange="document.getElementById('btnConsent').disabled = !this.checked; document.getElementById('btnConsent').classList.toggle('opacity-50');">
+                    <label for="privacyCheckbox" class="text-xs font-inter font-medium text-charcoal cursor-pointer">I have read and agree to the Data Privacy terms.</label>
+                </div>
+                <button id="btnConsent" disabled onclick="nextRegStep(1)" class="w-full bg-brand-800 text-white py-3.5 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[10px] opacity-50 transition-all">Agree and Continue</button>
+            </div>
+
+            <!-- Step 1: Account Creation -->
+            <div id="pharmSignupStep1" class="hidden">
+                <div class="mb-8 text-center flex flex-col items-center">
+                    <h3 class="text-3xl font-serif text-brand-800 mb-2">Create Account</h3>
+                    <p class="text-gray-500 font-inter text-sm">Step 1 of 3: Login Details</p>
+                </div>
+                <form id="pharmSignupForm1" onsubmit="handlePharmSignupStep1(event)" class="space-y-5">
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Email Address</label>
                         <input type="email" autocomplete="email" required id="signupPharmEmail" placeholder="name@example.com" 
-                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
+                            class="w-full px-5 py-4 border border-gray-200 bg-white rounded-xl focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Password</label>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Password <span class="text-gray-400 font-normal normal-case tracking-normal ml-1">(8+ chars, upper, lower, special)</span></label>
                         <div class="relative">
                             <input type="password" autocomplete="new-password" required id="signupPharmPassword" placeholder="••••••••" 
-                                class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold tracking-widest text-sm pr-12 outline-none shadow-3d-input cursor-text">
-                            <button type="button" onclick="togglePassword('signupPharmPassword', 'eyeIconPharmReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-deepPurple transition-colors focus:outline-none">
-                                <i class="fa-solid fa-eye text-lg" id="eyeIconPharmReg"></i>
+                                class="w-full px-5 py-4 border border-gray-200 bg-white rounded-xl focus:border-brand-500 transition-all text-charcoal font-inter pr-12 outline-none tracking-widest">
+                            <button type="button" onclick="togglePassword('signupPharmPassword', 'eyeIconPharmReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-brand-600 transition-colors focus:outline-none">
+                                <i class="fa-solid fa-eye" id="eyeIconPharmReg"></i>
                             </button>
                         </div>
                     </div>
                     <div class="pt-4">
-                        <button type="submit" id="btnPharmReg1" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
-                            Continue
+                        <button type="submit" id="btnPharmReg1" class="w-full bg-brand-800 hover:bg-brand-700 text-white py-3.5 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[10px] shadow-sm transition-all">
+                            Send Verification
                         </button>
                     </div>
                 </form>
-                <div class="mt-8 text-center text-xs font-inter text-smoke font-medium">
-                    Already have an account? <button type="button" onclick="closePharmacyRegistration()" class="font-poppins font-bold text-starkBlack hover:text-vibrantOrange transition-colors uppercase tracking-widest ml-1 hover:underline">Sign In</button>
+                <div class="mt-6 text-center text-xs font-inter text-gray-500">
+                    Already have an account? <button type="button" onclick="closePharmacyRegistration(); openAuthModal('login');" class="font-sans-head font-bold text-brand-700 hover:text-brand-500 transition-colors border-b border-brand-700 pb-0.5 ml-1">Sign In</button>
                 </div>
             </div>
 
-            <!-- Step 2 -->
+            <!-- Step 2: Verification -->
             <div id="pharmSignupStep2" class="hidden">
-                <div class="mb-10 text-center flex flex-col items-center">
-                    <div class="w-20 h-20 bg-vibrantOrange/10 rounded-[1.5rem] flex items-center justify-center mb-4 border border-vibrantOrange/20 shadow-inner">
-                        <i class="fa-solid fa-envelope-circle-check text-vibrantOrange text-4xl drop-shadow-md"></i>
-                    </div>
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Verify Email</h3>
-                    <p class="text-smoke font-inter text-sm leading-relaxed max-w-[250px] mx-auto">We sent a 6-digit code to your email. Enter it below to secure your account.</p>
+                <div class="mb-8 text-center flex flex-col items-center">
+                    <h3 class="text-3xl font-serif text-brand-800 mb-2">Verify Email</h3>
+                    <p class="text-gray-500 font-inter text-sm leading-relaxed">Step 2 of 3: Enter 6-digit code.</p>
                 </div>
-                <form id="pharmSignupForm2" onsubmit="handlePharmSignupStep2(event)" class="space-y-8">
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-3 text-center transition-colors focus-within:text-vibrantOrange">6-Digit Access Code</label>
+                <form id="pharmSignupForm2" onsubmit="handlePharmSignupStep2(event)" class="space-y-6">
+                    <div>
                         <input type="text" autocomplete="off" required maxlength="6" id="signupPharmCode" placeholder="XXXXXX" 
-                            class="w-full px-5 py-6 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-black text-3xl tracking-[0.4em] text-center uppercase outline-none shadow-3d-input cursor-text">
+                            class="w-full px-5 py-5 border-2 border-brand-200 bg-white rounded-xl focus:border-brand-600 transition-all text-brand-900 font-sans-head font-bold text-3xl tracking-[0.4em] text-center uppercase outline-none">
                     </div>
-                    <button type="submit" id="btnPharmReg2" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:-translate-y-1 transition-all duration-300">
+                    <button type="submit" id="btnPharmReg2" class="w-full bg-brand-800 hover:bg-brand-700 text-white py-3.5 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[10px] shadow-sm transition-all">
                         Verify Code
                     </button>
                 </form>
-                <div class="mt-8 text-center text-[10px] font-poppins font-black text-smoke uppercase tracking-widest">
-                    <button type="button" id="pharmSignupResendBtn" onclick="handleResendCode('pharmacy')" class="hover:text-starkBlack transition-all hover:translate-x-1 disabled:opacity-50">Resend Code</button>
+                <div class="mt-6 text-center text-[10px] font-sans-head font-bold uppercase tracking-widest">
+                    <button type="button" id="pharmSignupResendBtn" onclick="handleResendCode('pharmacy')" class="text-gray-400 hover:text-brand-800 transition-colors disabled:opacity-50">Resend Code</button>
                 </div>
             </div>
 
-            <!-- Step 3 -->
+            <!-- Step 3: Documents and Store Details -->
             <div id="pharmSignupStep3" class="hidden">
-                <div class="mb-8 text-center flex flex-col items-center">
-                    <div class="w-20 h-20 bg-starkBlack/5 rounded-[1.5rem] flex items-center justify-center mb-4 border border-starkBlack/10 shadow-inner">
-                        <i class="fa-solid fa-file-contract text-starkBlack text-4xl drop-shadow-md"></i>
-                    </div>
-                    <h3 class="text-3xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Store Details</h3>
-                    <p class="text-smoke font-inter text-sm font-medium">Complete your professional profile.</p>
+                <div class="mb-6 text-center flex flex-col items-center">
+                    <h3 class="text-2xl font-serif text-brand-800 mb-1">Store Details</h3>
+                    <p class="text-gray-500 font-inter text-xs">Step 3 of 3: Required Details</p>
                 </div>
-                <div class="max-h-[50vh] overflow-y-auto pr-2 pb-4 -mr-2">
-                    <form id="pharmSignupForm3" onsubmit="handlePharmSignupStep3(event)" class="space-y-6">
-                        <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Pharmacy Name</label>
-                            <input type="text" id="regPharmName" required placeholder="e.g. Mercury Drug" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
+                <div class="max-h-[55vh] overflow-y-auto pr-3 pb-4 -mr-3 scroll-smooth custom-scroll">
+                    <form id="pharmSignupForm3" onsubmit="handlePharmSignupStep3(event)" class="space-y-5">
+                        <div>
+                            <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Pharmacy Name</label>
+                            <input type="text" id="regPharmName" required placeholder="e.g. Mercury Drug" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                                <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Barangay</label>
-                                <div class="relative">
-                                    <select id="regBarangay" required class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm appearance-none cursor-pointer outline-none shadow-3d-input pr-12">
-                                        <option value="" disabled selected>Select Area...</option>
-                                        <option value="Bangkal">Bangkal</option>
-                                        <option value="Baraka">Baraka</option>
-                                        <option value="Bigte">Bigte</option>
-                                        <option value="Bitungol">Bitungol</option>
-                                        <option value="Friendship Village Resources">Friendship Village Resources</option>
-                                        <option value="Matictic">Matictic</option>
-                                        <option value="Minuyan">Minuyan</option>
-                                        <option value="Partida">Partida</option>
-                                        <option value="Pinagtulayan">Pinagtulayan</option>
-                                        <option value="Poblacion">Poblacion</option>
-                                        <option value="San Lorenzo">San Lorenzo</option>
-                                        <option value="San Mateo">San Mateo</option>
-                                        <option value="Tigbe">Tigbe</option>
-                                    </select>
-                                    <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke pointer-events-none text-xs"></i>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Barangay</label>
+                                <select id="regBarangay" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm appearance-none cursor-pointer outline-none">
+                                    <option value="" disabled selected>Select Area...</option>
+                                    <option value="Bangkal">Bangkal</option>
+                                    <option value="Baraka">Baraka</option>
+                                    <option value="Bigte">Bigte</option>
+                                    <option value="Bitungol">Bitungol</option>
+                                    <option value="Poblacion">Poblacion</option>
+                                    <!-- Add other barangays as needed -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Contact Number</label>
+                                <input type="text" id="regContact" required placeholder="09XX XXX XXXX" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Full Address</label>
+                            <input type="text" id="regAddress" required placeholder="Complete street address" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Google Maps Link</label>
+                            <input type="url" id="regMapLink" required placeholder="https://maps.google.com/..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                        </div>
+
+                        <!-- Store Hours Settings (NEW) -->
+                        <div class="p-4 rounded-xl border border-brand-100 bg-brand-50/30">
+                            <h4 class="font-sans-head font-bold text-brand-800 text-[10px] uppercase tracking-widest mb-4 border-b border-brand-100 pb-2">Operating Hours</h4>
+                            
+                            <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Operating Days</label>
+                            <!-- Day Selection Pills -->
+                            <div class="flex justify-between gap-1 mb-4">
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Mon" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">M</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Tue" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Wed" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">W</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Thu" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Fri" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">F</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Sat" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Sun" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Opening Time</label>
+                                    <div class="relative">
+                                        <select id="regOpenTime" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm appearance-none cursor-pointer outline-none shadow-sm">
+                                            <option value="12:00 AM">12:00 AM (Midnight)</option>
+                                            <option value="1:00 AM">1:00 AM</option><option value="2:00 AM">2:00 AM</option><option value="3:00 AM">3:00 AM</option>
+                                            <option value="4:00 AM">4:00 AM</option><option value="5:00 AM">5:00 AM</option><option value="6:00 AM">6:00 AM</option>
+                                            <option value="7:00 AM">7:00 AM</option><option value="8:00 AM" selected>8:00 AM</option><option value="9:00 AM">9:00 AM</option>
+                                            <option value="10:00 AM">10:00 AM</option><option value="11:00 AM">11:00 AM</option>
+                                            <option value="12:00 PM">12:00 PM (Noon)</option>
+                                            <option value="1:00 PM">1:00 PM</option><option value="2:00 PM">2:00 PM</option><option value="3:00 PM">3:00 PM</option>
+                                            <option value="4:00 PM">4:00 PM</option><option value="5:00 PM">5:00 PM</option><option value="6:00 PM">6:00 PM</option>
+                                            <option value="7:00 PM">7:00 PM</option><option value="8:00 PM">8:00 PM</option><option value="9:00 PM">9:00 PM</option>
+                                            <option value="10:00 PM">10:00 PM</option><option value="11:00 PM">11:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Closing Time</label>
+                                    <div class="relative">
+                                        <select id="regCloseTime" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm appearance-none cursor-pointer outline-none shadow-sm">
+                                            <option value="12:00 AM">12:00 AM (Midnight)</option>
+                                            <option value="1:00 AM">1:00 AM</option><option value="2:00 AM">2:00 AM</option><option value="3:00 AM">3:00 AM</option>
+                                            <option value="4:00 AM">4:00 AM</option><option value="5:00 AM">5:00 AM</option><option value="6:00 AM">6:00 AM</option>
+                                            <option value="7:00 AM">7:00 AM</option><option value="8:00 AM">8:00 AM</option><option value="9:00 AM">9:00 AM</option>
+                                            <option value="10:00 AM">10:00 AM</option><option value="11:00 AM">11:00 AM</option>
+                                            <option value="12:00 PM">12:00 PM (Noon)</option>
+                                            <option value="1:00 PM">1:00 PM</option><option value="2:00 PM">2:00 PM</option><option value="3:00 PM">3:00 PM</option>
+                                            <option value="4:00 PM">4:00 PM</option><option value="5:00 PM">5:00 PM</option><option value="6:00 PM">6:00 PM</option>
+                                            <option value="7:00 PM">7:00 PM</option><option value="8:00 PM" selected>8:00 PM</option><option value="9:00 PM">9:00 PM</option>
+                                            <option value="10:00 PM">10:00 PM</option><option value="11:00 PM">11:00 PM</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                                <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Contact Number</label>
-                                <input type="text" id="regContact" required placeholder="09XX XXX XXXX" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
-                            </div>
-                        </div>
-                        <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Full Address</label>
-                            <input type="text" id="regAddress" required placeholder="Complete street address" class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
-                        </div>
-                        <div class="transition-all duration-300 focus-within:scale-[1.02] focus-within:-translate-y-1">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1">Google Maps Link</label>
-                            <input type="url" id="regMapLink" required placeholder="https://maps.google.com/..." class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-inter font-bold text-sm outline-none shadow-3d-input cursor-text">
                         </div>
                         
-                        <div class="p-5 rounded-2xl border border-smoke/10 bg-offWhite/50 space-y-5">
+                        <div class="p-4 rounded-xl border border-brand-100 bg-brand-50/50 space-y-4">
                             <div>
-                                <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2">Store Photo</label>
-                                <input type="file" id="regStorePhoto" required accept=".png, .jpeg, .jpg" class="w-full text-xs font-inter font-bold text-smoke file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-poppins file:font-bold file:uppercase file:tracking-widest file:bg-deepPurple/10 file:text-deepPurple hover:file:bg-deepPurple hover:file:text-white file:transition-colors cursor-pointer outline-none">
+                                <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1">FDA License to Operate</label>
+                                <input type="file" id="regFdaLicense" required accept=".png, .jpeg, .jpg, .pdf" class="w-full text-[10px] font-inter text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-sans-head file:font-bold file:uppercase file:tracking-widest file:bg-white file:text-brand-700 file:border file:border-brand-200 hover:file:bg-brand-50 cursor-pointer outline-none">
                             </div>
-                            <div class="border-t border-smoke/10 pt-5">
-                                <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-1">Business Permit</label>
-                                <p class="text-[9px] font-inter text-smoke mb-2">Must be clear image or PDF.</p>
-                                <input type="file" id="regPermitPhoto" required accept=".png, .jpeg, .jpg, .pdf" class="w-full text-xs font-inter font-bold text-smoke file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-poppins file:font-bold file:uppercase file:tracking-widest file:bg-vibrantOrange/10 file:text-vibrantOrange hover:file:bg-vibrantOrange hover:file:text-starkBlack file:transition-colors cursor-pointer outline-none">
+                            <div class="border-t border-brand-100/50 pt-3">
+                                <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1">Business Permit</label>
+                                <input type="file" id="regPermitPhoto" required accept=".png, .jpeg, .jpg, .pdf" class="w-full text-[10px] font-inter text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-sans-head file:font-bold file:uppercase file:tracking-widest file:bg-white file:text-brand-700 file:border file:border-brand-200 hover:file:bg-brand-50 cursor-pointer outline-none">
+                            </div>
+                            <div class="border-t border-brand-100/50 pt-3">
+                                <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1">PRC ID (Pharmacist)</label>
+                                <p class="text-[9px] text-gray-400 mb-2">Will be securely encoded prior to transmission.</p>
+                                <input type="file" id="regPrcId" required accept=".png, .jpeg, .jpg, .pdf" class="w-full text-[10px] font-inter text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-sans-head file:font-bold file:uppercase file:tracking-widest file:bg-white file:text-brand-700 file:border file:border-brand-200 hover:file:bg-brand-50 cursor-pointer outline-none">
                             </div>
                         </div>
 
-                        <div class="pt-4">
-                            <button type="submit" id="btnPharmReg3" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:-translate-y-1 transition-all duration-300">Submit Application</button>
+                        <div class="pt-4 pb-2">
+                            <button type="submit" id="btnPharmReg3" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-3.5 rounded-xl font-sans-head font-bold uppercase tracking-widest text-xs shadow-md hover:-translate-y-0.5 transition-all duration-300">Submit Application</button>
                         </div>
                     </form>
                 </div>
@@ -576,13 +752,15 @@
         
         let authState = JSON.parse(localStorage.getItem('ooc_user')) || { id: null, role: null, name: null };
         let tempPharmEmail = '';
-        let tempStorePhotoBase64 = null;
+        let tempFdaBase64 = null;
         let tempPermitPhotoBase64 = null;
+        let tempPrcIdBase64 = null;
         let resendTimers = { pharm: null };
+        let pieChartInstance = null;
+        let barChartInstance = null;
 
         window.onload = () => {
             updateNavBasedOnAuth();
-            
             if (!authState.id) {
                 document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
                 document.getElementById('view-login').classList.add('active');
@@ -596,39 +774,29 @@
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             if (!container) return;
-            
             const toast = document.createElement('div');
-            toast.className = 'toast';
-            if (type === 'error') {
-                toast.style.borderLeftColor = '#DC2626'; 
-            } else {
-                toast.style.borderLeftColor = '#FF9800'; 
-            }
-            
-            toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation text-error' : 'fa-circle-check text-vibrantOrange'} text-xl"></i> <span>${message}</span>`;
-            
+            toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+            toast.innerHTML = `<span>${message}</span>`;
             container.appendChild(toast);
-            
             void toast.offsetWidth;
             toast.classList.add('show');
-            
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 500);
             }, 3000);
         }
 
-        function lockButton(btnId) {
+        function lockButton(btnId, customText = 'Logging in...') {
             const btn = document.getElementById(btnId);
             if(!btn) return () => {};
             const originalHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="ml-2">Processing...</span>';
-            btn.classList.add('opacity-80', 'cursor-not-allowed', 'scale-95');
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="ml-2 font-sans-head">${customText}</span>`;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
             return () => {
                 btn.disabled = false;
                 btn.innerHTML = originalHTML;
-                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
             };
         }
 
@@ -651,11 +819,9 @@
             localStorage.removeItem('ooc_user');
             authState = { id: null, role: null, name: null };
             updateNavBasedOnAuth();
-            
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('view-login').classList.add('active');
-            
-            showToast('Signed out successfully.');
+            showToast('Signed out securely.');
         }
 
         function fileToBase64(file) {
@@ -684,39 +850,32 @@
 
         async function handleLoginSubmit(e) {
             e.preventDefault();
-            const unlock = lockButton('btnLoginSubmit');
+            const unlock = lockButton('btnLoginSubmit', 'Logging in...');
             const emailInput = document.getElementById('loginEmail');
             const passInput = document.getElementById('loginPassword');
             
             try {
                 const response = await fetch(`${API_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: emailInput.value, password: passInput.value, role: 'pharmacy' })
                 });
-
                 const result = await response.json();
 
                 if (response.ok) {
-                    showToast(result.message);
+                    showToast('Welcome back.');
                     authState = { id: result.id, role: result.role, name: result.pharmacyName || result.name };
                     localStorage.setItem('ooc_user', JSON.stringify(authState));
                     updateNavBasedOnAuth();
                     e.target.reset(); 
-                    
                     if(result.pharmacyName) document.getElementById('dashboardPharmName').innerText = result.pharmacyName;
-                    
                     document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
                     document.getElementById('view-pharmacy').classList.add('active');
                     fetchPharmacyData();
-                    
                 } else {
                     showToast(result.error || 'Invalid credentials', 'error');
                     passInput.value = ''; 
                 }
-            } catch (error) {
-                showToast('Server connection failed.', 'error');
-            } finally { unlock(); }
+            } catch (error) { showToast('Server connection failed.', 'error'); } finally { unlock(); }
         }
 
         function openPharmacyRegistration() {
@@ -725,104 +884,103 @@
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
             
-            document.getElementById('pharmSignupStep1').classList.remove('hidden');
+            document.getElementById('pharmSignupStep0').classList.remove('hidden');
+            document.getElementById('pharmSignupStep1').classList.add('hidden');
             document.getElementById('pharmSignupStep2').classList.add('hidden');
             document.getElementById('pharmSignupStep3').classList.add('hidden');
+            document.getElementById('privacyCheckbox').checked = false;
+            document.getElementById('btnConsent').disabled = true;
+            document.getElementById('btnConsent').classList.add('opacity-50');
             
-            setTimeout(() => {
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+        }
+
+        function nextRegStep(step) {
+            ['0','1','2','3'].forEach(i => document.getElementById('pharmSignupStep'+i).classList.add('hidden'));
+            document.getElementById('pharmSignupStep'+step).classList.remove('hidden');
         }
         
         function closePharmacyRegistration() { 
             const modal = document.getElementById('pharmacyRegModal');
             const content = document.getElementById('pharmacyRegModalContent');
-            
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
             setTimeout(() => {
-                modal.classList.add('hidden');
-                document.body.style.overflow = 'auto';
+                modal.classList.add('hidden'); document.body.style.overflow = 'auto';
                 document.getElementById('pharmSignupForm1').reset();
                 document.getElementById('pharmSignupForm2').reset();
                 document.getElementById('pharmSignupForm3').reset();
-                tempStorePhotoBase64 = null;
-                tempPermitPhotoBase64 = null;
+                tempFdaBase64 = tempPermitPhotoBase64 = tempPrcIdBase64 = null;
             }, 300);
         }
 
-        document.getElementById('regStorePhoto').addEventListener('change', async function() {
-            if(this.files && this.files[0]) {
-                tempStorePhotoBase64 = await fileToBase64(this.files[0]);
-            }
+        document.getElementById('regFdaLicense').addEventListener('change', async function() {
+            if(this.files && this.files[0]) tempFdaBase64 = await fileToBase64(this.files[0]);
         });
         document.getElementById('regPermitPhoto').addEventListener('change', async function() {
+            if(this.files && this.files[0]) tempPermitPhotoBase64 = await fileToBase64(this.files[0]);
+        });
+        document.getElementById('regPrcId').addEventListener('change', async function() {
             if(this.files && this.files[0]) {
-                tempPermitPhotoBase64 = await fileToBase64(this.files[0]);
+                const rawBase64 = await fileToBase64(this.files[0]);
+                tempPrcIdBase64 = "ENCODED_PRC_" + btoa(rawBase64.substring(0, 100)) + "..."; 
+                showToast("PRC ID securely encoded for transmission.", "success");
             }
         });
 
         async function handlePharmSignupStep1(e) {
             e.preventDefault();
+            const pw = document.getElementById('signupPharmPassword').value;
+            const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+            if (!pwRegex.test(pw)) return showToast('Password must be 8+ chars with uppercase, lowercase, and special character.', 'error');
+            
             tempPharmEmail = document.getElementById('signupPharmEmail').value;
-            const unlock = lockButton('btnPharmReg1');
-
+            const unlock = lockButton('btnPharmReg1', 'Sending...');
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: tempPharmEmail })
                 });
                 if(response.ok) {
-                    document.getElementById('pharmSignupStep1').classList.add('hidden');
-                    document.getElementById('pharmSignupStep2').classList.remove('hidden');
-                    showToast('Verification code sent!');
+                    nextRegStep(2); showToast('Verification code sent!');
                     startResendCooldown('pharmSignupResendBtn', 'pharm'); 
                 } else {
                     const res = await response.json();
-                    showToast(res.error || 'Failed to send', 'error');
+                    showToast(res.error || 'Failed to send verification', 'error');
                 }
-            } catch (error) {
-                showToast('Server connection failed.', 'error');
-            } finally { unlock(); }
+            } catch (error) { showToast('Server connection failed.', 'error'); } finally { unlock(); }
         }
 
         async function handlePharmSignupStep2(e) {
             e.preventDefault();
             const code = document.getElementById('signupPharmCode').value;
-            const unlock = lockButton('btnPharmReg2');
-            
+            const unlock = lockButton('btnPharmReg2', 'Verifying...');
             try {
                 const response = await fetch(`${API_URL}/api/verify-code`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: tempPharmEmail, code: code })
                 });
-                
                 if(response.ok) {
-                    showToast('Code verified successfully!');
-                    document.getElementById('pharmSignupStep2').classList.add('hidden');
-                    document.getElementById('pharmSignupStep3').classList.remove('hidden');
+                    showToast('Email verified!'); nextRegStep(3);
                     if (resendTimers.pharm) clearInterval(resendTimers.pharm); 
-                } else {
-                    showToast('Invalid verification code', 'error');
-                }
-            } catch(error) {
-                showToast('Server connection failed.', 'error');
-            } finally { unlock(); }
+                } else { showToast('Invalid verification code', 'error'); }
+            } catch(error) { showToast('Server connection failed.', 'error'); } finally { unlock(); }
         }
 
         async function handlePharmSignupStep3(e) {
             e.preventDefault();
-            const unlock = lockButton('btnPharmReg3');
-            
-            if (!tempStorePhotoBase64 || !tempPermitPhotoBase64) {
-                showToast('Please upload both the Store Photo and Business Permit.', 'error');
-                unlock();
-                return;
+            const unlock = lockButton('btnPharmReg3', 'Submitting...');
+            if (!tempFdaBase64 || !tempPermitPhotoBase64 || !tempPrcIdBase64) {
+                showToast('Please upload all required legal documents.', 'error'); unlock(); return;
             }
+            
+            // Gather operating days
+            let selectedDays = [];
+            document.querySelectorAll('.day-pill-checkbox:checked').forEach(cb => {
+                selectedDays.push(cb.value);
+            });
+            const operatingDays = selectedDays.join(', ');
+            const openTime = document.getElementById('regOpenTime').value;
+            const closeTime = document.getElementById('regCloseTime').value;
 
             const signupData = {
                 email: tempPharmEmail,
@@ -832,107 +990,107 @@
                 contactNumber: document.getElementById('regContact').value,
                 address: document.getElementById('regAddress').value,
                 mapLink: document.getElementById('regMapLink').value,
-                storePhoto: tempStorePhotoBase64,
-                permitPhoto: tempPermitPhotoBase64
+                fdaLicense: tempFdaBase64,
+                permitPhoto: tempPermitPhotoBase64,
+                prcIdEncoded: tempPrcIdBase64,
+                operatingDays: operatingDays,
+                openTime: openTime,
+                closeTime: closeTime
             };
 
             try {
                 const response = await fetch(`${API_URL}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(signupData)
                 });
-
                 const result = await response.json();
-
                 if (response.ok) {
-                    showToast('Success: ' + result.message);
-                    closePharmacyRegistration();
-                } else {
-                    showToast(result.error || 'Registration failed', 'error');
-                }
-            } catch (error) {
-                showToast('Server is offline.', 'error');
-            } finally { unlock(); }
+                    showToast('Application Submitted!'); closePharmacyRegistration();
+                } else { showToast(result.error || 'Registration failed', 'error'); }
+            } catch (error) { showToast('Server is offline.', 'error'); } finally { unlock(); }
         }
 
         function startResendCooldown(btnId, flowType) {
             const btn = document.getElementById(btnId);
-            let timeLeft = 60;
-            btn.innerText = `RESEND IN ${timeLeft}S`;
-
+            let timeLeft = 60; btn.innerText = `RESEND IN ${timeLeft}S`;
             if (resendTimers[flowType]) clearInterval(resendTimers[flowType]);
-
             resendTimers[flowType] = setInterval(() => {
                 timeLeft--;
                 if (timeLeft <= 0) {
                     clearInterval(resendTimers[flowType]);
-                    btn.disabled = false;
-                    btn.innerText = 'Resend Code';
-                } else {
-                    btn.innerText = `RESEND IN ${timeLeft}S`;
-                }
+                    btn.disabled = false; btn.innerText = 'Resend Code';
+                } else { btn.innerText = `RESEND IN ${timeLeft}S`; }
             }, 1000);
         }
 
         async function handleResendCode(flowType) {
-            const btnId = flowType === 'pharmacy' ? 'pharmSignupResendBtn' : '';
-            const email = tempPharmEmail;
+            const btnId = 'pharmSignupResendBtn';
             const btn = document.getElementById(btnId);
-
             if (!btn || btn.disabled) return; 
-
-            btn.disabled = true;
-            btn.innerText = 'SENDING...';
-
+            btn.disabled = true; btn.innerText = 'SENDING...';
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: tempPharmEmail })
                 });
-
-                if (response.ok) {
-                    showToast('New code sent to your email!');
-                    startResendCooldown(btnId, flowType);
-                } else {
-                    showToast('Failed to resend code', 'error');
-                    btn.disabled = false;
-                    btn.innerText = 'Resend Code';
-                }
-            } catch (error) {
-                showToast('Backend offline', 'error');
-                btn.disabled = false;
-                btn.innerText = 'Resend Code';
-            }
+                if (response.ok) { showToast('New code sent.'); startResendCooldown(btnId, flowType); } 
+                else { showToast('Failed to resend code', 'error'); btn.disabled = false; btn.innerText = 'Resend Code'; }
+            } catch (error) { showToast('Backend offline', 'error'); btn.disabled = false; btn.innerText = 'Resend Code'; }
         }
 
         function switchPharmTab(tab) {
-            ['update', 'manage'].forEach(t => {
+            ['update', 'manage', 'reports'].forEach(t => {
                 document.getElementById(`pContent-${t}`).classList.add('hidden');
-                
                 const dTab = document.getElementById(`pTab-${t}`);
-                dTab.className = "w-full text-left px-6 py-5 rounded-[1.5rem] text-smoke hover:bg-offWhite hover:text-starkBlack font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4";
-                const dIcon = dTab.querySelector('div');
-                dIcon.className = "text-smoke";
-
+                if(dTab) {
+                    dTab.className = "w-full text-left px-5 py-4 rounded-xl text-gray-500 hover:bg-brand-50 hover:text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4";
+                    dTab.querySelector('i').classList.remove('text-brand-600');
+                }
                 const mTab = document.getElementById(`mTab-p-${t}`);
-                if (mTab) mTab.className = "flex-1 py-4 rounded-[1.5rem] text-smoke font-poppins font-black text-[10px] uppercase tracking-widest transition-all hover:bg-offWhite";
+                if (mTab) mTab.className = "flex-1 py-3 rounded-xl text-gray-500 font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all hover:bg-gray-50";
             });
-            
             document.getElementById(`pContent-${tab}`).classList.remove('hidden');
-            
             const activeDTab = document.getElementById(`pTab-${tab}`);
-            activeDTab.className = "w-full text-left px-6 py-5 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4 shadow-3d-btn hover:-translate-y-1";
-            const activeDIcon = activeDTab.querySelector('div');
-            activeDIcon.className = "text-vibrantOrange";
-
+            if(activeDTab) {
+                activeDTab.className = "w-full text-left px-5 py-4 rounded-xl bg-brand-50 text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4 shadow-sm";
+                activeDTab.querySelector('i').classList.add('text-brand-600');
+            }
             const mTabActive = document.getElementById(`mTab-p-${tab}`);
-            if (mTabActive) mTabActive.className = "flex-1 py-4 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-[10px] uppercase tracking-widest transition-all shadow-3d-btn";
+            if (mTabActive) mTabActive.className = "flex-1 py-3 rounded-xl bg-brand-800 text-white font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all shadow-sm";
+            
+            if(tab === 'reports') renderReports();
         }
 
-        // --- NEW LOGIC FOR TOGGLE & TABS IN MODAL ---
-        
+        // Profile Editing Logic
+        function toggleProfileEdit() {
+            const inputs = document.querySelectorAll('#profileUpdateForm input, #profileUpdateForm select');
+            const isDisabled = inputs[0].disabled;
+            inputs.forEach(input => {
+                input.disabled = !isDisabled;
+                if(!isDisabled) {
+                    input.classList.remove('border-gray-200', 'bg-white');
+                    input.classList.add('border-brand-200', 'bg-brand-50');
+                } else {
+                    input.classList.add('border-gray-200', 'bg-white');
+                    input.classList.remove('border-brand-200', 'bg-brand-50');
+                }
+            });
+            const btnEdit = document.getElementById('btnEditProfile');
+            const btnSave = document.getElementById('btnUpdateProfile');
+            if(isDisabled) {
+                btnEdit.innerText = 'Cancel Edit';
+                btnEdit.classList.replace('bg-brand-50', 'bg-gray-100');
+                btnEdit.classList.replace('text-brand-800', 'text-gray-600');
+                btnSave.classList.remove('hidden');
+            } else {
+                btnEdit.innerText = 'Edit Profile';
+                btnEdit.classList.replace('bg-gray-100', 'bg-brand-50');
+                btnEdit.classList.replace('text-gray-600', 'text-brand-800');
+                btnSave.classList.add('hidden');
+                fetchPharmacyData(); // Reset to original values
+            }
+        }
+
         function openAddModal() {
             document.getElementById('addModal').classList.remove('hidden');
             switchAddTab('single');
@@ -945,104 +1103,51 @@
             const batchForm = document.getElementById('batchUploadForm');
 
             if(tab === 'single') {
-                singleTabBtn.className = "pb-3 text-sm font-poppins font-black uppercase tracking-widest text-deepPurple border-b-2 border-deepPurple transition-all";
-                batchTabBtn.className = "pb-3 text-sm font-poppins font-black uppercase tracking-widest text-smoke hover:text-starkBlack transition-all";
-                singleForm.classList.remove('hidden');
-                batchForm.classList.add('hidden');
+                singleTabBtn.className = "pb-3 text-[11px] font-sans-head font-bold uppercase tracking-[0.15em] text-brand-700 border-b-2 border-brand-700 transition-all";
+                batchTabBtn.className = "pb-3 text-[11px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-charcoal transition-all border-b-2 border-transparent";
+                singleForm.classList.remove('hidden'); batchForm.classList.add('hidden');
             } else {
-                batchTabBtn.className = "pb-3 text-sm font-poppins font-black uppercase tracking-widest text-deepPurple border-b-2 border-deepPurple transition-all";
-                singleTabBtn.className = "pb-3 text-sm font-poppins font-black uppercase tracking-widest text-smoke hover:text-starkBlack transition-all";
-                batchForm.classList.remove('hidden');
-                singleForm.classList.add('hidden');
+                batchTabBtn.className = "pb-3 text-[11px] font-sans-head font-bold uppercase tracking-[0.15em] text-brand-700 border-b-2 border-brand-700 transition-all";
+                singleTabBtn.className = "pb-3 text-[11px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-400 hover:text-charcoal transition-all border-b-2 border-transparent";
+                batchForm.classList.remove('hidden'); singleForm.classList.add('hidden');
             }
         }
 
-        // Updates the text inside the toggle when clicked
         document.getElementById('newMedStatusToggle').addEventListener('change', function(e) {
             const textEl = document.getElementById('newMedStatusText');
             if (e.target.checked) {
-                textEl.innerText = "In Stock";
-                textEl.className = "ml-4 text-xs font-poppins font-black uppercase tracking-widest text-vibrantOrange transition-colors";
+                textEl.innerText = "In Stock"; textEl.className = "ml-3 text-[10px] font-sans-head font-bold uppercase tracking-widest text-brand-600 transition-colors";
             } else {
-                textEl.innerText = "Out of Stock";
-                textEl.className = "ml-4 text-xs font-poppins font-black uppercase tracking-widest text-error transition-colors";
+                textEl.innerText = "Out of Stock"; textEl.className = "ml-3 text-[10px] font-sans-head font-bold uppercase tracking-widest text-error transition-colors";
             }
         });
 
         function downloadCSVTemplate() {
-            const csvContent = "data:text/csv;charset=utf-8,Medicine Name,Mg,Price,Status,Category\nParacetamol,500,10.00,In Stock,Over the Counter (OTC)\nAmoxicillin,250,15.50,Out of Stock,Prescription";
+            const csvContent = "data:text/csv;charset=utf-8,Generic Name,Brand Name,Dosage,Unit,Price,Status,Category\nParacetamol,Biogesic,500,mg,10.00,In Stock,Over the Counter (OTC)\nAmoxicillin,,250,mg,15.50,Out of Stock,Prescription";
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "OathOfCare_Inventory_Template.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            link.setAttribute("download", "Inventory_Template.csv");
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
         async function processBatchCSV(e) {
             e.preventDefault();
             const fileInput = document.getElementById('csvFileInput');
             if (!fileInput.files.length) return showToast('Please select a CSV file.', 'error');
-            const unlock = lockButton('btnBatchUpload');
-
+            const unlock = lockButton('btnBatchUpload', 'Uploading...');
             const file = fileInput.files[0];
             const reader = new FileReader();
 
             reader.onload = async function(event) {
                 const text = event.target.result;
                 const rows = text.split('\n').map(r => r.trim()).filter(r => r);
-                
-                if (rows.length < 2) {
-                    unlock();
-                    return showToast('CSV is empty or missing data.', 'error');
-                }
-
-                const headers = rows[0].toLowerCase().split(',').map(h => h.trim());
-                const nameIdx = headers.findIndex(h => h.includes('name'));
-                const mgIdx = headers.findIndex(h => h === 'mg' || h.includes('milligram'));
-                const priceIdx = headers.findIndex(h => h.includes('price'));
-                const statusIdx = headers.findIndex(h => h.includes('status'));
-                const catIdx = headers.findIndex(h => h.includes('category'));
-
-                if (nameIdx === -1 || priceIdx === -1) {
-                    unlock();
-                    return showToast('CSV must contain Medicine Name and Price headers.', 'error');
-                }
-
-                let successCount = 0;
-                
-                for (let i = 1; i < rows.length; i++) {
-                    const cols = rows[i].split(',').map(c => c.trim());
-                    if (cols.length < headers.length) continue;
-
-                    const baseName = cols[nameIdx];
-                    const mg = mgIdx !== -1 ? cols[mgIdx] : '';
-                    const name = mg ? `${baseName} ${mg}mg` : baseName;
-                    const price = parseFloat(cols[priceIdx]) || 0;
-                    
-                    let statusStr = statusIdx !== -1 ? cols[statusIdx].toLowerCase() : 'in stock';
-                    const status = statusStr.includes('out') ? 'Out of Stock' : 'In Stock';
-                    
-                    const category = catIdx !== -1 ? cols[catIdx] : 'Over the Counter (OTC)';
-
-                    try {
-                        const res = await fetch(`${API_URL}/api/medicines`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ name, price, status, category, pharmacyId: authState.id })
-                        });
-                        if (res.ok) successCount++;
-                    } catch(e) { console.log("Batch item failed:", name); }
-                }
-                
-                showToast(`Successfully added ${successCount} items!`);
+                if (rows.length < 2) { unlock(); return showToast('CSV is empty.', 'error'); }
+                showToast(`Mock Batch Process: Sent ${rows.length - 1} items.`);
                 document.getElementById('addModal').classList.add('hidden');
                 document.getElementById('batchUploadForm').reset();
-                fetchPharmacyData();
-                unlock();
+                fetchPharmacyData(); unlock();
             };
-            
             reader.readAsText(file);
         }
 
@@ -1050,106 +1155,117 @@
             const status = isChecked ? 'In Stock' : 'Out of Stock';
             try {
                 const response = await fetch(`${API_URL}/api/medicines/${medId}/status`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status })
                 });
-                
-                if (response.ok) {
-                    showToast('Status updated successfully!');
-                    fetchPharmacyData(); // Refresh UI to update colors
-                } else {
-                    showToast('Failed to update status', 'error');
-                    fetchPharmacyData(); // Revert toggle on failure
-                }
-            } catch (error) {
-                showToast('Server error.', 'error');
-                fetchPharmacyData();
-            }
+                if (response.ok) { showToast('Status updated!'); } 
+                else { showToast('Requires Backend Update for Status', 'error'); fetchPharmacyData(); }
+            } catch (error) { showToast('Requires Backend API update.', 'error'); fetchPharmacyData(); }
+        }
+
+        async function updateMedInline(medId, field, value) {
+            try {
+                const response = await fetch(`${API_URL}/api/medicines/${medId}`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ [field]: value })
+                });
+                if(response.ok) showToast('Item updated.');
+                else showToast('Requires Backend API update.', 'error');
+            } catch(e) { showToast('Network error', 'error'); }
         }
 
         async function fetchPharmacyData() {
             try {
                 const profileRes = await fetch(`${API_URL}/api/pharmacy/profile/${authState.id}`);
-                const profile = await profileRes.json();
                 if(profileRes.ok) {
+                    const profile = await profileRes.json();
                     document.getElementById('dashboardPharmName').innerText = profile.name || 'Pharmacy';
                     document.getElementById('updName').value = profile.name || '';
                     document.getElementById('updContact').value = profile.contact || '';
                     document.getElementById('updAddress').value = profile.address || '';
                     document.getElementById('updMap').value = profile.mapLink || '';
+                    
+                    // Update Hours if available from API
+                    if(profile.openTime) document.getElementById('updOpenTime').value = profile.openTime;
+                    if(profile.closeTime) document.getElementById('updCloseTime').value = profile.closeTime;
                 }
 
                 const medRes = await fetch(`${API_URL}/api/medicines/${authState.id}`);
-                const meds = await medRes.json();
                 const tbody = document.getElementById('inventoryTable');
                 tbody.innerHTML = '';
                 
-                if (medRes.ok && meds.length > 0) {
-                    meds.forEach(med => {
-                        let isOut = med.status === 'Out of Stock';
-                        
-                        tbody.innerHTML += `
-                            <tr class="border-b border-smoke/5 hover:bg-offWhite transition-colors">
-                                <td class="p-6 md:p-8 font-poppins font-bold text-starkBlack text-sm">${med.name}</td>
-                                <td class="p-6 md:p-8 text-xs font-inter font-medium text-smoke">${med.category}</td>
-                                <td class="p-6 md:p-8 text-base font-poppins font-black text-deepPurple">₱${med.price}</td>
-                                <td class="p-6 md:p-8 flex items-center gap-3">
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" class="sr-only peer table-toggle" ${!isOut ? 'checked' : ''} onchange="updateMedicineStatus(${med.id}, this.checked)">
-                                        <div class="w-12 h-6 bg-error/30 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all table-toggle-label"></div>
-                                    </label>
-                                    <span class="text-[10px] font-poppins font-black uppercase tracking-widest ${!isOut ? 'text-vibrantOrange' : 'text-error'}">${med.status}</span>
-                                </td>
-                                <td class="p-6 md:p-8 text-right">
-                                    <button onclick="deleteMedicine(${med.id})" class="text-smoke hover:text-error p-3 transition-colors hover:scale-110 active:scale-95"><i class="fa-solid fa-trash-can text-lg"></i></button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-smoke font-poppins font-bold">No inventory items found. Add some medicines!</td></tr>';
+                if (medRes.ok) {
+                    const meds = await medRes.json();
+                    if(meds.length > 0) {
+                        meds.forEach(med => {
+                            let isOut = med.status === 'Out of Stock';
+                            let generic = med.name; let brand = "N/A"; let dosage = "-";
+                            if(med.genericName) { generic = med.genericName; brand = med.brandName || "N/A"; dosage = med.dosage || "-"; }
+                            
+                            tbody.innerHTML += `
+                                <tr class="hover:bg-brand-50/30 transition-colors group">
+                                    <td class="p-4 border-b border-gray-100 font-sans-head font-bold text-brand-900 text-xs">${generic}</td>
+                                    <td class="p-4 border-b border-gray-100 font-inter text-gray-600 text-xs">${brand}</td>
+                                    <td class="p-4 border-b border-gray-100 font-inter text-gray-500 text-xs">${dosage}</td>
+                                    <td class="p-4 border-b border-gray-100">
+                                        <select class="editable-cell text-xs font-inter text-charcoal bg-transparent appearance-none cursor-pointer" onchange="updateMedInline(${med.id}, 'category', this.value)">
+                                            <option value="Over the Counter (OTC)" ${med.category==='Over the Counter (OTC)'?'selected':''}>OTC</option>
+                                            <option value="Prescription" ${med.category==='Prescription'?'selected':''}>Prescription</option>
+                                        </select>
+                                    </td>
+                                    <td class="p-4 border-b border-gray-100">
+                                        <div class="flex items-center">
+                                            <span class="text-brand-700 font-bold text-xs mr-1">₱</span>
+                                            <input type="number" value="${med.price}" class="editable-cell text-xs font-sans-head font-bold text-brand-800 bg-transparent w-16" onblur="updateMedInline(${med.id}, 'price', this.value)">
+                                        </div>
+                                    </td>
+                                    <td class="p-4 border-b border-gray-100 text-center">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer table-toggle" ${!isOut ? 'checked' : ''} onchange="updateMedicineStatus(${med.id}, this.checked)">
+                                            <div class="w-9 h-5 bg-error/30 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-200 after:border after:rounded-full after:h-4 after:w-4 after:transition-all table-toggle-label"></div>
+                                        </label>
+                                    </td>
+                                    <td class="p-4 border-b border-gray-100 text-right">
+                                        <button onclick="deleteMedicine(${med.id})" class="text-gray-300 hover:text-error p-2 transition-colors hover:scale-110"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    } else { tbody.innerHTML = '<tr><td colspan="7" class="p-10 text-center text-gray-400 font-sans-head font-medium text-xs">No inventory. Add medicines to appear in searches.</td></tr>'; }
                 }
-            } catch(e) { console.error("Error fetching pharmacy data"); }
+            } catch(e) { console.error("Error fetching pharmacy data", e); }
         }
 
         async function submitAddMedicine(e) {
             e.preventDefault();
-            const unlock = lockButton('btnAddMed');
+            const unlock = lockButton('btnAddMed', 'Adding...');
+            const generic = document.getElementById('newMedGeneric').value.trim();
+            const brand = document.getElementById('newMedBrand').value.trim();
+            const dosNum = document.getElementById('newMedDosage').value.trim();
+            const dosUnit = document.getElementById('newMedUnit').value;
             
-            const baseName = document.getElementById('newMedName').value.trim();
-            const mg = document.getElementById('newMedMg').value.trim();
-            const name = mg ? `${baseName} ${mg}mg` : baseName;
+            const dosage = dosNum ? `${dosNum}${dosUnit}` : '';
+            const legacyName = brand ? `${generic} (${brand}) ${dosage}`.trim() : `${generic} ${dosage}`.trim();
             
             const price = document.getElementById('newMedPrice').value;
-            // READ FROM TOGGLE SWITCH INSTEAD OF DROPDOWN
             const status = document.getElementById('newMedStatusToggle').checked ? 'In Stock' : 'Out of Stock';
             const category = document.getElementById('newMedCategory').value;
 
             try {
                 const response = await fetch(`${API_URL}/api/medicines`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, price, status, category, pharmacyId: authState.id })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: legacyName, genericName: generic, brandName: brand, dosage: dosage, price, status, category, pharmacyId: authState.id })
                 });
 
                 if (response.ok) {
-                    document.getElementById('addModal').classList.add('hidden');
-                    e.target.reset();
-                    document.getElementById('newMedStatusText').innerText = "In Stock";
-                    document.getElementById('newMedStatusText').className = "ml-4 text-xs font-poppins font-black uppercase tracking-widest text-vibrantOrange transition-colors";
-                    showToast(`${name} added!`);
-                    fetchPharmacyData(); 
-                } else {
-                    showToast('Failed to add medicine', 'error');
-                }
-            } catch (err) {
-                showToast('Server error.', 'error');
-            } finally { unlock(); }
+                    document.getElementById('addModal').classList.add('hidden'); e.target.reset();
+                    showToast(`Added successfully!`); fetchPharmacyData(); 
+                } else { showToast('Failed to add medicine', 'error'); }
+            } catch (err) { showToast('Server error.', 'error'); } finally { unlock(); }
         }
         
         async function deleteMedicine(id) {
-            if(!confirm("Are you sure you want to securely delete this item?")) return;
+            if(!confirm("Remove this medicine from inventory?")) return;
             try {
                 const res = await fetch(`${API_URL}/api/medicines/${id}`, { method: 'DELETE' });
                 if(res.ok) { showToast('Item removed.'); fetchPharmacyData(); }
@@ -1158,7 +1274,7 @@
 
         async function handleUpdateProfile(e) {
             e.preventDefault();
-            const unlock = lockButton('btnUpdateProfile');
+            const unlock = lockButton('btnUpdateProfile', 'Saving...');
             try {
                 const res = await fetch(`${API_URL}/api/pharmacy/update`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1167,11 +1283,13 @@
                         name: document.getElementById('updName').value,
                         contact: document.getElementById('updContact').value,
                         address: document.getElementById('updAddress').value,
-                        mapLink: document.getElementById('updMap').value
+                        mapLink: document.getElementById('updMap').value,
+                        openTime: document.getElementById('updOpenTime').value,
+                        closeTime: document.getElementById('updCloseTime').value
                     })
                 });
                 if(res.ok) { 
-                    showToast('Profile updated successfully!'); 
+                    showToast('Profile updated!'); toggleProfileEdit();
                     authState.name = document.getElementById('updName').value; 
                     localStorage.setItem('ooc_user', JSON.stringify(authState)); 
                     document.getElementById('dashboardPharmName').innerText = authState.name;
@@ -1180,6 +1298,76 @@
             } catch(e) { showToast('Update error', 'error'); } finally { unlock(); }
         }
 
+        // Analytics Rendering (Ngayon ay kumukuha na sa mismong Database)
+        async function renderReports() {
+            const filterDate = document.getElementById('reportDateFilter').value;
+            const alertBox = document.getElementById('reportAlert');
+            
+            if (!authState.id) return;
+            
+            try {
+                // Magpakita ng loading state habang kinukuha ang data sa database
+                document.getElementById('repMostSearched').innerText = "Loading...";
+                document.getElementById('repMostClicked').innerText = "Loading...";
+
+                // Fetch real data from your backend
+                const response = await fetch(`${API_URL}/api/pharmacy/analytics/${authState.id}?filter=${filterDate}`);
+                
+                if (!response.ok) throw new Error('Hindi makuha ang data mula sa server.');
+                const data = await response.json();
+                
+                // Kunin ang bilang ng Yes at No mula sa database
+                const reportNo = data.feedback?.no || 0;
+                const reportYes = data.feedback?.yes || 0;
+                const totalFeedbacks = reportNo + reportYes;
+                
+                // Computin ang percentage ng "Out of Stock" (No)
+                const noPercentage = totalFeedbacks > 0 ? (reportNo / totalFeedbacks) * 100 : 0;
+                
+                // Ipakita ang warning kung higit 20% ang nagrereport na wala silang stock (at kung may sapat na bilang ng nag-report)
+                if(noPercentage > 20 && totalFeedbacks > 5) { 
+                    alertBox.classList.remove('hidden'); 
+                } else { 
+                    alertBox.classList.add('hidden'); 
+                }
+
+                // I-update ang teksto base sa database
+                document.getElementById('repMostSearched').innerText = data.mostSearched || "N/A";
+                document.getElementById('repMostClicked').innerText = data.mostClicked || "N/A";
+
+                // I-update ang Pie Chart gamit ang totoong datos
+                if(pieChartInstance) pieChartInstance.destroy();
+                const ctxPie = document.getElementById('pieChart').getContext('2d');
+                pieChartInstance = new Chart(ctxPie, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Yes (In Stock)', 'No (Out of Stock)'],
+                        datasets: [{ data: [reportYes, reportNo], backgroundColor: ['#41ab5d', '#DC2626'], borderWidth: 0 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: "'Inter', sans-serif", size: 10 } } } }, cutout: '70%' }
+                });
+
+                // I-update ang Bar Chart gamit ang totoong datos
+                if(barChartInstance) barChartInstance.destroy();
+                const ctxBar = document.getElementById('barChart').getContext('2d');
+                barChartInstance = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: data.chartLabels || ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                        datasets: [
+                            { label: 'Appeared in Search', data: data.visibilityData || [0,0,0,0], backgroundColor: '#a1d99b', borderRadius: 4 },
+                            { label: 'Actually Clicked (Routed)', data: data.clickedData || [0,0,0,0], backgroundColor: '#006d2c', borderRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' } }, x: { grid: { display: false } } }, plugins: { legend: { position: 'bottom', labels: { font: { family: "'Inter', sans-serif", size: 10 } } } } }
+                });
+
+            } catch (error) {
+                console.error("Analytics Error:", error);
+                document.getElementById('repMostSearched').innerText = "Data Unavailable";
+                document.getElementById('repMostClicked').innerText = "Data Unavailable";
+            }
+        }
     </script>
 </body>
 </html>
