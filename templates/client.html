@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oath of Care | Client Search Portal</title>
+    <title>Oath of Care | Premium Pharmacy Locator</title>
     
-    <!-- Google Fonts: Poppins for bold sans-serif, Playfair for script/serif, Inter for body -->
+    <!-- Premium Fonts: Poppins (Clean UI), Playfair Display (Luxury Headings), Inter (Legible Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome for professional Icons -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS -->
@@ -21,12 +21,23 @@
             theme: {
                 extend: {
                     colors: {
-                        deepPurple: '#4A148C', /* Darkened, more vibrant violet */
-                        vibrantOrange: '#FF9800',
+                        // The exact luxury green palette requested
+                        brand: {
+                            50: '#f7fcf5',
+                            100: '#e5f5e0',
+                            200: '#c7e9c0',
+                            300: '#a1d99b',
+                            400: '#74c476',
+                            500: '#41ab5d',
+                            600: '#238b45',
+                            700: '#006d2c',
+                            800: '#00441b',
+                            900: '#002a11' // Deepest contrast
+                        },
+                        mocha: '#b08d6a', // Added Mocha color for icons and shadows
+                        charcoal: '#1A1A1A',
                         starkBlack: '#09090b',
-                        offWhite: '#F4F4F5',
                         surface: '#FFFFFF',
-                        smoke: '#52525b',
                         error: '#DC2626'
                     },
                     fontFamily: {
@@ -35,14 +46,10 @@
                         inter: ['"Inter"', 'sans-serif'],
                     },
                     boxShadow: {
-                        '3d-btn': '0 8px 25px -5px rgba(0, 0, 0, 0.3), inset 0 2px 1px rgba(255, 255, 255, 0.2)',
-                        '3d-btn-hover': '0 15px 35px -5px rgba(0, 0, 0, 0.4), inset 0 2px 1px rgba(255, 255, 255, 0.2)',
-                        '3d-btn-active': '0 4px 10px -2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.4)',
-                        '3d-pill': '0 25px 50px -12px rgba(0, 0, 0, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.8)',
-                        '3d-input': 'inset 0 2px 5px rgba(0, 0, 0, 0.06), 0 2px 0 rgba(255, 255, 255, 1)',
-                        '3d-input-focus': '0 10px 25px -5px rgba(74, 20, 140, 0.25), inset 0 2px 5px rgba(0, 0, 0, 0.02)',
-                        '3d-modal': '0 30px 60px -15px rgba(0, 0, 0, 0.4), 0 0 40px rgba(74, 20, 140, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.9)',
-                        '3d-card': '0 10px 30px -10px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.8)'
+                        'luxury': '0 20px 40px -15px rgba(0, 68, 27, 0.15)',
+                        'luxury-hover': '0 25px 50px -12px rgba(0, 68, 27, 0.3)',
+                        'input': '0 8px 25px -5px rgba(0,0,0,0.05)',
+                        'input-focus': '0 10px 30px -5px rgba(0, 68, 27, 0.15)',
                     }
                 }
             }
@@ -51,150 +58,152 @@
 
     <style>
         body {
-            background-color: #F8F9FA;
-            color: #09090b;
+            background-color: #f7fcf5;
+            color: #1A1A1A;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
-        }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
+        .font-sans-head { font-family: 'Poppins', sans-serif; }
 
-        .glass-pill {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-        }
-
-        /* Input overrides for Chrome Autocomplete */
+        /* Elegant Inputs Fix for Chrome Autofill */
         input:-webkit-autofill,
         input:-webkit-autofill:hover, 
         input:-webkit-autofill:focus, 
         input:-webkit-autofill:active{
-            -webkit-box-shadow: 0 0 0 30px #F4F4F5 inset !important;
-            -webkit-text-fill-color: #09090b !important;
+            -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+            -webkit-text-fill-color: #1A1A1A !important;
             transition: background-color 5000s ease-in-out 0s;
         }
 
-        /* Floating animations for cards and capsules */
-        @keyframes float3d {
-            0% { transform: translateY(0px) rotateX(0deg) rotate(var(--base-rot, 0deg)); }
-            50% { transform: translateY(-15px) rotateX(5deg) rotate(calc(var(--base-rot, 0deg) + 5deg)); }
-            100% { transform: translateY(0px) rotateX(0deg) rotate(var(--base-rot, 0deg)); }
-        }
-        
-        .float-card {
-            animation: float3d 6s ease-in-out infinite;
-            transform-style: preserve-3d;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-        }
-        .float-card:hover {
-            transform: translateY(-10px) scale(1.04) rotateX(5deg) !important;
-            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.9);
-            z-index: 30;
-            animation-play-state: paused;
-        }
-        .float-card:nth-child(2) { animation-delay: 1s; }
-        .float-card:nth-child(3) { animation-delay: 2s; }
-        .float-card:nth-child(4) { animation-delay: 3s; }
-
-        /* CSS 3D Medicine Capsules */
-        .capsule-3d {
-            position: absolute;
-            width: 45px;
-            height: 120px;
-            border-radius: 50px;
-            z-index: -1;
-            animation: float3d 8s ease-in-out infinite;
-            opacity: 0.85;
-            box-shadow: 
-                inset -8px -8px 20px rgba(0,0,0,0.25), 
-                inset 8px 8px 20px rgba(255,255,255,0.7), 
-                15px 20px 30px rgba(0,0,0,0.15);
-        }
-        .capsule-orange {
-            background: linear-gradient(180deg, #FF9800 50%, #ffffff 50%);
-        }
-        .capsule-purple {
-            background: linear-gradient(180deg, #4A148C 50%, #ffffff 50%);
+        /* Custom Select Arrow Styling */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%23006d2c' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-repeat: no-repeat;
+            background-position-x: 85%;
+            background-position-y: 50%;
+            background-size: 14px;
         }
 
-        /* Toast Notifications */
+        /* Premium Toast Notifications */
         #toast-container {
             position: fixed; bottom: 30px; right: 30px; z-index: 9999;
             display: flex; flex-direction: column; gap: 15px;
         }
         .toast {
-            background: #09090b; color: #F8F9FA; padding: 18px 28px;
-            border-left: 5px solid #FF9800; border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1);
-            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            background: #1A1A1A; color: #ffffff; padding: 18px 24px;
+            border-left: 4px solid #41ab5d; border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif;
-            font-weight: 600; font-size: 0.95rem;
+            font-size: 0.95rem; font-weight: 500;
         }
         .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: #DC2626; }
         
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #F8F9FA; }
-        ::-webkit-scrollbar-thumb { background: #4A148C; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: #f7fcf5; }
+        ::-webkit-scrollbar-thumb { background: #41ab5d; border-radius: 10px; }
         
-        /* Sliding Panel for History */
-        .history-panel-open { transform: translateX(0) !important; box-shadow: -20px 0 50px rgba(0,0,0,0.2); }
-
-        /* Rotating 3D Text Badge */
-        @keyframes spin-slow {
-            100% { transform: rotate(360deg); }
+        /* Sliding Panel */
+        .history-panel-open { transform: translateX(0) !important; box-shadow: -20px 0 50px rgba(0,68,27,0.15); }
+        
+        /* Smooth height transition for hero */
+        #heroSection { transition: min-height 0.8s cubic-bezier(0.25, 1, 0.5, 1), padding 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .results-enter { animation: slideUpFade 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .rotating-badge {
-            animation: spin-slow 12s linear infinite;
+
+        /* Luxury 3D Card Hover Effects for How It Works */
+        .card-3d {
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-style: preserve-3d;
+        }
+        .card-3d:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 68, 27, 0.2);
+            border-color: #006d2c !important;
+        }
+        .card-3d .icon-container {
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s ease;
+        }
+        .card-3d:hover .icon-container {
+            transform: translateZ(30px) translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 30px -5px rgba(176, 141, 106, 0.6) !important; /* Mocha shadow on hover */
         }
     </style>
 </head>
-<body class="antialiased flex flex-col min-h-screen">
+<body class="antialiased flex flex-col min-h-screen relative">
 
-    <!-- Navigation Bar -->
-    <nav class="fixed w-full z-50 transition-all duration-300 bg-gradient-to-r from-surface/90 via-purple-50/80 to-orange-50/90 backdrop-blur-xl border-b border-starkBlack/5 h-24 flex items-center shadow-sm" id="navbar">
+    <!-- ================= BESPOKE LANDSCAPE BACKGROUND (CLEAN & MINIMALIST) ================= -->
+    <div class="fixed inset-0 z-[-5] w-full h-full overflow-hidden bg-brand-50 pointer-events-none">
+        <!-- Bright Sun Glow -->
+        <div class="absolute top-[10%] right-[30%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-yellow-50/60 rounded-full blur-[100px] transform translate-x-1/2"></div>
+        <div class="absolute top-[15%] right-[25%] w-[20vw] h-[20vw] max-w-[250px] max-h-[250px] bg-white rounded-full blur-3xl transform translate-x-1/2 opacity-90"></div>
+        
+        <!-- High-Res Vector Landscape SVG (Removed trees, houses, windmills) -->
+        <svg class="absolute bottom-0 w-full h-[60vh] min-h-[400px]" preserveAspectRatio="none" viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg">
+            <!-- Distant Hills -->
+            <path fill="#e5f5e0" d="M0,250 C300,150 600,300 900,200 C1200,100 1350,250 1440,280 L1440,600 L0,600 Z"></path>
+            <!-- Mid Hills -->
+            <path fill="#c7e9c0" d="M0,350 C250,450 450,250 750,300 C1050,350 1250,200 1440,250 L1440,600 L0,600 Z"></path>
+            <!-- Middle Foreground Hills -->
+            <path fill="#a1d99b" d="M0,450 C350,380 550,500 850,420 C1150,340 1300,480 1440,400 L1440,600 L0,600 Z"></path>
+            <!-- Foreground Field -->
+            <path fill="#238b45" d="M0,520 C400,450 700,600 1000,480 C1200,400 1350,550 1440,500 L1440,600 L0,600 Z"></path>
+            <!-- Very Dark Bottom Edge for contrast -->
+            <path fill="#00441b" d="M0,580 C500,550 800,600 1200,570 C1350,560 1400,590 1440,580 L1440,600 L0,600 Z"></path>
+        </svg>
+    </div>
+    <!-- ========================================================================= -->
+
+    <!-- Elegant Navigation Bar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-xl border-b border-brand-100 h-24 flex items-center shadow-sm" id="navbar">
         <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center">
             
             <!-- BRAND LOGO -->
             <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
-                <div class="relative w-12 h-12 mr-4 transform group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
-                    <i class="fa-solid fa-location-dot text-[40px] text-deepPurple relative z-0" style="text-shadow: 2px 4px 6px rgba(74,20,140,0.3);"></i>
-                    <div class="absolute bottom-0 -right-1 z-10 flex items-center justify-center drop-shadow-md">
-                        <div class="absolute w-2.5 h-2.5 bg-white rounded-full"></div>
-                        <i class="fa-solid fa-capsules text-vibrantOrange text-xl relative z-10"></i>
-                    </div>
+                <div class="relative w-11 h-11 mr-3 flex items-center justify-center bg-brand-800 rounded-xl shadow-md group-hover:bg-brand-700 transition-colors">
+                    <i class="fa-solid fa-leaf text-xl text-white"></i>
                 </div>
-                <div class="flex items-baseline gap-1.5 ml-1 transition-transform duration-500 group-hover:translate-x-1">
-                    <span class="font-poppins font-black text-3xl text-starkBlack tracking-tight drop-shadow-sm">Oath</span>
-                    <span class="font-serif italic text-3xl text-deepPurple drop-shadow-sm">of Care</span>
+                <div class="flex items-baseline gap-1.5 ml-1">
+                    <span class="font-sans-head font-bold text-2xl text-charcoal tracking-wide">Oath</span>
+                    <span class="font-serif italic text-2xl text-brand-600">of Care</span>
                 </div>
             </div>
             
             <!-- Auth Links -->
-            <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-8">
                 <!-- Logged Out State -->
                 <div id="navAuthLoggedOut" class="flex items-center space-x-6">
-                    <button onclick="openAuthModal('login')" class="font-poppins font-bold text-starkBlack hover:text-deepPurple hover:scale-110 transition-all duration-300 text-sm uppercase tracking-widest hidden sm:block">
+                    <button onclick="openAuthModal('login')" class="font-sans-head font-semibold text-gray-500 hover:text-brand-800 transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] hidden sm:block">
                         Sign In
                     </button>
-                    <button onclick="openAuthModal('signup1')" class="bg-starkBlack text-surface px-8 py-3.5 rounded-full font-poppins font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active">
+                    <button onclick="openAuthModal('signup1')" class="bg-brand-800 text-white px-8 py-3.5 rounded-full font-sans-head font-semibold text-[11px] uppercase tracking-[0.15em] transition-all duration-300 hover:bg-brand-700 shadow-luxury hover:shadow-luxury-hover hover:-translate-y-0.5">
                         Sign Up
                     </button>
                 </div>
 
-                <!-- Logged In State (Hidden by default) -->
+                <!-- Logged In State -->
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
-                    <span id="navUserName" class="font-inter font-bold text-smoke text-sm hidden md:block"></span>
+                    <div class="flex items-center gap-3 hidden md:flex border-r border-brand-200 pr-6">
+                        <div class="w-9 h-9 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 shadow-inner-soft">
+                            <i class="fa-solid fa-user text-xs"></i>
+                        </div>
+                        <span id="navUserName" class="font-sans-head font-medium text-charcoal text-sm"></span>
+                    </div>
                     
-                    <button onclick="toggleHistoryPanel()" class="font-poppins font-bold text-deepPurple hover:text-vibrantOrange hover:scale-105 transition-all duration-300 text-sm uppercase tracking-widest flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left"></i> My Visits
+                    <button onclick="toggleHistoryPanel()" class="font-sans-head font-semibold text-brand-700 hover:text-brand-500 transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-sm"></i> My Visits
                     </button>
                     
-                    <button onclick="handleLogout()" class="text-error font-poppins font-bold hover:text-red-800 hover:scale-110 transition-all duration-300 text-sm uppercase tracking-widest border-l border-smoke/20 pl-6">
-                        Sign Out
+                    <button onclick="handleLogout()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-error hover:bg-red-50 transition-colors">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </button>
                 </div>
             </div>
@@ -202,196 +211,117 @@
     </nav>
 
     <!-- My Visits Sliding Panel -->
-    <div id="historyOverlay" class="fixed inset-0 bg-starkBlack/40 backdrop-blur-sm z-[140] hidden opacity-0 transition-opacity duration-300" onclick="toggleHistoryPanel()"></div>
-    <div id="historyPanel" class="fixed right-0 top-0 h-full w-full max-w-md bg-surface transform translate-x-full transition-transform duration-500 ease-in-out z-[150] flex flex-col border-l border-smoke/10">
-        <div class="p-8 border-b border-smoke/10 bg-offWhite flex justify-between items-center">
+    <div id="historyOverlay" class="fixed inset-0 bg-brand-900/30 backdrop-blur-sm z-[140] hidden opacity-0 transition-opacity duration-300" onclick="toggleHistoryPanel()"></div>
+    <div id="historyPanel" class="fixed right-0 top-0 h-full w-full max-w-md bg-white transform translate-x-full transition-transform duration-500 ease-in-out z-[150] flex flex-col border-l border-brand-100 shadow-2xl">
+        <div class="p-8 border-b border-brand-100 bg-brand-50/50 flex justify-between items-center">
             <div>
-                <h3 class="text-2xl font-poppins font-black text-starkBlack">Visit History</h3>
-                <p class="text-xs font-inter text-smoke mt-1">Help us keep the inventory accurate.</p>
+                <h3 class="text-2xl font-serif text-brand-800">Visit History</h3>
+                <p class="text-xs font-inter text-gray-500 mt-1">Help maintain our network accuracy.</p>
             </div>
-            <button onclick="toggleHistoryPanel()" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-smoke hover:text-error hover:rotate-90 transition-all duration-300">
-                <i class="fa-solid fa-times text-lg"></i>
+            <button onclick="toggleHistoryPanel()" class="w-10 h-10 rounded-full bg-white border border-brand-200 flex items-center justify-center text-gray-400 hover:text-error hover:border-error transition-all hover:rotate-90 shadow-sm">
+                <i class="fa-solid fa-times"></i>
             </button>
         </div>
-        <div id="historyList" class="flex-grow overflow-y-auto p-6 space-y-4 bg-surface">
+        <div id="historyList" class="flex-grow overflow-y-auto p-6 space-y-5 bg-white">
             <!-- Dynamic History Cards Inserted Here -->
         </div>
     </div>
 
     <!-- Main Content Area -->
-    <main class="flex-grow pt-24 flex flex-col relative z-10">
+    <main class="flex-grow pt-24 flex flex-col relative z-10 overflow-hidden">
 
-        <!-- ================= HERO & SEARCH SECTION (Fix 3: Pinaliit yung taas papuntang min-h-[50vh]) ================= -->
-        <section id="heroSection" class="relative min-h-[50vh] flex flex-col justify-center items-center pt-10 pb-10 overflow-hidden transition-all duration-[800ms] ease-in-out">
-            <!-- Background Elements -->
-            <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
-            
-            <!-- Top Left Violet Gradient -->
-            <div class="absolute top-[-10%] left-[-15%] w-[70vw] max-w-[800px] h-[70vw] max-h-[800px] bg-deepPurple rounded-full blur-[150px] z-[-2] opacity-50 pointer-events-none"></div>
-            
-            <!-- The massive gold curve -->
-            <svg id="heroCurve" class="absolute bottom-0 left-0 w-full min-h-[40vh] md:min-h-[55vh] z-[-1] drop-shadow-2xl transition-all duration-[800ms] ease-in-out" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                <path d="M0 400C300 400 450 150 800 250C1150 350 1300 50 1440 0V600H0V400Z" fill="#FF9800"/>
-            </svg>
+        <!-- ================= HERO & SEARCH SECTION ================= -->
+        <section id="heroSection" class="relative min-h-[90vh] flex flex-col justify-center items-center pt-20 pb-24 transition-all duration-[800ms] ease-in-out w-full">
 
-            <!-- ================= MOVED 3D CAPSULES TO CENTER (To prevent hitting store) ================= -->
-            <div class="capsule-3d capsule-orange top-[20%] left-[25%] hidden md:block" style="--base-rot: 35deg; animation-delay: 0s;"></div>
-            <div class="capsule-3d capsule-purple top-[30%] right-[30%] hidden lg:block" style="--base-rot: -25deg; animation-delay: 1.5s; transform: scale(1.2);"></div>
-            <div class="capsule-3d capsule-purple bottom-[40%] left-[35%] hidden md:block" style="--base-rot: 60deg; animation-delay: 3s; transform: scale(0.8);"></div>
-            <div class="capsule-3d capsule-orange top-[15%] right-[40%] hidden xl:block" style="--base-rot: -50deg; animation-delay: 2s; transform: scale(0.9); opacity: 0.6;"></div>
-
-            <!-- ================= REAL PHARMACY STORE VECTOR ILLUSTRATIONS ================= -->
-            <!-- Left Store -->
-            <div class="absolute bottom-[10%] left-[-2%] lg:left-[5%] opacity-[0.25] pointer-events-none z-[-1] transform -rotate-3 transition-opacity duration-500">
-                <svg width="250" height="250" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Ground shadow -->
-                    <ellipse cx="200" cy="350" rx="160" ry="20" fill="#09090b" opacity="0.15"/>
-                    <!-- Main Building Body -->
-                    <rect x="80" y="100" width="240" height="250" fill="#FFFFFF" rx="8" stroke="#E4E4E7" stroke-width="4"/>
-                    <!-- Store Awning -->
-                    <path d="M 60 140 L 340 140 L 320 100 L 80 100 Z" fill="#4A148C"/>
-                    <path d="M 60 140 L 340 140 L 340 150 L 60 150 Z" fill="#311B92"/>
-                    <!-- Main Signboard -->
-                    <rect x="150" y="30" width="100" height="80" fill="#FFFFFF" rx="10" stroke="#4A148C" stroke-width="8"/>
-                    <!-- Medical Cross inside Signboard -->
-                    <rect x="185" y="45" width="30" height="50" fill="#FF9800" rx="4"/>
-                    <rect x="175" y="55" width="50" height="30" fill="#FF9800" rx="4"/>
-                    <!-- Glass Front / Windows / Doors -->
-                    <rect x="100" y="170" width="80" height="180" fill="#E0F2FE" rx="4" stroke="#D4D4D8" stroke-width="2"/>
-                    <rect x="220" y="170" width="80" height="180" fill="#E0F2FE" rx="4" stroke="#D4D4D8" stroke-width="2"/>
-                    <!-- Light Reflection on Glass -->
-                    <path d="M 100 190 L 180 170 L 180 200 L 100 220 Z" fill="#FFFFFF" opacity="0.6"/>
-                    <path d="M 220 190 L 300 170 L 300 200 L 220 220 Z" fill="#FFFFFF" opacity="0.6"/>
-                    <!-- Door Handles -->
-                    <rect x="165" y="250" width="6" height="30" fill="#4A148C" rx="3"/>
-                    <rect x="229" y="250" width="6" height="30" fill="#4A148C" rx="3"/>
-                    <!-- Decorative Plant outside store -->
-                    <circle cx="70" cy="320" r="25" fill="#10B981"/>
-                    <circle cx="90" cy="330" r="20" fill="#059669"/>
-                    <rect x="65" y="340" width="30" height="25" fill="#B45309" rx="2"/>
-                </svg>
-            </div>
-            
-            <!-- Right Store -->
-            <div class="absolute top-[15%] right-[-5%] lg:right-[2%] opacity-[0.25] pointer-events-none z-[-1] transform scale-x-[-1] rotate-3 transition-opacity duration-500">
-                <svg width="250" height="250" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Ground shadow -->
-                    <ellipse cx="200" cy="350" rx="160" ry="20" fill="#09090b" opacity="0.15"/>
-                    <!-- Main Building Body -->
-                    <rect x="80" y="100" width="240" height="250" fill="#FFFFFF" rx="8" stroke="#E4E4E7" stroke-width="4"/>
-                    <!-- Store Awning -->
-                    <path d="M 60 140 L 340 140 L 320 100 L 80 100 Z" fill="#4A148C"/>
-                    <path d="M 60 140 L 340 140 L 340 150 L 60 150 Z" fill="#311B92"/>
-                    <!-- Main Signboard -->
-                    <rect x="150" y="30" width="100" height="80" fill="#FFFFFF" rx="10" stroke="#4A148C" stroke-width="8"/>
-                    <!-- Medical Cross inside Signboard -->
-                    <rect x="185" y="45" width="30" height="50" fill="#FF9800" rx="4"/>
-                    <rect x="175" y="55" width="50" height="30" fill="#FF9800" rx="4"/>
-                    <!-- Glass Front / Windows / Doors -->
-                    <rect x="100" y="170" width="80" height="180" fill="#E0F2FE" rx="4" stroke="#D4D4D8" stroke-width="2"/>
-                    <rect x="220" y="170" width="80" height="180" fill="#E0F2FE" rx="4" stroke="#D4D4D8" stroke-width="2"/>
-                    <!-- Light Reflection on Glass -->
-                    <path d="M 100 190 L 180 170 L 180 200 L 100 220 Z" fill="#FFFFFF" opacity="0.6"/>
-                    <path d="M 220 190 L 300 170 L 300 200 L 220 220 Z" fill="#FFFFFF" opacity="0.6"/>
-                    <!-- Door Handles -->
-                    <rect x="165" y="250" width="6" height="30" fill="#4A148C" rx="3"/>
-                    <rect x="229" y="250" width="6" height="30" fill="#4A148C" rx="3"/>
-                    <!-- Decorative Plant outside store -->
-                    <circle cx="70" cy="320" r="25" fill="#10B981"/>
-                    <circle cx="90" cy="330" r="20" fill="#059669"/>
-                    <rect x="65" y="340" width="30" height="25" fill="#B45309" rx="2"/>
-                </svg>
-            </div>
-
-            <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center">
+            <div class="w-full max-w-[1200px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center">
                 
-                <!-- System Heading -->
-                <div class="text-center w-full max-w-[1400px] mx-auto flex flex-col items-center mb-8 group cursor-default relative mt-4 md:mt-8">
-                    <!-- Fix 4: Pinalitan ang z-index ng badge at linagyan ng pointer-events-none para di na humarang -->
-                    <div class="absolute -top-12 md:-top-16 right-2 md:-right-6 lg:-right-16 w-32 h-32 md:w-40 md:h-40 flex items-center justify-center opacity-95 pointer-events-none -z-10">
-                        <svg class="rotating-badge w-full h-full text-deepPurple" viewBox="0 0 100 100" style="filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.15));">
-                            <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" fill="transparent" />
-                            <text class="font-poppins font-black text-[8.5px] uppercase" fill="currentColor">
-                                <textPath href="#circlePath" startOffset="0%" textLength="238" lengthAdjust="spacing">
-                                    • VERIFIED PHARMACY &amp; MEDICINE LOCATOR
-                                </textPath>
-                            </text>
-                        </svg>
-                        <!-- Raw Capsule Icon sa gitna -->
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <i class="fa-solid fa-capsules text-vibrantOrange text-2xl md:text-3xl drop-shadow-md"></i>
-                        </div>
-                    </div>
-
-                    <h1 class="flex flex-col items-center transition-transform duration-500 group-hover:scale-[1.02] relative z-10">
-                        <span class="font-poppins font-black text-starkBlack text-lg sm:text-xl md:text-2xl lg:text-[1.5rem] leading-none mb-2 md:mb-3 relative z-20 uppercase tracking-widest" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.15);">Your Trusted</span>
-                        <span class="font-serif font-bold text-starkBlack text-[1.5rem] sm:text-3xl md:text-4xl lg:text-[3.5rem] xl:text-[4.2rem] leading-[1.05] tracking-tighter whitespace-nowrap relative z-10" style="text-shadow: 4px 8px 15px rgba(0,0,0,0.15);">Pharmacy and Medicine Locator.</span>
+                <!-- Elegant System Heading -->
+                <div class="text-center w-full flex flex-col items-center mb-16" id="heroTextContainer">
+                    <span class="bg-white/90 backdrop-blur-sm text-brand-700 px-6 py-2.5 rounded-full font-sans-head font-bold text-[11px] uppercase tracking-[0.25em] mb-8 border border-brand-200 shadow-sm inline-flex items-center gap-3">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        Premium Medical Network
+                    </span>
+                    <h1 class="font-serif text-charcoal text-[2.8rem] sm:text-5xl md:text-6xl lg:text-[4.8rem] leading-[1.15] mb-6 drop-shadow-sm">
+                        Locate Essential Medicines <br class="hidden md:block"/> 
+                        <span class="text-brand-800 relative">
+                            With Precision.
+                        </span>
                     </h1>
-                    <p class="text-lg md:text-xl text-smoke font-inter font-medium max-w-2xl mt-6 transition-transform duration-500 group-hover:translate-y-2 relative z-10">
-                        Locate essential medicines instantly. Professional network of verified pharmacies. 
-                        <span class="font-black text-starkBlack block mt-5 md:mt-7 drop-shadow-md text-xl md:text-2xl">Account required to search.</span>
+                    <p class="text-base md:text-lg text-charcoal/80 font-inter font-light max-w-2xl leading-relaxed bg-white/40 backdrop-blur-sm p-4 rounded-xl">
+                        Discover verified pharmacies and available medicines in real-time. Authentication is required to maintain the integrity of our professional network.
                     </p>
                 </div>
 
-                <!-- Critical Search Layout -->
-                <form onsubmit="handleSearch(event)" class="w-full max-w-[1150px] flex flex-col items-center mt-6">
-                    <div class="glass-pill rounded-[2.5rem] p-5 md:p-7 flex flex-col lg:flex-row items-end gap-5 md:gap-4 w-full relative z-40 shadow-3d-pill">
-                        
-                        <div class="flex-grow w-full lg:w-auto relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Medicine Name</label>
-                            <div class="relative rounded-full">
-                                <i class="fa-solid fa-pills absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
-                                <input type="text" id="searchMedicine" placeholder="e.g. Paracetamol" required 
-                                    class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
+                <!-- Professional Standalone Search Inputs (NO Wrapper Container) -->
+                <form onsubmit="handleSearch(event)" class="w-full flex flex-col lg:flex-row items-end gap-5 justify-center relative z-20">
+                    
+                    <!-- Generic Name Input -->
+                    <div class="w-full lg:w-[35%] relative text-left">
+                        <label class="block font-sans-head font-bold text-brand-900 text-[11px] uppercase tracking-[0.15em] mb-2 pl-4 drop-shadow-sm">Generic Name / Medicine <span class="text-error">*</span></label>
+                        <div class="relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400">
+                            <div class="absolute left-6 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                <i class="fa-solid fa-capsules text-brand-500 text-lg"></i>
                             </div>
-                        </div>
-
-                        <div class="w-full lg:w-52 xl:w-60 relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Milligrams (mg)</label>
-                            <div class="relative rounded-full">
-                                <i class="fa-solid fa-weight-scale absolute left-5 top-1/2 transform -translate-y-1/2 text-smoke transition-colors peer-focus:text-deepPurple z-10"></i>
-                                <input type="number" id="searchMg" placeholder="e.g. 500" required 
-                                    class="peer w-full pl-12 pr-4 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface focus:bg-white focus:border-deepPurple transition-all text-starkBlack font-bold placeholder-smoke/60 outline-none cursor-text shadow-3d-input focus:shadow-3d-input-focus">
-                            </div>
-                        </div>
-
-                        <div class="w-full lg:w-[24rem] xl:w-[28rem] relative text-left transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-2 focus-within:z-50" id="customDropdownContainer">
-                            <label class="block font-poppins font-black text-starkBlack text-[10px] md:text-[11px] uppercase tracking-[0.15em] mb-3 pl-4 transition-colors group-focus-within:text-deepPurple" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Barangay</label>
-                            <div class="relative rounded-full">
-                                <input type="hidden" id="searchBarangayInput" required>
-                                
-                                <div id="dropdownTrigger" class="w-full pl-12 pr-6 py-4 md:py-5 rounded-full border-2 border-transparent bg-surface transition-all text-starkBlack font-bold cursor-pointer outline-none shadow-3d-input flex justify-between items-center hover:border-starkBlack/10 focus:shadow-3d-input-focus">
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-map-location-dot absolute left-5 text-smoke transition-colors"></i>
-                                        <span id="dropdownSelectedText" class="text-smoke/60">Select Barangay...</span>
-                                    </div>
-                                    <i class="fa-solid fa-chevron-down text-starkBlack transition-transform duration-300" id="dropdownIcon"></i>
-                                </div>
-                                
-                                <ul id="dropdownMenu" class="absolute top-full left-0 mt-2 w-full bg-white border border-smoke/10 rounded-2xl shadow-premium max-h-64 overflow-y-auto hidden z-[100] opacity-0 transition-opacity duration-200">
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bangkal">Bangkal</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Baraka">Baraka</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bigte">Bigte</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Bitungol">Bitungol</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Friendship Village Resources">Friendship Village Resources</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Matictic">Matictic</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Minuyan">Minuyan</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Partida">Partida</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Pinagtulayan">Pinagtulayan</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="Poblacion">Poblacion</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Lorenzo">San Lorenzo</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack border-b border-smoke/5 dropdown-item transition-colors" data-value="San Mateo">San Mateo</li>
-                                    <li class="px-6 py-4 hover:bg-offWhite cursor-pointer font-bold text-starkBlack dropdown-item transition-colors" data-value="Tigbe">Tigbe</li>
-                                </ul>
-                            </div>
+                            <input type="text" id="searchMedicine" placeholder="e.g. Paracetamol" required 
+                                class="w-full pl-14 pr-6 py-4.5 bg-transparent font-inter text-base text-charcoal placeholder-gray-400 focus:outline-none h-[65px] rounded-full">
                         </div>
                     </div>
 
-                    <div class="mt-10 flex justify-center w-full relative z-10">
-                        <button type="submit" id="btnSearch" 
-                            class="group/btn bg-starkBlack text-surface font-poppins font-black text-base md:text-lg px-12 py-5 rounded-[2rem] shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active uppercase tracking-widest flex items-center justify-center gap-4 w-full sm:w-auto min-w-[250px] transition-all duration-300">
-                            <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">FIND YOUR MEDS</span>
-                            <i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-2"></i>
+                    <!-- Dosage Input (Optional) strictly mg, g, ml -->
+                    <div class="w-full lg:w-[25%] relative text-left">
+                        <label class="block font-sans-head font-bold text-brand-900 text-[11px] uppercase tracking-[0.15em] mb-2 pl-4 drop-shadow-sm">Dosage (Optional)</label>
+                        <div class="flex relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400 overflow-hidden h-[65px]">
+                            <div class="absolute left-6 top-1/2 transform -translate-y-1/2 pointer-events-none z-10">
+                                <i class="fa-solid fa-weight-scale text-brand-500 text-lg"></i>
+                            </div>
+                            <input type="number" id="searchDosageNum" placeholder="e.g. 500" 
+                                class="w-[60%] pl-14 pr-2 py-4 bg-transparent font-inter text-base text-charcoal placeholder-gray-400 focus:outline-none h-full">
+                            <select id="searchDosageUnit" class="w-[40%] px-4 py-4 bg-brand-50 text-brand-800 font-sans-head font-bold text-sm outline-none cursor-pointer border-l border-brand-100 hover:bg-brand-100 transition-colors h-full">
+                                <option value="mg">mg</option>
+                                <option value="g">g</option>
+                                <option value="ml">ml</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Barangay Dropdown -->
+                    <div class="w-full lg:w-[25%] relative text-left" id="customDropdownContainer">
+                        <label class="block font-sans-head font-bold text-brand-900 text-[11px] uppercase tracking-[0.15em] mb-2 pl-4 drop-shadow-sm">Select Location <span class="text-error">*</span></label>
+                        <div class="relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400 h-[65px]">
+                            <input type="hidden" id="searchBarangayInput" required>
+                            
+                            <div id="dropdownTrigger" class="w-full pl-14 pr-6 py-4 bg-transparent flex justify-between items-center cursor-pointer h-full rounded-full">
+                                <div class="absolute left-6 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    <i class="fa-solid fa-map-location-dot text-brand-500 text-lg"></i>
+                                </div>
+                                <span id="dropdownSelectedText" class="font-inter text-base text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis">Select Barangay...</span>
+                                <i class="fa-solid fa-chevron-down text-brand-800 text-sm transition-transform duration-300" id="dropdownIcon"></i>
+                            </div>
+                            
+                            <!-- Dropdown Menu -->
+                            <ul id="dropdownMenu" class="absolute top-[115%] left-0 w-full bg-white border border-brand-100 rounded-3xl shadow-luxury max-h-64 overflow-y-auto hidden z-[100] opacity-0 transition-all duration-300 py-3">
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Bangkal">Bangkal</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Baraka">Baraka</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Bigte">Bigte</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Bitungol">Bitungol</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Friendship Village Resources">Friendship Village Resources</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Matictic">Matictic</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Minuyan">Minuyan</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Partida">Partida</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Pinagtulayan">Pinagtulayan</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Poblacion">Poblacion</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="San Lorenzo">San Lorenzo</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="San Mateo">San Mateo</li>
+                                <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal dropdown-item transition-all duration-200" data-value="Tigbe">Tigbe</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Search Button -->
+                    <div class="w-full lg:w-[15%] pt-4 lg:pt-0">
+                        <button type="submit" id="btnSearch" class="w-full bg-brand-800 text-white font-sans-head font-bold text-sm px-6 py-4 h-[65px] rounded-full shadow-luxury hover:bg-brand-700 hover:shadow-luxury-hover hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
+                            <span class="tracking-[0.1em] uppercase">Search</span>
+                            <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
                     </div>
                 </form>
@@ -399,235 +329,287 @@
             </div>
         </section>
 
-        <!-- ================= HOW IT WORKS SECTION (Fix 2: May id="howItWorksSection" na ito para ma-hide sa JS) ================= -->
-        <section id="howItWorksSection" class="py-24 bg-surface relative z-10 border-t border-smoke/10 transition-all duration-[800ms] overflow-hidden opacity-100 max-h-[2000px]">
+        <!-- ================= SEARCH RESULTS DISPLAY ================= -->
+        <!-- Will slide up when hero shrinks -->
+        <section id="searchResults" class="hidden bg-white pb-24 pt-12 relative z-20 min-h-[55vh] border-t border-brand-100">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
-                <div class="text-center mb-20 group">
-                    <h2 class="text-sm font-poppins font-bold uppercase tracking-[0.3em] text-vibrantOrange mb-3 transition-transform group-hover:-translate-y-1" style="text-shadow: 1px 1px 2px rgba(255,152,0,0.2);">User Journey</h2>
-                    <h3 class="text-4xl md:text-5xl font-poppins font-black text-starkBlack transition-transform group-hover:scale-105" style="text-shadow: 2px 4px 8px rgba(0,0,0,0.1);">How It Works</h3>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 pb-6 gap-4 border-b border-gray-100">
+                    <div>
+                        <h2 class="text-4xl font-serif text-brand-800">Search Results</h2>
+                        <p class="text-gray-500 font-inter font-light text-base mt-2" id="searchQueryText">Showing verified pharmacies.</p>
+                    </div>
+                    <div class="bg-brand-50 border border-brand-200 text-brand-800 px-5 py-3 rounded-full text-[11px] font-sans-head font-bold uppercase tracking-[0.2em] flex items-center gap-3 shadow-inner-soft">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-600"></span>
+                        </span>
+                        LIVE INVENTORY
+                    </div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- Step 1 -->
-                    <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
-                        <div class="w-16 h-16 bg-deepPurple text-surface rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
-                            <i class="fa-solid fa-lock"></i>
-                        </div>
-                        <h4 class="font-poppins font-black text-xl text-starkBlack mb-4">Account Required</h4>
-                        <p class="text-smoke font-inter leading-relaxed">Our professional locator network is secure. You must be authenticated to access real-time inventory.</p>
-                        <div class="absolute -right-4 top-1/2 transform -translate-y-1/2 text-smoke/20 text-4xl hidden lg:block">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </div>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div class="bg-starkBlack p-10 rounded-[2rem] shadow-[0_15px_35px_-5px_rgba(0,0,0,0.5),_inset_0_2px_4px_rgba(255,255,255,0.1)] float-card relative z-20 cursor-pointer">
-                        <div class="w-16 h-16 bg-vibrantOrange text-starkBlack rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </div>
-                        <h4 class="font-poppins font-black text-xl text-surface mb-4">Create an Account</h4>
-                        <p class="text-offWhite/70 font-inter leading-relaxed">Complete our quick registration and verify your email to unlock access to our partner pharmacies.</p>
-                        <div class="absolute -right-4 top-1/2 transform -translate-y-1/2 text-smoke/20 text-4xl hidden lg:block">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </div>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
-                        <div class="w-16 h-16 bg-deepPurple text-surface rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
-                            <i class="fa-solid fa-magnifying-glass-location"></i>
-                        </div>
-                        <h4 class="font-poppins font-black text-xl text-starkBlack mb-4">Search Inventory</h4>
-                        <p class="text-smoke font-inter leading-relaxed">Input your medicine, exact milligrams, and targeted barangay to instantly view availability and prices.</p>
-                        <div class="absolute -right-4 top-1/2 transform -translate-y-1/2 text-smoke/20 text-4xl hidden lg:block">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </div>
-                    </div>
-
-                    <!-- Step 4 -->
-                    <div class="bg-offWhite p-10 rounded-[2rem] shadow-3d-card float-card relative z-10 cursor-pointer">
-                        <div class="w-16 h-16 bg-vibrantOrange text-starkBlack rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-3d-btn">
-                            <i class="fa-solid fa-map-location-dot"></i>
-                        </div>
-                        <h4 class="font-poppins font-black text-xl text-starkBlack mb-4">Navigate Map</h4>
-                        <p class="text-smoke font-inter leading-relaxed">Select a verified pharmacy from the results and launch our integrated maps for real-time driving directions.</p>
-                    </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="resultsGrid">
+                    <!-- Results populated via JS -->
                 </div>
             </div>
         </section>
 
-        <!-- ================= SEARCH RESULTS DISPLAY ================= -->
-        <section id="searchResults" class="hidden bg-offWhite py-20 relative z-20 border-t border-smoke/10 min-h-[50vh]">
-            <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 border-b border-smoke/20 pb-6 gap-4">
-                    <div>
-                        <h2 class="text-4xl font-poppins font-black text-starkBlack" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Available Pharmacies</h2>
-                        <p class="text-smoke font-inter font-medium mt-3 text-lg" id="searchQueryText">Showing results for your search.</p>
-                    </div>
-                    <div class="text-xs font-bold text-surface uppercase tracking-[0.2em] flex items-center gap-2 bg-deepPurple px-5 py-3 rounded-full shadow-3d-btn cursor-default hover:-translate-y-1 transition-transform duration-300">
-                        <i class="fa-solid fa-circle text-[8px] text-vibrantOrange animate-pulse"></i> LIVE INVENTORY
-                    </div>
+        <!-- ================= HOW IT WORKS SECTION ================= -->
+        <section id="howItWorksSection" class="py-24 relative z-10 bg-white">
+            <div class="max-w-[1200px] mx-auto px-6 lg:px-12">
+                <div class="text-center mb-20">
+                    <h3 class="text-5xl text-brand-800 font-serif">How It Works</h3>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10" id="resultsGrid">
-                    <!-- Results populated via JS -->
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+                    
+                    <!-- Step 1 -->
+                    <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
+                        <div class="icon-container w-20 h-20 bg-white text-mocha rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(176,141,106,0.4)]">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <h4 class="font-sans-head font-bold text-[15px] uppercase tracking-[0.15em] text-white mb-4">Auth Required</h4>
+                        <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Our network is secure. You must be authenticated to view real-time data.</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
+                        <div class="icon-container w-20 h-20 bg-white text-mocha rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(176,141,106,0.4)]">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <h4 class="font-sans-head font-bold text-[15px] uppercase tracking-[0.15em] text-white mb-4">Create Profile</h4>
+                        <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Complete registration and verify your email to unlock platform access.</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
+                        <div class="icon-container w-20 h-20 bg-white text-mocha rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(176,141,106,0.4)]">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <h4 class="font-sans-head font-bold text-[15px] uppercase tracking-[0.15em] text-white mb-4">Search Items</h4>
+                        <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Input generic name (optional dosage) and location to view availability.</p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
+                        <div class="icon-container w-20 h-20 bg-white text-mocha rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(176,141,106,0.4)]">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <h4 class="font-sans-head font-bold text-[15px] uppercase tracking-[0.15em] text-white mb-4">Navigate Map</h4>
+                        <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Select a pharmacy to launch integrated maps for real-time routing.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- ================= PREMIUM AUTHENTICATION MODAL ================= -->
-    <div id="authModal" class="fixed inset-0 bg-starkBlack/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500 overflow-y-auto">
-        <div class="bg-surface p-8 md:p-10 rounded-[2rem] shadow-3d-modal w-full max-w-[450px] relative my-8 transition-transform duration-300 scale-95 border border-white/20" id="authModalContent">
-            <button onclick="closeAuthModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full flex items-center justify-center text-smoke hover:bg-gray-100 hover:text-starkBlack transition-all hover:rotate-90 hover:scale-110 active:scale-95 z-20">
-                <i class="fa-solid fa-times text-lg"></i>
+    <!-- ================= LUXURY AUTHENTICATION MODAL ================= -->
+    <div id="authModal" class="fixed inset-0 bg-charcoal/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-400 overflow-y-auto">
+        <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-[460px] relative my-8 transition-all duration-400 scale-95 border-t-4 border-brand-800" id="authModalContent">
+            
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-50 hover:text-brand-800 transition-colors z-20">
+                <i class="fa-solid fa-times"></i>
             </button>
 
-            <!-- Login Form -->
+            <!-- Sign In Form -->
             <div id="loginFormWrapper" class="block">
-                <div class="mb-10 text-left">
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Sign In.</h3>
-                    <p class="text-smoke font-inter text-sm font-medium">Welcome back to the portal.</p>
+                <div class="mb-10 text-center">
+                    <h3 class="text-4xl font-serif text-brand-800 mb-3">Sign In</h3>
+                    <p class="text-gray-500 font-inter text-sm">Access your verified profile.</p>
                 </div>
                 <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-6">
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-1">Email Address</label>
                         <input type="email" id="loginEmail" autocomplete="email" required placeholder="name@example.com" 
-                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none cursor-text shadow-3d-input">
+                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Password</label>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-1">Password</label>
                         <div class="relative">
                             <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="••••••••" 
-                                class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest pr-12 text-sm outline-none cursor-text shadow-3d-input">
-                            <button type="button" onclick="togglePassword('loginPassword', 'eyeLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-deepPurple hover:scale-110 transition-all focus:outline-none">
+                                class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter pr-12 text-sm outline-none tracking-widest">
+                            <button type="button" onclick="togglePassword('loginPassword', 'eyeLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-brand-400 hover:text-brand-700 transition-colors focus:outline-none">
                                 <i class="fa-solid fa-eye text-lg" id="eyeLogin"></i>
                             </button>
                         </div>
-                        <div class="flex justify-end mt-3">
-                            <button type="button" onclick="switchAuthView('forgot')" class="text-[10px] font-poppins font-black text-smoke hover:text-deepPurple uppercase tracking-widest transition-all hover:translate-x-1">Forgot Password?</button>
+                        <!-- Forgot Password properly placed on the RIGHT -->
+                        <div class="flex justify-end mt-3 pr-1">
+                            <button type="button" onclick="switchAuthView('forgot')" class="text-[10px] font-sans-head font-bold text-brand-600 hover:text-brand-800 uppercase tracking-widest transition-colors">Forgot Password?</button>
                         </div>
                     </div>
                     <div class="pt-4">
-                        <button type="submit" id="btnLoginSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
-                            Continue
+                        <button type="submit" id="btnLoginSubmit" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-sm transition-colors shadow-luxury">
+                            Sign In
                         </button>
                     </div>
                 </form>
-                <div class="mt-8 text-center text-xs font-inter text-smoke font-medium">
-                    Don't have an account? <button type="button" onclick="switchAuthView('signup1')" class="font-poppins font-bold text-starkBlack hover:text-vibrantOrange transition-colors uppercase tracking-widest ml-1 hover:underline">Sign Up</button>
+                <div class="mt-8 text-center text-sm font-inter text-gray-500">
+                    Not registered yet? <button type="button" onclick="switchAuthView('signup1')" class="font-sans-head font-bold text-brand-700 hover:text-brand-500 transition-colors border-b border-brand-700 hover:border-brand-500 pb-0.5 ml-1">Sign Up</button>
                 </div>
             </div>
 
-            <!-- Signup Step 1 -->
+            <!-- Sign Up Step 1 -->
             <div id="signup1FormWrapper" class="hidden">
-                <div class="mb-10 text-left">
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Sign Up.</h3>
-                    <p class="text-smoke font-inter text-sm font-medium">Create your client profile.</p>
+                <div class="mb-8 text-center">
+                    <h3 class="text-4xl font-serif text-brand-800 mb-3">Sign Up</h3>
+                    <p class="text-gray-500 font-inter text-sm">Create your verified profile.</p>
                 </div>
-                <form id="signup1Form" onsubmit="handleSignupStep1(event)" class="space-y-6">
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">First Name</label>
+                <form id="signup1Form" onsubmit="handleSignupStep1(event)">
+                    <!-- First Name (Full Width) -->
+                    <div class="mb-4">
+                        <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-1.5 pl-1">First Name</label>
                         <input type="text" id="regFname" required placeholder="John" 
-                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Last Name</label>
+                    <!-- Last Name (Full Width, below First Name) -->
+                    <div class="mb-4">
+                        <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-1.5 pl-1">Last Name</label>
                         <input type="text" id="regLname" required placeholder="Doe" 
-                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-1.5 pl-1">Email Address</label>
                         <input type="email" id="regEmail" autocomplete="email" required placeholder="name@example.com" 
-                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Password</label>
+                    <!-- Password (No Confirm Password) -->
+                    <div class="mb-8">
+                        <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-1.5 pl-1">Password <span class="text-gray-400 font-normal normal-case tracking-normal ml-1">(8+ chars, upper, lower, special)</span></label>
                         <div class="relative">
                             <input type="password" id="regPassword" autocomplete="new-password" required placeholder="••••••••" 
-                                class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest text-sm pr-12 outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
-                            <button type="button" onclick="togglePassword('regPassword', 'eyeReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-deepPurple hover:scale-110 transition-all focus:outline-none">
+                                class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm pr-12 outline-none tracking-widest">
+                            <button type="button" onclick="togglePassword('regPassword', 'eyeReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-brand-300 hover:text-brand-700 transition-colors focus:outline-none">
                                 <i class="fa-solid fa-eye text-lg" id="eyeReg"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="pt-4">
-                        <button type="submit" id="btnSignup1Submit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
+                    
+                    <div class="pt-2">
+                        <button type="submit" id="btnSignup1Submit" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-sm shadow-luxury transition-all hover:shadow-luxury-hover hover:-translate-y-0.5">
                             Continue
                         </button>
                     </div>
                 </form>
-                <div class="mt-8 text-center text-xs font-inter text-smoke font-medium">
-                    Already have an account? <button type="button" onclick="switchAuthView('login')" class="font-poppins font-bold text-starkBlack hover:text-vibrantOrange transition-colors uppercase tracking-widest ml-1 hover:underline">Sign In</button>
+                <div class="mt-8 text-center text-sm font-inter text-gray-500">
+                    Already registered? <button type="button" onclick="switchAuthView('login')" class="font-sans-head font-bold text-brand-700 hover:text-brand-500 transition-colors border-b border-brand-700 hover:border-brand-500 pb-0.5 ml-1">Sign In</button>
                 </div>
             </div>
 
             <!-- Signup Step 2 -->
             <div id="signup2FormWrapper" class="hidden">
                 <div class="mb-10 text-center">
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Verify Email.</h3>
-                    <p class="text-smoke font-inter text-sm leading-relaxed max-w-[250px] mx-auto">We sent a 6-digit code to your email. Enter it below to secure your account.</p>
+                    <div class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center text-brand-700 mx-auto mb-5 border border-brand-100 shadow-inner-soft">
+                        <i class="fa-solid fa-envelope-open-text text-2xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-serif text-brand-800 mb-3">Verify Email</h3>
+                    <p class="text-gray-500 font-inter text-sm leading-relaxed px-4">We sent a 6-digit secure code to your email. Enter it to confirm.</p>
                 </div>
                 <form id="signup2Form" onsubmit="handleSignupStep2(event)" class="space-y-8">
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-3 text-center transition-colors focus-within:text-vibrantOrange">6-Digit Access Code</label>
+                    <div>
                         <input type="text" id="regCode" required maxlength="6" placeholder="XXXXXX" 
-                            class="w-full px-5 py-6 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-black text-3xl tracking-[0.4em] text-center uppercase outline-none cursor-text shadow-3d-input">
+                            class="w-full px-5 py-6 bg-white border border-gray-300 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-brand-900 font-sans-head font-bold text-4xl tracking-[0.4em] text-center uppercase outline-none">
                     </div>
-                    <button type="submit" id="btnSignup2Submit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
-                        Verify & Create
+                    <button type="submit" id="btnSignup2Submit" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-sm shadow-luxury transition-all hover:shadow-luxury-hover hover:-translate-y-0.5">
+                        Verify & Complete Sign Up
                     </button>
                 </form>
-                <div class="mt-8 text-center text-[10px] font-poppins font-black text-smoke uppercase tracking-widest">
-                    <button type="button" id="resendCodeBtn" onclick="handleResendCode('signup')" class="hover:text-starkBlack transition-all hover:translate-x-1">Resend Code</button>
+                <div class="mt-8 text-center">
+                    <button type="button" id="resendCodeBtn" onclick="handleResendCode()" class="text-[11px] font-sans-head font-bold text-gray-400 hover:text-brand-800 uppercase tracking-widest transition-colors">Resend Code</button>
                 </div>
             </div>
 
             <!-- Forgot Password -->
             <div id="forgotFormWrapper" class="hidden">
-                <div class="mb-10 text-left">
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Reset.</h3>
-                    <p class="text-smoke font-inter text-sm">We'll email you instructions to reset your password.</p>
+                <div class="mb-10 text-center">
+                    <h3 class="text-3xl font-serif text-brand-800 mb-3">Reset Password</h3>
+                    <p class="text-gray-500 font-inter text-sm">We'll email instructions to restore access.</p>
                 </div>
                 <form id="forgotForm" onsubmit="handleForgotRequest(event)" class="space-y-6">
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Email Address</label>
                         <input type="email" id="forgotEmail" required placeholder="name@example.com" 
-                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none placeholder-smoke/50 cursor-text shadow-3d-input">
+                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                     <div class="pt-4">
-                        <button type="submit" id="btnForgotSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-4 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
+                        <button type="submit" id="btnForgotSubmit" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-sm shadow-luxury transition-all hover:shadow-luxury-hover hover:-translate-y-0.5">
                             Send Reset Link
                         </button>
                     </div>
                 </form>
-                <div class="mt-8 text-center text-xs font-inter text-smoke font-medium">
-                    Remember your password? <button type="button" onclick="switchAuthView('login')" class="font-poppins font-bold text-starkBlack hover:text-vibrantOrange transition-colors uppercase tracking-widest ml-1 hover:underline">Sign In</button>
+                <div class="mt-8 text-center text-sm font-inter text-gray-500">
+                    Remembered it? <button type="button" onclick="switchAuthView('login')" class="font-sans-head font-bold text-brand-700 hover:text-brand-500 transition-colors border-b border-brand-700 hover:border-brand-500 pb-0.5 ml-1">Sign In</button>
                 </div>
             </div>
 
         </div>
     </div>
 
+    <!-- ================= INFO MODAL ================= -->
+    <div id="infoModal" class="fixed inset-0 bg-charcoal/80 backdrop-blur-sm hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-400">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-[420px] relative transition-transform duration-400 scale-95 border border-brand-100" id="infoModalContent">
+            
+            <button onclick="closeInfoModal()" class="absolute top-6 right-6 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-50 hover:text-brand-800 transition-colors z-20">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            
+            <div class="text-center mb-8 pb-6 border-b border-gray-100 mt-2">
+                <span class="text-[11px] font-sans-head font-bold uppercase tracking-[0.25em] text-brand-500 block mb-2" id="infoBranch">Branch</span>
+                <h3 class="text-3xl font-serif text-brand-900 leading-tight" id="infoPharmName">Pharmacy Name</h3>
+            </div>
+            
+            <div class="space-y-6 px-2">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600 flex-shrink-0 mt-0.5">
+                        <i class="fa-solid fa-location-dot text-base"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-sans-head font-bold uppercase tracking-[0.2em] text-gray-400 mb-1">Full Address</p>
+                        <p class="text-sm font-inter text-charcoal leading-relaxed font-medium" id="infoAddress">Loading...</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600 flex-shrink-0 mt-0.5">
+                        <i class="fa-solid fa-phone text-base"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-sans-head font-bold uppercase tracking-[0.2em] text-gray-400 mb-1">Contact Number</p>
+                        <p class="text-base font-inter font-medium text-charcoal" id="infoContact">Loading...</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600 flex-shrink-0 mt-0.5">
+                        <i class="fa-solid fa-clock text-base"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-sans-head font-bold uppercase tracking-[0.2em] text-gray-400 mb-1">Store Hours</p>
+                        <p class="text-base font-inter text-charcoal font-medium" id="infoHours">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10">
+                <button onclick="closeInfoModal()" class="w-full bg-white border-2 border-brand-200 hover:border-brand-800 hover:bg-brand-800 hover:text-white text-brand-800 py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[11px] transition-all duration-300 shadow-sm">
+                    Close Details
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- ================= MAP & DIRECTIONS MODAL ================= -->
-    <div id="mapModal" class="fixed inset-0 bg-starkBlack/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-500">
-        <div class="bg-surface p-8 md:p-10 rounded-[2.5rem] shadow-3d-modal w-full max-w-6xl relative h-[75vh] md:h-[85vh] flex flex-col transition-transform duration-300 scale-95 border border-white/20" id="mapModalContent">
-            <button onclick="closeMapModal()" class="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-smoke hover:bg-gray-100 hover:text-starkBlack transition-all hover:rotate-90 z-20">
+    <div id="mapModal" class="fixed inset-0 bg-charcoal/90 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-400">
+        <div class="bg-white p-2 rounded-[2rem] shadow-2xl w-full max-w-6xl relative h-[85vh] flex flex-col transition-transform duration-400 scale-95 border border-brand-100" id="mapModalContent">
+            
+            <div class="absolute top-6 left-8 z-20 bg-white/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-luxury border border-brand-100 flex flex-col gap-1">
+                <h3 class="text-2xl font-serif text-brand-900 leading-tight">Route Navigation</h3>
+                <p class="text-brand-600 font-sans-head uppercase tracking-widest font-bold text-[11px]" id="mapDestText">Directions to Pharmacy</p>
+            </div>
+
+            <button onclick="closeMapModal()" class="absolute top-6 right-6 w-14 h-14 bg-white rounded-full flex items-center justify-center text-gray-500 hover:bg-error hover:text-white transition-all shadow-md hover:scale-105 z-20 border border-brand-100">
                 <i class="fa-solid fa-times text-xl"></i>
             </button>
             
-            <div class="mb-6 pr-16 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
-                <div>
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Route Navigation</h3>
-                    <p class="text-smoke font-inter font-medium mt-1 text-sm" id="mapDestText">Directions to Pharmacy</p>
-                </div>
-                <button id="startNavigationBtn" class="bg-starkBlack hover:bg-deepPurple text-surface px-8 py-4 rounded-[1.25rem] font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center gap-3 transition-all duration-300">
-                    <i class="fa-solid fa-location-arrow"></i> Start Live Routing
-                </button>
-            </div>
-            
-            <div class="flex-grow rounded-3xl overflow-hidden bg-offWhite shadow-[inset_0_2px_10px_rgba(0,0,0,0.1)] relative">
+            <div class="flex-grow rounded-[1.5rem] overflow-hidden bg-brand-50 relative w-full h-full">
                 <iframe id="googleMapFrame" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
@@ -638,25 +620,20 @@
 
     <!-- Core Logic -->
     <script>
-        // DYNAMIC API URL (Fixed to point to Railway so it always works)
         const API_URL = 'https://oath-of-care-production.up.railway.app';
         
-        // State
         let authState = JSON.parse(localStorage.getItem('ooc_client_user')) || { id: null, role: null, name: null };
         let tempSignupEmail = '';
         let resendTimer = null;
-        
-        // Visits History State
         let visitsHistory = JSON.parse(localStorage.getItem('ooc_client_visits')) || [];
 
-        // Init
         window.onload = () => {
             updateNavUI();
             setupCustomDropdown();
             renderHistoryPanel();
         };
 
-        // --- CUSTOM DROPDOWN LOGIC ---
+        // Custom Dropdown Logic
         function setupCustomDropdown() {
             const trigger = document.getElementById('dropdownTrigger');
             const menu = document.getElementById('dropdownMenu');
@@ -670,15 +647,16 @@
                     menu.classList.toggle('hidden');
                     setTimeout(() => menu.classList.toggle('opacity-0'), 10);
                     icon.classList.toggle('rotate-180');
-                    trigger.classList.toggle('border-deepPurple');
+                    trigger.parentElement.classList.toggle('border-brand-400');
+                    trigger.parentElement.classList.toggle('shadow-input-focus');
                 });
 
                 document.querySelectorAll('.dropdown-item').forEach(item => {
                     item.addEventListener('click', (e) => {
                         const value = e.target.getAttribute('data-value');
                         selectedText.innerText = value;
-                        selectedText.classList.remove('text-smoke/60');
-                        selectedText.classList.add('text-starkBlack');
+                        selectedText.classList.remove('text-gray-400');
+                        selectedText.classList.add('text-charcoal');
                         hiddenInput.value = value;
                     });
                 });
@@ -688,26 +666,20 @@
                         menu.classList.add('opacity-0');
                         setTimeout(() => menu.classList.add('hidden'), 200);
                         icon.classList.remove('rotate-180');
-                        trigger.classList.remove('border-deepPurple');
+                        trigger.parentElement.classList.remove('border-brand-400');
+                        trigger.parentElement.classList.remove('shadow-input-focus');
                     }
                 });
             }
         }
 
-        // UI Toast Notification
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             if (!container) return;
             
             const toast = document.createElement('div');
-            toast.className = 'toast';
-            if (type === 'error') {
-                toast.style.borderLeftColor = '#DC2626';
-            } else {
-                toast.style.borderLeftColor = '#FF9800';
-            }
-            
-            toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation text-error' : 'fa-circle-check text-vibrantOrange'} text-xl"></i> <span>${message}</span>`;
+            toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+            toast.innerHTML = `<span>${message}</span>`;
             
             container.appendChild(toast);
             void toast.offsetWidth;
@@ -715,26 +687,24 @@
             
             setTimeout(() => {
                 toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 500);
+                setTimeout(() => toast.remove(), 400);
             }, 3000);
         }
 
-        // Button Loading State
         function lockButton(btnId) {
             const btn = document.getElementById(btnId);
             if(!btn) return () => {};
             const originalHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin drop-shadow-md"></i> <span class="ml-2 drop-shadow-md">Loading...</span>';
-            btn.classList.add('opacity-80', 'cursor-not-allowed', 'scale-95');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="ml-2 font-inter text-sm">Processing...</span>';
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
             return () => {
                 btn.disabled = false;
                 btn.innerHTML = originalHTML;
-                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
             };
         }
 
-        // Nav Auth State UI
         function updateNavUI() {
             const loggedOutDiv = document.getElementById('navAuthLoggedOut');
             const loggedInDiv = document.getElementById('navAuthLoggedIn');
@@ -743,7 +713,7 @@
             if(authState.role === 'patient') {
                 loggedOutDiv.classList.add('hidden');
                 loggedInDiv.classList.remove('hidden');
-                if(nameDisplay) nameDisplay.innerText = `Hi, ${authState.name || 'User'}`;
+                if(nameDisplay) nameDisplay.innerText = `${authState.name || 'User'}`;
             } else {
                 loggedOutDiv.classList.remove('hidden');
                 loggedInDiv.classList.add('hidden');
@@ -754,38 +724,33 @@
             localStorage.removeItem('ooc_client_user');
             authState = { id: null, role: null, name: null };
             updateNavUI();
+            
             document.getElementById('searchResults').classList.add('hidden');
             document.getElementById('resultsGrid').innerHTML = '';
             document.getElementById('searchMedicine').value = '';
-            document.getElementById('searchMg').value = '';
-            
+            document.getElementById('searchDosageNum').value = '';
             document.getElementById('searchBarangayInput').value = '';
+            
             const selectedText = document.getElementById('dropdownSelectedText');
             if(selectedText) {
                 selectedText.innerText = 'Select Barangay...';
-                selectedText.classList.add('text-smoke/60');
-                selectedText.classList.remove('text-starkBlack');
+                selectedText.classList.add('text-gray-400');
+                selectedText.classList.remove('text-charcoal');
             }
 
-            // Restore the animations back to original pag na-logout
             const hero = document.getElementById('heroSection');
-            const howItWorks = document.getElementById('howItWorksSection');
-            const heroCurve = document.getElementById('heroCurve');
-            
             if (hero) {
-                hero.classList.add('min-h-[50vh]');
-                hero.classList.remove('min-h-[40vh]');
-            }
-            if (heroCurve) {
-                heroCurve.style.minHeight = '';
-                heroCurve.classList.add('min-h-[40vh]', 'md:min-h-[55vh]');
-            }
-            if (howItWorks) {
-                howItWorks.classList.remove('hidden');
-                howItWorks.style.display = 'block';
+                hero.classList.remove('min-h-[45vh]');
+                hero.classList.add('min-h-[90vh]');
+                
+                const heroTextContainer = document.getElementById('heroTextContainer');
+                if(heroTextContainer) {
+                    heroTextContainer.style.display = 'flex';
+                    heroTextContainer.style.opacity = '1';
+                }
             }
 
-            showToast('Signed out successfully.');
+            showToast('Signed out securely.');
         }
 
         function togglePassword(inputId, iconId) {
@@ -808,22 +773,14 @@
             const content = document.getElementById('authModalContent');
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-            
-            setTimeout(() => {
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
-            
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
             switchAuthView(view);
         }
 
         function closeAuthModal() {
             const modal = document.getElementById('authModal');
             const content = document.getElementById('authModalContent');
-            
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
             setTimeout(() => {
                 modal.classList.add('hidden');
                 document.body.style.overflow = 'auto';
@@ -831,7 +788,7 @@
                 document.getElementById('signup1Form').reset();
                 document.getElementById('signup2Form').reset();
                 document.getElementById('forgotForm').reset();
-            }, 300); 
+            }, 400); 
         }
 
         function switchAuthView(view) {
@@ -843,7 +800,31 @@
             if(targetEl) targetEl.classList.remove('hidden');
         }
 
-        // --- AUTH API ---
+        function openInfoModal(name, branch, address, contact, hours) {
+            document.getElementById('infoPharmName').innerText = name;
+            document.getElementById('infoBranch').innerText = branch;
+            document.getElementById('infoAddress').innerText = address;
+            document.getElementById('infoContact').innerText = contact || 'N/A';
+            document.getElementById('infoHours').innerText = hours || 'Not specified';
+            
+            const modal = document.getElementById('infoModal');
+            const content = document.getElementById('infoModalContent');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+        }
+
+        function closeInfoModal() {
+            const modal = document.getElementById('infoModal');
+            const content = document.getElementById('infoModalContent');
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, 400);
+        }
+
+        // Auth API Integration
         async function handleLoginSubmit(e) {
             e.preventDefault();
             const unlock = lockButton('btnLoginSubmit');
@@ -858,7 +839,7 @@
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showToast('Successfully signed in!');
+                    showToast('Authentication successful.');
                     authState = { id: result.id, role: result.role, name: result.name };
                     localStorage.setItem('ooc_client_user', JSON.stringify(authState));
                     updateNavUI();
@@ -867,16 +848,23 @@
                     showToast(result.error || 'Invalid credentials', 'error');
                     document.getElementById('loginPassword').value = ''; 
                 }
-            } catch (err) { 
-                showToast('Server connection failed.', 'error'); 
-            } finally { unlock(); }
+            } catch (err) { showToast('Server connection failed.', 'error'); } finally { unlock(); }
         }
 
         async function handleSignupStep1(e) {
             e.preventDefault();
+            
+            const pw = document.getElementById('regPassword').value;
+            // Validates at least 8 chars, one uppercase, one lowercase, one special char
+            const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+            
+            if (!pwRegex.test(pw)) {
+                showToast('Password must be 8+ chars with uppercase, lowercase, & special character.', 'error');
+                return;
+            }
+
             tempSignupEmail = document.getElementById('regEmail').value.trim();
             const unlock = lockButton('btnSignup1Submit');
-
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -884,15 +872,13 @@
                 });
                 if(response.ok) {
                     switchAuthView('signup2');
-                    showToast('Verification code sent to email!');
+                    showToast('Verification code sent to email.');
                     startResendCooldown('resendCodeBtn'); 
                 } else {
                     const res = await response.json();
                     showToast(res.error || 'Failed to send verification', 'error');
                 }
-            } catch (error) {
-                showToast('Server connection failed.', 'error');
-            } finally { unlock(); }
+            } catch (error) { showToast('Server connection failed.', 'error'); } finally { unlock(); }
         }
 
         async function handleSignupStep2(e) {
@@ -905,7 +891,6 @@
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: tempSignupEmail, code: code })
                 });
-                
                 if(response.ok) {
                     if (resendTimer) clearInterval(resendTimer);
                     const data = {
@@ -919,18 +904,11 @@
                     });
                     const regResult = await regResponse.json();
                     if(regResponse.ok){ 
-                        showToast('Account created successfully!'); 
-                        closeAuthModal();
-                        switchAuthView('login'); 
-                    } else { 
-                        showToast(regResult.error, 'error'); 
-                    }
-                } else {
-                    showToast('Invalid verification code', 'error');
-                }
-            } catch(error) {
-                showToast('Server connection failed.', 'error');
-            } finally { unlock(); }
+                        showToast('Profile created successfully.'); 
+                        closeAuthModal(); switchAuthView('login'); 
+                    } else { showToast(regResult.error, 'error'); }
+                } else { showToast('Invalid verification code.', 'error'); }
+            } catch(error) { showToast('Server connection failed.', 'error'); } finally { unlock(); }
         }
 
         async function handleForgotRequest(e) {
@@ -942,260 +920,268 @@
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
                 });
-                if(response.ok) {
-                    showToast('If account exists, reset instructions sent.');
-                    closeAuthModal();
-                } else {
-                    showToast('Failed to process request', 'error');
-                }
-            } catch (err) {
-                showToast('Server connection failed.', 'error');
-            } finally { unlock(); }
+                if(response.ok) { showToast('Instructions sent to your email.'); closeAuthModal(); }
+                else { showToast('Failed to process request', 'error'); }
+            } catch (err) { showToast('Server connection failed.', 'error'); } finally { unlock(); }
         }
 
         function startResendCooldown(btnId) {
             const btn = document.getElementById(btnId);
             let timeLeft = 60;
-            btn.innerText = `Resend in ${timeLeft}s`;
-            btn.disabled = true;
-
+            btn.innerText = `Resend in ${timeLeft}s`; btn.disabled = true;
             if (resendTimer) clearInterval(resendTimer);
-
             resendTimer = setInterval(() => {
                 timeLeft--;
                 if (timeLeft <= 0) {
                     clearInterval(resendTimer);
-                    btn.disabled = false;
-                    btn.innerText = 'Resend Code';
-                } else {
-                    btn.innerText = `Resend in ${timeLeft}s`;
-                }
+                    btn.disabled = false; btn.innerText = 'Resend Code';
+                } else { btn.innerText = `Resend in ${timeLeft}s`; }
             }, 1000);
         }
 
         async function handleResendCode() {
             const btn = document.getElementById('resendCodeBtn');
-            if (btn.disabled) return; 
-            btn.disabled = true;
-            btn.innerText = 'Sending...';
-
+            if (btn.disabled) return; btn.disabled = true; btn.innerText = 'Sending...';
             try {
                 const response = await fetch(`${API_URL}/api/send-verification`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: tempSignupEmail })
                 });
-                if (response.ok) {
-                    showToast('New code sent to your email!');
-                    startResendCooldown('resendCodeBtn');
-                } else {
-                    showToast('Failed to resend code', 'error');
-                    btn.disabled = false;
-                    btn.innerText = 'Resend Code';
+                if (response.ok) { showToast('New code sent.'); startResendCooldown('resendCodeBtn'); }
+                else { showToast('Failed to resend code', 'error'); btn.disabled = false; btn.innerText = 'Resend Code'; }
+            } catch (error) { showToast('Server connection failed.', 'error'); btn.disabled = false; btn.innerText = 'Resend Code'; }
+        }
+
+        function isStoreOpen(openStr, closeStr) {
+            if (!openStr || !closeStr) return true;
+            try {
+                const now = new Date();
+                const parseTime = (timeStr) => {
+                    const [time, modifier] = timeStr.trim().split(' ');
+                    let [hours, minutes] = time.split(':');
+                    hours = parseInt(hours, 10);
+                    if(modifier) {
+                        if (hours === 12) hours = modifier.toLowerCase() === 'pm' ? 12 : 0;
+                        else if (modifier.toLowerCase() === 'pm') hours += 12;
+                    }
+                    return (hours * 60) + parseInt(minutes || '0', 10);
+                };
+                
+                const openMins = parseTime(openStr);
+                const closeMins = parseTime(closeStr);
+                const currentMins = (now.getHours() * 60) + now.getMinutes();
+
+                if(closeMins < openMins) {
+                    return currentMins >= openMins || currentMins <= closeMins;
                 }
+                return currentMins >= openMins && currentMins <= closeMins;
+            } catch(e) {
+                return true; 
+            }
+        }
+
+        // Search API
+        async function handleSearch(e) {
+            e.preventDefault();
+            if (authState.role !== 'patient') {
+                showToast("Sign In is required to perform searches.", "error");
+                openAuthModal('login'); return;
+            }
+
+            const medicine = document.getElementById('searchMedicine').value.trim();
+            const dosageNum = document.getElementById('searchDosageNum').value.trim();
+            const dosageUnit = document.getElementById('searchDosageUnit').value;
+            const barangay = document.getElementById('searchBarangayInput').value.trim();
+
+            if(!barangay) { showToast("Please select a Location.", "error"); return; }
+
+            const unlock = lockButton('btnSearch');
+            
+            const combinedMedicineQuery = dosageNum ? `${medicine} ${dosageNum}${dosageUnit}`.trim() : medicine;
+            const displayDosage = dosageNum ? `(${dosageNum}${dosageUnit})` : '';
+            
+            document.getElementById('searchQueryText').innerHTML = `Query: <strong class="text-brand-800">${medicine} ${displayDosage}</strong> in <strong class="text-brand-800">${barangay}</strong>`;
+            
+            const resultsDiv = document.getElementById('searchResults');
+            const grid = document.getElementById('resultsGrid');
+            
+            resultsDiv.classList.remove('hidden');
+            grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-brand-600 mb-4 block"></i><p class="text-gray-400 font-sans-head font-bold uppercase tracking-widest text-[11px]">Retrieving secure data...</p></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/search`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ medicine: combinedMedicineQuery, barangay: barangay, patientId: authState.id })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 429) {
+                    showToast(data.error, 'error');
+                    grid.innerHTML = `<div class="col-span-full text-center py-12 text-error font-sans-head font-medium">${data.error}</div>`;
+                    return; 
+                }
+                if (!response.ok) throw new Error(data.error || `HTTP Error ${response.status}`);
+                
+                // Animation: Shrink Hero
+                const hero = document.getElementById('heroSection');
+                if (hero) {
+                    hero.classList.remove('min-h-[90vh]');
+                    hero.classList.add('min-h-[45vh]');
+                    
+                    // Hide the big text to save space elegantly
+                    const heroTextContainer = document.getElementById('heroTextContainer');
+                    if(heroTextContainer) {
+                        heroTextContainer.style.transition = 'opacity 0.5s ease-out, height 0.5s ease-out';
+                        heroTextContainer.style.opacity = '0';
+                        setTimeout(() => { heroTextContainer.style.display = 'none'; }, 500);
+                    }
+                }
+                
+                if (data.results && data.results.length > 0) {
+                    grid.innerHTML = ''; 
+                    data.results.forEach(res => {
+                        const shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
+                        const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
+
+                        const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        
+                        const openTimeStr = res.openTime || '';
+                        const closeTimeStr = res.closeTime || '';
+                        const hoursStr = (openTimeStr && closeTimeStr) ? `${openTimeStr} - ${closeTimeStr}` : '';
+                        const safeHoursStr = hoursStr.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        
+                        const safeContact = (res.contactNumber || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        
+                        const isStoreCurrentlyOpen = isStoreOpen(openTimeStr, closeTimeStr);
+
+                        grid.innerHTML += `
+                            <div class="bg-white rounded-3xl border border-brand-100 shadow-input hover:shadow-luxury transition-all duration-500 flex flex-col group transform hover:-translate-y-1 overflow-hidden relative">
+                                <div class="h-1.5 w-full ${isStoreCurrentlyOpen ? 'bg-brand-500' : 'bg-gray-300'}"></div>
+                                
+                                <div class="h-48 overflow-hidden relative">
+                                    ${isStoreCurrentlyOpen ? 
+                                        `<span class="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-sm text-brand-800 px-4 py-2 rounded-full text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 border border-brand-100"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span> OPEN</span>` 
+                                        : 
+                                        `<span class="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-sm text-gray-500 px-4 py-2 rounded-full text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 border border-gray-200"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> CLOSED</span>`
+                                    }
+                                    <img src="${shopImage}" alt="Pharmacy" class="w-full h-full object-cover filter contrast-[0.95] group-hover:scale-105 group-hover:brightness-105 transition-all duration-700">
+                                </div>
+                                <div class="p-8 flex flex-col flex-grow bg-white">
+                                    <p class="text-brand-500 text-[10px] font-sans-head font-bold uppercase tracking-[0.25em] mb-2 truncate"><i class="fa-solid fa-location-dot mr-1"></i> ${res.branch}</p>
+                                    <h3 class="text-2xl font-serif text-brand-800 mb-6 line-clamp-1 leading-tight">${safeName}</h3>
+                                    
+                                    <div class="mb-8 space-y-3 bg-brand-50/50 p-5 rounded-2xl border border-brand-100/50">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500">Generic Name</span>
+                                            <span class="text-sm font-inter font-medium text-charcoal truncate ml-2 text-right">${safeMedicine}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center border-t border-brand-100/50 pt-3">
+                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500">Price</span>
+                                            <span class="text-xl font-sans-head font-bold text-brand-700">₱${res.price}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-auto grid grid-cols-2 gap-3">
+                                        <button onclick="openInfoModal('${safeName}', '${res.branch}', '${safeAddress}', '${safeContact}', '${safeHoursStr}')" 
+                                            class="w-full bg-white border border-brand-200 text-brand-800 py-3.5 rounded-xl font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-50 hover:border-brand-300 transition-colors">
+                                            Info
+                                        </button>
+                                        <button onclick="requestDirections('${safeAddress}', '${safeName}', '${pharmId}', '${safeMedicine}')" 
+                                            class="w-full bg-brand-800 text-white py-3.5 rounded-xl font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-700 shadow-soft hover:shadow-md transition-all">
+                                            Route
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="w-20 h-20 bg-brand-50 rounded-full flex items-center justify-center text-brand-300 text-3xl mx-auto mb-5 border border-brand-100"><i class="fa-solid fa-box-open"></i></div><div class="text-brand-800 font-serif text-3xl mb-2">No inventory matches.</div><p class="text-gray-500 font-inter text-sm max-w-sm mx-auto">Please try adjusting your search parameters or check another location.</p></div>';
+                }
+                
+                setTimeout(() => { 
+                    resultsDiv.classList.add('results-enter');
+                    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+                }, 400);
             } catch (error) {
-                showToast('Server connection failed.', 'error');
-                btn.disabled = false;
-                btn.innerText = 'Resend Code';
-            }
+                showToast('System encountered an issue.', 'error');
+                grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-sans-head font-medium text-sm">Error: ${error.message}</div>`;
+            } finally { unlock(); }
         }
 
-        // --- SEARCH API ---
-       async function handleSearch(e) {
-    e.preventDefault();
-    
-    if (authState.role !== 'patient') {
-        showToast("Please sign in to search the inventory.", "error");
-        openAuthModal('login');
-        return;
-    }
-
-    const medicine = document.getElementById('searchMedicine').value.trim();
-    const milligrams = document.getElementById('searchMg').value.trim();
-    const barangay = document.getElementById('searchBarangayInput').value.trim();
-
-    if(!barangay) {
-        showToast("Please select a Barangay.", "error");
-        return;
-    }
-
-    document.getElementById('howItWorksSection').classList.add('hidden');
-
-    const unlock = lockButton('btnSearch');
-    document.getElementById('searchQueryText').innerHTML = `Searching for: <strong class="text-deepPurple">${medicine} (${milligrams}mg)</strong> in <strong class="text-deepPurple">${barangay}</strong>`;
-    
-    const resultsDiv = document.getElementById('searchResults');
-    const grid = document.getElementById('resultsGrid');
-    
-    resultsDiv.classList.remove('hidden');
-    grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl text-vibrantOrange"></i><p class="mt-6 text-smoke font-poppins font-bold uppercase tracking-widest text-sm">Querying database...</p></div>';
-    
-    try {
-        const combinedMedicineQuery = `${medicine} ${milligrams}`.trim();
-
-        const response = await fetch(`${API_URL}/api/search`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ medicine: combinedMedicineQuery, barangay: barangay, patientId: authState.id })
-        });
-        
-        // Parse muna ang JSON bago tayo mag check ng response status para makuha ang error message ng backend
-        const data = await response.json();
-        
-        if (response.status === 429) {
-            showToast(data.error, 'error');
-            grid.innerHTML = `<div class="col-span-full text-center py-16 text-error font-poppins font-black">${data.error}</div>`;
-            return; // Stop execution
-        }
-
-        if (!response.ok) {
-            // Throw error kasama ang actual message mula sa Flask backend
-            throw new Error(data.error || `HTTP Error ${response.status}`);
-        }
-        
-        if (data.results && data.results.length > 0) {
-            
-            // UI ADAPTATION MAGIC: Shrink Hero
-            const hero = document.getElementById('heroSection');
-            const heroCurve = document.getElementById('heroCurve');
-            
-            if (hero) {
-                hero.classList.remove('min-h-[50vh]');
-                hero.classList.add('min-h-[40vh]');
-            }
-            if (heroCurve) {
-                heroCurve.classList.remove('min-h-[40vh]', 'md:min-h-[55vh]');
-                heroCurve.style.minHeight = '15vh';
-            }
-
-            grid.innerHTML = ''; 
-            data.results.forEach(res => {
-                let shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
-                const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
-
-                // FIX: Gamitin ang '&quot;' imbis na """ para maiwasan ang Syntax Error
-                const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-
-                grid.innerHTML += `
-                    <div class="bg-surface rounded-[2.5rem] shadow-3d-card hover:shadow-3d-modal transition-all duration-500 overflow-hidden flex flex-col group border border-white/50 cursor-pointer transform hover:-translate-y-2">
-                        <div class="h-56 overflow-hidden relative rounded-t-[2.5rem] shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]">
-                            <div class="absolute inset-0 bg-starkBlack/10 group-hover:bg-transparent transition-colors z-10"></div>
-                            <span class="absolute top-5 right-5 z-20 bg-vibrantOrange text-starkBlack px-4 py-2 rounded-xl text-xs font-poppins font-black uppercase tracking-widest shadow-3d-btn">IN STOCK</span>
-                            <img src="${shopImage}" alt="Pharmacy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
-                        </div>
-                        <div class="p-8 md:p-10 flex flex-col flex-grow">
-                            <h3 class="text-2xl font-poppins font-black text-starkBlack mb-2 line-clamp-1" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">${safeName}</h3>
-                            <p class="text-smoke text-xs font-poppins font-bold uppercase tracking-widest mb-6"><i class="fa-solid fa-location-dot text-deepPurple mr-2"></i> ${res.branch}</p>
-                            
-                            <div class="bg-offWhite rounded-2xl p-6 mb-8 border border-starkBlack/5 transition-colors shadow-3d-input">
-                                <div class="flex justify-between items-center mb-3">
-                                    <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Item</span>
-                                    <span class="text-sm font-inter font-bold text-starkBlack truncate w-1/2 text-right">${safeMedicine}</span>
-                                </div>
-                                <div class="flex justify-between items-center border-t border-smoke/10 pt-3">
-                                    <span class="text-[11px] font-poppins font-black uppercase tracking-widest text-smoke">Price</span>
-                                    <span class="text-xl font-poppins font-black text-deepPurple" style="text-shadow: 1px 1px 2px rgba(74,20,140,0.2);">₱${res.price}</span>
-                                </div>
-                            </div>
-
-                            <div class="mt-auto">
-                                <button onclick="openMapModal('${safeAddress}', '${safeName}', '${pharmId}', '${safeMedicine}')" class="w-full bg-starkBlack text-surface py-5 rounded-xl font-poppins font-black text-sm uppercase tracking-widest hover:bg-deepPurple transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active flex items-center justify-center gap-3">
-                                    <i class="fa-solid fa-diamond-turn-right text-lg drop-shadow-md"></i> <span style="text-shadow: 1px 2px 4px rgba(0,0,0,0.5);">Get Directions</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        } else {
-            grid.innerHTML = '<div class="col-span-full text-center py-20"><div class="text-6xl text-smoke/30 mb-6"><i class="fa-solid fa-box-open transition-transform hover:scale-110"></i></div><div class="text-starkBlack font-poppins font-black text-2xl" style="text-shadow: 1px 2px 4px rgba(0,0,0,0.1);">No inventory matches found.</div><p class="text-smoke mt-3 font-inter font-medium">Try adjusting your search terms or barangay.</p></div>';
-        }
-        
-        setTimeout(() => {
-            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-        
-    } catch (error) {
-        console.error("Search API Error:", error);
-        
-        // I-display natin kung ano specifically ang nag-crash
-        showToast('System encounterd an issue.', 'error');
-        grid.innerHTML = `<div class="col-span-full text-center py-20 text-error font-poppins font-black text-2xl">Error: ${error.message}</div>`;
-    } finally { 
-        unlock(); 
-    }
-}
-        // --- MAP MODAL & VISITS HISTORY LOGIC ---
+        // --- MAP ROUTING & VISITS LOGIC ---
         function toggleHistoryPanel() {
             const panel = document.getElementById('historyPanel');
             const overlay = document.getElementById('historyOverlay');
-            
             panel.classList.toggle('history-panel-open');
-            
             if(panel.classList.contains('history-panel-open')) {
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
                 document.body.style.overflow = 'hidden';
             } else {
                 overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
+                setTimeout(() => overlay.classList.add('hidden'), 400);
                 document.body.style.overflow = 'auto';
             }
         }
 
-        function openMapModal(address, pharmacyName, pharmacyId, medicineSearched) {
+        function requestDirections(address, pharmacyName, pharmacyId, medicineSearched) {
+            logVisit(pharmacyId, pharmacyName, medicineSearched);
+
+            if (navigator.geolocation) {
+                showToast('Requesting GPS location for accurate routing...');
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const origin = `${position.coords.latitude},${position.coords.longitude}`;
+                        const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
+                        openMapModalWithRoute(origin, encodedDest, pharmacyName);
+                    },
+                    (error) => {
+                        showToast('Location access denied. Displaying standard map.', 'error');
+                        const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
+                        openMapModalWithRoute(null, encodedDest, pharmacyName);
+                    }
+                );
+            } else {
+                showToast('Geolocation is not supported by your browser.', 'error');
+            }
+        }
+
+        function openMapModalWithRoute(origin, encodedDest, pharmacyName) {
             const mapModal = document.getElementById('mapModal');
             const content = document.getElementById('mapModalContent');
             const mapFrame = document.getElementById('googleMapFrame');
-            const navBtn = document.getElementById('startNavigationBtn');
             
-            logVisit(pharmacyId, pharmacyName, medicineSearched);
-
             document.getElementById('mapDestText').innerText = `Destination: ${pharmacyName}`;
-            const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
-            mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
             
-            navBtn.onclick = () => {
-                showToast('Requesting GPS location for live routing...', 'success');
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const origin = `${position.coords.latitude},${position.coords.longitude}`;
-                            mapFrame.src = `https://www.google.com/maps/embed/v1/directions?origin=${origin}&destination=${encodedDest}&mode=driving`;
-                            navBtn.classList.add('hidden');
-                        },
-                        (error) => {
-                            showToast('GPS access denied. Cannot generate live route.', 'error');
-                        }
-                    );
-                } else {
-                    showToast('Geolocation is not supported by your browser.', 'error');
-                }
-            };
-            
+            if(origin) {
+                mapFrame.src = `https://www.google.com/maps/embed/v1/directions?origin=${origin}&destination=${encodedDest}&mode=driving`;
+            } else {
+                mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
+            }
+
             mapModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-            setTimeout(() => {
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
         }
-        
+
         function closeMapModal() { 
             const mapModal = document.getElementById('mapModal');
             const content = document.getElementById('mapModalContent');
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
             setTimeout(() => {
                 mapModal.classList.add('hidden'); 
                 document.getElementById('googleMapFrame').src = '';
                 document.body.style.overflow = 'auto';
-            }, 300);
+            }, 400);
         }
 
-        // --- VISITS SYSTEM ---
         function logVisit(pharmacyId, pharmacyName, medicine) {
-            const exists = visitsHistory.find(v => v.id === pharmacyId && v.status === 'pending');
+            // FIXED LOGIC: Iche-check na niya kung nag-exist na yung exact Pharmacy ID at Medicine sa history, regardless kung pending o nasagutan na.
+            const exists = visitsHistory.find(v => v.id === pharmacyId && v.medicine === medicine);
             if(!exists) {
                 const newVisit = {
                     uuid: crypto.randomUUID(),
@@ -1215,10 +1201,12 @@
             const container = document.getElementById('historyList');
             if(visitsHistory.length === 0) {
                 container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full text-center opacity-50 py-20">
-                        <i class="fa-solid fa-map-location-dot text-4xl mb-4"></i>
-                        <p class="font-poppins font-bold">No recent visits.</p>
-                        <p class="text-sm font-inter">Pharmacies you navigate to will appear here.</p>
+                    <div class="flex flex-col items-center justify-center h-full text-center opacity-60 py-20">
+                        <div class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center text-brand-400 border border-brand-100 text-2xl mb-4 shadow-sm">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <p class="font-sans-head font-bold uppercase tracking-[0.2em] text-[11px] text-brand-800">No recent activity</p>
+                        <p class="text-sm font-inter mt-2 text-gray-500 max-w-[200px]">Pharmacies you route to will appear here for feedback.</p>
                     </div>`;
                 return;
             }
@@ -1226,17 +1214,19 @@
             container.innerHTML = visitsHistory.map(visit => {
                 if(visit.status === 'pending') {
                     return `
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-smoke/10">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-poppins font-black text-starkBlack text-sm">${visit.name}</h4>
-                            <span class="text-[10px] text-smoke">${visit.date}</span>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-brand-100 relative overflow-hidden">
+                        <div class="absolute left-0 top-0 w-1.5 h-full bg-brand-500"></div>
+                        <div class="flex justify-between items-start mb-2 pl-2">
+                            <h4 class="font-serif text-brand-800 text-lg line-clamp-1 pr-2">${visit.name}</h4>
+                            <span class="text-[9px] font-sans-head font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap mt-1">${visit.date}</span>
                         </div>
-                        <p class="text-xs text-deepPurple font-medium mb-4">Searched for: ${visit.medicine}</p>
-                        <div class="bg-offWhite p-4 rounded-xl border border-smoke/5">
-                            <p class="text-xs font-poppins font-bold text-starkBlack mb-3">Did you visit this pharmacy?</p>
+                        <p class="text-xs text-gray-500 font-inter mb-4 pl-2"><span class="font-medium text-charcoal">Searched:</span> ${visit.medicine}</p>
+                        
+                        <div class="bg-brand-50/80 p-4 rounded-xl border border-brand-50 ml-2">
+                            <p class="text-[10px] font-sans-head font-bold uppercase tracking-[0.1em] text-brand-800 mb-3 text-center">Did you visit this pharmacy?</p>
                             <div class="flex gap-2">
-                                <button onclick="handleHistoryQ1('${visit.uuid}', true)" class="flex-1 bg-starkBlack text-white text-xs py-2 rounded-lg font-bold hover:bg-deepPurple transition-colors">Yes</button>
-                                <button onclick="handleHistoryQ1('${visit.uuid}', false)" class="flex-1 bg-white border border-smoke/20 text-smoke text-xs py-2 rounded-lg font-bold hover:bg-smoke/10 transition-colors">No</button>
+                                <button onclick="handleHistoryQ1('${visit.uuid}', true)" class="flex-1 bg-brand-800 text-white text-[10px] font-sans-head font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">Yes</button>
+                                <button onclick="handleHistoryQ1('${visit.uuid}', false)" class="flex-1 bg-white border border-brand-200 text-brand-700 text-[10px] font-sans-head font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-brand-50 transition-colors shadow-sm">No</button>
                             </div>
                         </div>
                     </div>`;
@@ -1244,37 +1234,38 @@
                 
                 if(visit.status === 'active_q2') {
                     return `
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border-l-4 border-l-vibrantOrange">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-poppins font-black text-starkBlack text-sm">${visit.name}</h4>
-                            <span class="text-[10px] text-smoke">${visit.date}</span>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-brand-100 relative overflow-hidden">
+                        <div class="absolute left-0 top-0 w-1.5 h-full bg-brand-400"></div>
+                        <div class="flex justify-between items-start mb-2 pl-2">
+                            <h4 class="font-serif text-brand-800 text-lg line-clamp-1 pr-2">${visit.name}</h4>
+                            <span class="text-[9px] font-sans-head font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap mt-1">${visit.date}</span>
                         </div>
-                        <p class="text-xs text-deepPurple font-medium mb-4">Searched for: ${visit.medicine}</p>
-                        <div class="bg-orange-50 p-4 rounded-xl border border-vibrantOrange/20">
-                            <p class="text-xs font-poppins font-bold text-starkBlack mb-3">Did they have the medicine in stock?</p>
+                        <p class="text-xs text-gray-500 font-inter mb-4 pl-2"><span class="font-medium text-charcoal">Searched:</span> ${visit.medicine}</p>
+                        
+                        <div class="bg-brand-100/40 p-4 rounded-xl border border-brand-100 ml-2">
+                            <p class="text-[10px] font-sans-head font-bold uppercase tracking-[0.1em] text-brand-800 mb-3 text-center">Was the medicine in stock?</p>
                             <div class="flex gap-2">
-                                <button onclick="handleHistoryQ2('${visit.uuid}', '${visit.id}', true)" class="flex-1 bg-starkBlack text-white text-xs py-2 rounded-lg font-bold hover:bg-deepPurple transition-colors">Yes</button>
-                                <button onclick="handleHistoryQ2('${visit.uuid}', '${visit.id}', false)" class="flex-1 bg-error text-white text-xs py-2 rounded-lg font-bold hover:bg-red-800 transition-colors shadow-sm">No (Out of Stock)</button>
+                                <button onclick="handleHistoryQ2('${visit.uuid}', '${visit.id}', true)" class="flex-1 bg-brand-800 text-white text-[10px] font-sans-head font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">Yes</button>
+                                <button onclick="handleHistoryQ2('${visit.uuid}', '${visit.id}', false)" class="flex-1 bg-error text-white text-[10px] font-sans-head font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-red-800 transition-colors shadow-sm">No (Out)</button>
                             </div>
                         </div>
                     </div>`;
                 }
 
                 return `
-                <div class="bg-offWhite p-5 rounded-2xl border border-smoke/10 opacity-70">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-poppins font-bold text-starkBlack text-sm">${visit.name}</h4>
-                        <i class="fa-solid fa-circle-check text-green-600"></i>
+                <div class="bg-brand-50 p-4 rounded-xl border border-brand-100 opacity-75">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-serif text-brand-700 text-base line-clamp-1">${visit.name}</h4>
+                        <i class="fa-solid fa-check text-brand-500 ml-2"></i>
                     </div>
-                    <p class="text-xs text-smoke font-medium">Feedback Submitted (${visit.date})</p>
+                    <p class="text-[9px] font-sans-head font-bold uppercase tracking-[0.2em] text-brand-600/60">Feedback Submitted (${visit.date})</p>
                 </div>`;
             }).join('');
         }
 
         function handleHistoryQ1(uuid, didVisit) {
-            if(!didVisit) {
-                visitsHistory = visitsHistory.filter(v => v.uuid !== uuid);
-            } else {
+            if(!didVisit) { visitsHistory = visitsHistory.filter(v => v.uuid !== uuid); } 
+            else {
                 const idx = visitsHistory.findIndex(v => v.uuid === uuid);
                 if(idx > -1) visitsHistory[idx].status = 'active_q2';
             }
@@ -1289,24 +1280,15 @@
             renderHistoryPanel();
 
             if(!inStock) {
-                console.log(`[SYSTEM] Triggering penalty strike for Pharmacy ID: ${pharmacyId}`);
-                showToast("Feedback sent. We penalize pharmacies showing false stock.", "error");
-                
+                showToast("Feedback sent. We penalize false stock reports.", "error");
                 try {
                     await fetch(`${API_URL}/api/report-stock`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            pharmacyId: pharmacyId, 
-                            clientId: authState.id, 
-                            isOutOfStock: true 
-                        })
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ pharmacyId: pharmacyId, clientId: authState.id, isOutOfStock: true })
                     });
-                } catch(e) {
-                    console.log("Mock API call handled");
-                }
+                } catch(e) { /* ignored */ }
             } else {
-                showToast("Thanks for confirming! This keeps our network reliable.");
+                showToast("Thank you for confirming inventory availability.");
             }
         }
     </script>
