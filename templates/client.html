@@ -610,16 +610,20 @@
     <div id="mapModal" class="fixed inset-0 bg-charcoal/90 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-400">
         <div class="bg-white p-2 rounded-[2rem] shadow-2xl w-full max-w-6xl relative h-[85vh] flex flex-col transition-transform duration-400 scale-95 border border-brand-100" id="mapModalContent">
             
-            <div class="absolute top-6 left-8 z-20 bg-white/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-luxury border border-brand-100 flex flex-col gap-1">
+            <div class="absolute top-6 left-8 z-20 bg-white/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-luxury border border-brand-100 flex flex-col gap-2">
                 <h3 class="text-2xl font-serif text-brand-900 leading-tight">Route Navigation</h3>
                 <p class="text-brand-600 font-sans-head uppercase tracking-widest font-bold text-[11px]" id="mapDestText">Directions to Pharmacy</p>
+                <!-- New Button for External Maps App -->
+                <button id="externalMapBtn" class="mt-2 w-full bg-brand-800 text-white py-2 rounded-lg font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-700 transition-colors shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Maps App
+                </button>
             </div>
 
             <button onclick="closeMapModal()" class="absolute top-6 right-6 w-14 h-14 bg-white rounded-full flex items-center justify-center text-gray-500 hover:bg-error hover:text-white transition-all shadow-md hover:scale-105 z-20 border border-brand-100">
                 <i class="fa-solid fa-times text-xl"></i>
             </button>
             
-            <div class="flex-grow rounded-[1.5rem] overflow-hidden bg-brand-50 relative w-full h-full">
+            <div class="flex-grow rounded-[1.5rem] overflow-hidden bg-brand-50 relative w-full h-full mt-24 md:mt-0">
                 <iframe id="googleMapFrame" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
@@ -1134,7 +1138,7 @@
                         openMapModalWithRoute(origin, encodedDest, pharmacyName);
                     },
                     (error) => {
-                        showToast('Location access denied. Displaying standard map.', 'error');
+                        showToast('Location access denied. Opening standard map.', 'error');
                         const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
                         openMapModalWithRoute(null, encodedDest, pharmacyName);
                     }
@@ -1145,21 +1149,21 @@
         }
 
         function openMapModalWithRoute(origin, encodedDest, pharmacyName) {
-            const mapModal = document.getElementById('mapModal');
-            const content = document.getElementById('mapModalContent');
-            const mapFrame = document.getElementById('googleMapFrame');
+            // WORKAROUND: Instead of iframe which requires API key for directions,
+            // we open the native Google Maps URL. This works perfectly on mobile apps and desktop browsers.
             
-            document.getElementById('mapDestText').innerText = `Destination: ${pharmacyName}`;
+            let mapsUrl = '';
             
             if(origin) {
-                mapFrame.src = `https://www.google.com/maps/embed/v1/directions?origin=${origin}&destination=${encodedDest}&mode=driving`;
+                // If we have GPS, create a routing link
+                mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodedDest}&travelmode=driving`;
             } else {
-                mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
+                // If no GPS, just show the destination pin
+                mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedDest}`;
             }
 
-            mapModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+            // Open in a new tab (or triggers the Maps app on mobile)
+            window.open(mapsUrl, '_blank');
         }
 
         function closeMapModal() { 
