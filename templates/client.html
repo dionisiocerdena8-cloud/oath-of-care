@@ -156,7 +156,7 @@
         <div class="absolute top-[10%] right-[30%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-yellow-50/60 rounded-full blur-[100px] transform translate-x-1/2"></div>
         <div class="absolute top-[15%] right-[25%] w-[20vw] h-[20vw] max-w-[250px] max-h-[250px] bg-white rounded-full blur-3xl transform translate-x-1/2 opacity-90"></div>
         
-        <!-- High-Res Vector Landscape SVG (Removed trees, houses, windmills) -->
+        <!-- High-Res Vector Landscape SVG -->
         <svg class="absolute bottom-0 w-full h-[60vh] min-h-[400px]" preserveAspectRatio="none" viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg">
             <!-- Distant Hills -->
             <path fill="#e5f5e0" d="M0,250 C300,150 600,300 900,200 C1200,100 1350,250 1440,280 L1440,600 L0,600 Z"></path>
@@ -614,8 +614,8 @@
                 <h3 class="text-2xl font-serif text-brand-900 leading-tight">Route Navigation</h3>
                 <p class="text-brand-600 font-sans-head uppercase tracking-widest font-bold text-[11px]" id="mapDestText">Directions to Pharmacy</p>
                 <!-- New Button for External Maps App -->
-                <button id="externalMapBtn" class="mt-2 w-full bg-brand-800 text-white py-2 rounded-lg font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-700 transition-colors shadow-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Maps App
+                <button id="startNavigatingBtn" onclick="startNavigating()" class="mt-3 w-full bg-brand-900 hover:bg-brand-800 text-white py-3.5 rounded-xl font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all shadow-luxury hover:shadow-luxury-hover hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-location-arrow"></i> Start Navigating
                 </button>
             </div>
 
@@ -623,7 +623,7 @@
                 <i class="fa-solid fa-times text-xl"></i>
             </button>
             
-            <div class="flex-grow rounded-[1.5rem] overflow-hidden bg-brand-50 relative w-full h-full mt-24 md:mt-0">
+            <div class="flex-grow rounded-[1.5rem] overflow-hidden bg-brand-50 relative w-full h-full mt-36 md:mt-0">
                 <iframe id="googleMapFrame" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
@@ -640,6 +640,10 @@
         let tempSignupEmail = '';
         let resendTimer = null;
         let visitsHistory = JSON.parse(localStorage.getItem('ooc_client_visits')) || [];
+        
+        // Navigation state variables
+        let currentNavDestination = '';
+        let currentNavAddress = '';
 
         window.onload = () => {
             updateNavUI();
@@ -1056,7 +1060,7 @@
                         const isStoreCurrentlyOpen = isStoreOpen(openTimeStr, closeTimeStr);
 
                         grid.innerHTML += `
-                            <div class="bg-white rounded-3xl border border-brand-100 shadow-input hover:shadow-luxury transition-all duration-500 flex flex-col group transform hover:-translate-y-1 overflow-hidden relative">
+                            <div class="bg-white rounded-3xl border border-gray-100 shadow-input hover:shadow-luxury transition-all duration-500 flex flex-col group transform hover:-translate-y-1 overflow-hidden relative">
                                 <div class="h-1.5 w-full ${isStoreCurrentlyOpen ? 'bg-brand-500' : 'bg-gray-300'}"></div>
                                 
                                 <div class="h-48 overflow-hidden relative">
@@ -1129,41 +1133,46 @@
         function requestDirections(address, pharmacyName, pharmacyId, medicineSearched) {
             logVisit(pharmacyId, pharmacyName, medicineSearched);
 
+            currentNavDestination = pharmacyName;
+            currentNavAddress = address;
+
+            const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
+            const mapFrame = document.getElementById('googleMapFrame');
+            
+            document.getElementById('mapDestText').innerText = `Destination: ${pharmacyName}`;
+            
+            // Simple embed for just showing the place (no directions yet, avoiding API key error)
+            mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
+
+            const mapModal = document.getElementById('mapModal');
+            const content = document.getElementById('mapModalContent');
+            mapModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+        }
+
+        function startNavigating() {
+            if (!currentNavDestination || !currentNavAddress) return;
+
+            const encodedDest = encodeURIComponent(`${currentNavDestination}, ${currentNavAddress}`);
+
             if (navigator.geolocation) {
-                showToast('Requesting GPS location for accurate routing...');
+                showToast('Humihingi ng pahintulot para sa lokasyon...');
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const origin = `${position.coords.latitude},${position.coords.longitude}`;
-                        const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
-                        openMapModalWithRoute(origin, encodedDest, pharmacyName);
+                        const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodedDest}&travelmode=driving`;
+                        window.open(mapsUrl, '_blank');
                     },
                     (error) => {
-                        showToast('Location access denied. Opening standard map.', 'error');
-                        const encodedDest = encodeURIComponent(`${pharmacyName}, ${address}`);
-                        openMapModalWithRoute(null, encodedDest, pharmacyName);
+                        showToast('Hindi ma-access ang lokasyon. Bubuksan ang standard map.', 'error');
+                        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedDest}`;
+                        window.open(mapsUrl, '_blank');
                     }
                 );
             } else {
-                showToast('Geolocation is not supported by your browser.', 'error');
+                showToast('Hindi suportado ng iyong browser ang Geolocation.', 'error');
             }
-        }
-
-        function openMapModalWithRoute(origin, encodedDest, pharmacyName) {
-            // WORKAROUND: Instead of iframe which requires API key for directions,
-            // we open the native Google Maps URL. This works perfectly on mobile apps and desktop browsers.
-            
-            let mapsUrl = '';
-            
-            if(origin) {
-                // If we have GPS, create a routing link
-                mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodedDest}&travelmode=driving`;
-            } else {
-                // If no GPS, just show the destination pin
-                mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedDest}`;
-            }
-
-            // Open in a new tab (or triggers the Maps app on mobile)
-            window.open(mapsUrl, '_blank');
         }
 
         function closeMapModal() { 
