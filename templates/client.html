@@ -119,22 +119,32 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Luxury 3D Card Hover Effects for How It Works */
-        .card-3d {
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            transform-style: preserve-3d;
+        /* Concisely Shrink Hero Section Content */
+        #heroSection, #heroTextContainer, #heroTitle, #heroSubtitle {
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .card-3d:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 68, 27, 0.2);
-            border-color: #006d2c !important;
+        #heroSection.is-shrunk {
+            min-height: 50vh !important;
+            padding-top: 6rem;
+            padding-bottom: 2rem;
         }
-        .card-3d .icon-container {
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s ease;
+        #heroSection.is-shrunk #heroTextContainer {
+            margin-bottom: 2rem !important;
         }
-        .card-3d:hover .icon-container {
-            transform: translateZ(30px) translateY(-5px) scale(1.1);
-            box-shadow: 0 15px 30px -5px rgba(176, 141, 106, 0.6) !important; /* Mocha shadow on hover */
+        #heroSection.is-shrunk #heroTitle {
+            font-size: 2rem !important;
+            margin-bottom: 0.5rem;
+        }
+        #heroSection.is-shrunk #heroSubtitle {
+            font-size: 0.875rem !important;
+        }
+        @media (min-width: 768px) {
+            #heroSection.is-shrunk #heroTitle {
+                font-size: 2.75rem !important;
+            }
+            #heroSection.is-shrunk #heroSubtitle {
+                font-size: 1rem !important;
+            }
         }
     </style>
 </head>
@@ -241,13 +251,13 @@
                         <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
                         Premium Medical Network
                     </span>
-                    <h1 class="font-serif text-charcoal text-[2.8rem] sm:text-5xl md:text-6xl lg:text-[4.8rem] leading-[1.15] mb-6 drop-shadow-sm">
+                    <h1 id="heroTitle" class="font-serif text-charcoal text-[2.8rem] sm:text-5xl md:text-6xl lg:text-[4.8rem] leading-[1.15] mb-6 drop-shadow-sm">
                         Locate Essential Medicines <br class="hidden md:block"/> 
                         <span class="text-brand-800 relative">
                             With Precision.
                         </span>
                     </h1>
-                    <p class="text-base md:text-lg text-charcoal/80 font-inter font-light max-w-2xl leading-relaxed bg-white/40 backdrop-blur-sm p-4 rounded-xl">
+                    <p id="heroSubtitle" class="text-base md:text-lg text-charcoal/80 font-inter font-light max-w-2xl leading-relaxed bg-white/40 backdrop-blur-sm p-4 rounded-xl">
                         Discover verified pharmacies and available medicines in real-time. Authentication is required to maintain the integrity of our professional network.
                     </p>
                 </div>
@@ -740,14 +750,7 @@
 
             const hero = document.getElementById('heroSection');
             if (hero) {
-                hero.classList.remove('min-h-[45vh]');
-                hero.classList.add('min-h-[90vh]');
-                
-                const heroTextContainer = document.getElementById('heroTextContainer');
-                if(heroTextContainer) {
-                    heroTextContainer.style.display = 'flex';
-                    heroTextContainer.style.opacity = '1';
-                }
+                hero.classList.remove('is-shrunk');
             }
 
             showToast('Signed out securely.');
@@ -1023,19 +1026,10 @@
                 }
                 if (!response.ok) throw new Error(data.error || `HTTP Error ${response.status}`);
                 
-                // Animation: Shrink Hero
+                // Animation: Shrink Hero Concisely (Without removing content)
                 const hero = document.getElementById('heroSection');
                 if (hero) {
-                    hero.classList.remove('min-h-[90vh]');
-                    hero.classList.add('min-h-[45vh]');
-                    
-                    // Hide the big text to save space elegantly
-                    const heroTextContainer = document.getElementById('heroTextContainer');
-                    if(heroTextContainer) {
-                        heroTextContainer.style.transition = 'opacity 0.5s ease-out, height 0.5s ease-out';
-                        heroTextContainer.style.opacity = '0';
-                        setTimeout(() => { heroTextContainer.style.display = 'none'; }, 500);
-                    }
+                    hero.classList.add('is-shrunk');
                 }
                 
                 if (data.results && data.results.length > 0) {
