@@ -412,7 +412,11 @@ def search_medicine():
                 'address': pharm.FullAddress,
                 'inStock': med.InStock,
                 'strikes': status.StrikeCount,
-                'storeImage': pharm.LogoPhotoPath
+                'storeImage': pharm.LogoPhotoPath,
+                'openTime': pharm.OpenTime,
+                'closeTime': pharm.CloseTime,
+                'contactNumber': pharm.ContactNumber,
+                'permitPhoto': pharm.PermitPhotoPath
             })
 
         return jsonify({'message': 'Search completed', 'results': results}), 200
