@@ -1142,6 +1142,13 @@
         function requestDirections(address, pharmacyName, pharmacyId, medicineSearched) {
             logVisit(pharmacyId, pharmacyName, medicineSearched);
 
+            // LOG THE CLICK SA BACKEND PARA SA ANALYTICS BAR CHART
+            fetch(`${API_URL}/api/log-click`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pharmacyId: pharmacyId, medicine: medicineSearched })
+            }).catch(e => console.log('Click log failed'));
+
             currentNavDestination = pharmacyName;
             currentNavAddress = address;
 
@@ -1150,7 +1157,6 @@
             
             document.getElementById('mapDestText').innerText = `DESTINATION: ${pharmacyName.toUpperCase()}`;
             
-            // Simple embed for just showing the place (no directions yet, avoiding API key error)
             mapFrame.src = `https://maps.google.com/maps?q=${encodedDest}&output=embed`;
 
             const mapModal = document.getElementById('mapModal');
@@ -1291,7 +1297,11 @@
 
         async function handleHistoryQ2(uuid, pharmacyId, inStock) {
             const idx = visitsHistory.findIndex(v => v.uuid === uuid);
-            if(idx > -1) visitsHistory[idx].status = 'resolved';
+            if(idx === -1) return;
+            
+            const medicineName = visitsHistory[idx].medicine; // GET THE MEDICINE NAME
+
+            visitsHistory[idx].status = 'resolved';
             localStorage.setItem('ooc_client_visits', JSON.stringify(visitsHistory));
             renderHistoryPanel();
 
@@ -1300,10 +1310,18 @@
                 try {
                     await fetch(`${API_URL}/api/report-stock`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ pharmacyId: pharmacyId, clientId: authState.id, isOutOfStock: true })
+                        // ADDED MEDICINENAME SA BODY PARA ALAM KUNG SINO IPAPENALIZE NG 5/10 STRIKES
+                        body: JSON.stringify({ pharmacyId: pharmacyId, clientId: authState.id, isOutOfStock: true, medicineName: medicineName })
                     });
                 } catch(e) { /* ignored */ }
             } else {
+                // LOG DIN NATIN KUNG 'YES' (IN STOCK) PARA SA PIE CHART
+                try {
+                    await fetch(`${API_URL}/api/report-stock`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ pharmacyId: pharmacyId, clientId: authState.id, isOutOfStock: false })
+                    });
+                } catch(e) { /* ignored */ }
                 showToast("Thank you for confirming inventory availability.");
             }
         }
