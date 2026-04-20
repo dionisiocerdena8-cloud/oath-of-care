@@ -430,7 +430,7 @@
                         <input type="text" required id="newMedGeneric" placeholder="e.g. Paracetamol" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                     <div>
-                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Brand Name (Optional)</label>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Medicine Name (Optional)</label>
                         <input type="text" id="newMedBrand" placeholder="e.g. Biogesic" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                 </div>
@@ -486,7 +486,7 @@
                         <i class="fa-solid fa-circle-info text-brand-600 text-lg mt-0.5"></i>
                         <div>
                             <h4 class="font-sans-head font-bold text-brand-900 text-xs uppercase tracking-widest mb-1">CSV Requirements</h4>
-                            <p class="text-xs font-inter text-gray-600 mb-3">Headers required: <b>Generic Name, Brand Name, Dosage, Unit, Price, Status, Category</b>.</p>
+                            <p class="text-xs font-inter text-gray-600 mb-3">Headers required: <b>Generic Name, Medicine Name, Dosage, Unit, Price, Status, Category</b>.</p>
                             <button type="button" onclick="downloadCSVTemplate()" class="text-[9px] font-sans-head font-bold bg-white text-brand-700 px-3 py-1.5 rounded-lg border border-brand-200 shadow-sm hover:bg-brand-50 transition-colors">
                                 <i class="fa-solid fa-download mr-1"></i> Download Template
                             </button>
@@ -1128,7 +1128,7 @@
         });
 
         function downloadCSVTemplate() {
-            const csvContent = "data:text/csv;charset=utf-8,Generic Name,Brand Name,Dosage,Unit,Price,Status,Category\nParacetamol,Biogesic,500,mg,10.00,In Stock,Over the Counter (OTC)\nAmoxicillin,,250,mg,15.50,Out of Stock,Prescription";
+            const csvContent = "data:text/csv;charset=utf-8,Generic Name,Medicine Name,Dosage,Unit,Price,Status,Category\nParacetamol,Biogesic,500,mg,10.00,In Stock,Over the Counter (OTC)\nAmoxicillin,,250,mg,15.50,Out of Stock,Prescription";
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
