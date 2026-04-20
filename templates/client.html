@@ -21,7 +21,6 @@
             theme: {
                 extend: {
                     colors: {
-                        // The exact luxury green palette requested
                         brand: {
                             50: '#f7fcf5',
                             100: '#e5f5e0',
@@ -32,9 +31,9 @@
                             600: '#238b45',
                             700: '#006d2c',
                             800: '#00441b',
-                            900: '#002a11' // Deepest contrast
+                            900: '#002a11'
                         },
-                        mocha: '#b08d6a', // Added Mocha color for icons and shadows
+                        mocha: '#b08d6a',
                         charcoal: '#1A1A1A',
                         starkBlack: '#09090b',
                         surface: '#FFFFFF',
@@ -67,7 +66,6 @@
         h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
         .font-sans-head { font-family: 'Poppins', sans-serif; }
 
-        /* Elegant Inputs Fix for Chrome Autofill */
         input:-webkit-autofill,
         input:-webkit-autofill:hover, 
         input:-webkit-autofill:focus, 
@@ -77,7 +75,6 @@
             transition: background-color 5000s ease-in-out 0s;
         }
 
-        /* Custom Select Arrow Styling */
         select {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -88,7 +85,6 @@
             background-size: 14px;
         }
 
-        /* Premium Toast Notifications */
         #toast-container {
             position: fixed; bottom: 30px; right: 30px; z-index: 9999;
             display: flex; flex-direction: column; gap: 15px;
@@ -108,10 +104,8 @@
         ::-webkit-scrollbar-track { background: #f7fcf5; }
         ::-webkit-scrollbar-thumb { background: #41ab5d; border-radius: 10px; }
         
-        /* Sliding Panel */
         .history-panel-open { transform: translateX(0) !important; box-shadow: -20px 0 50px rgba(0,68,27,0.15); }
         
-        /* Smooth height transition for hero */
         #heroSection { transition: min-height 0.8s cubic-bezier(0.25, 1, 0.5, 1), padding 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
         .results-enter { animation: slideUpFade 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes slideUpFade {
@@ -119,7 +113,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Concisely Shrink Hero Section Content */
         #heroSection, #heroTextContainer, #heroTitle, #heroSubtitle {
             transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -150,29 +143,20 @@
 </head>
 <body class="antialiased flex flex-col min-h-screen relative">
 
-    <!-- ================= BESPOKE LANDSCAPE BACKGROUND (CLEAN & MINIMALIST) ================= -->
+    <!-- Background -->
     <div class="fixed inset-0 z-[-5] w-full h-full overflow-hidden bg-brand-50 pointer-events-none">
-        <!-- Bright Sun Glow -->
         <div class="absolute top-[10%] right-[30%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-yellow-50/60 rounded-full blur-[100px] transform translate-x-1/2"></div>
         <div class="absolute top-[15%] right-[25%] w-[20vw] h-[20vw] max-w-[250px] max-h-[250px] bg-white rounded-full blur-3xl transform translate-x-1/2 opacity-90"></div>
-        
-        <!-- High-Res Vector Landscape SVG -->
         <svg class="absolute bottom-0 w-full h-[60vh] min-h-[400px]" preserveAspectRatio="none" viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg">
-            <!-- Distant Hills -->
             <path fill="#e5f5e0" d="M0,250 C300,150 600,300 900,200 C1200,100 1350,250 1440,280 L1440,600 L0,600 Z"></path>
-            <!-- Mid Hills -->
             <path fill="#c7e9c0" d="M0,350 C250,450 450,250 750,300 C1050,350 1250,200 1440,250 L1440,600 L0,600 Z"></path>
-            <!-- Middle Foreground Hills -->
             <path fill="#a1d99b" d="M0,450 C350,380 550,500 850,420 C1150,340 1300,480 1440,400 L1440,600 L0,600 Z"></path>
-            <!-- Foreground Field -->
             <path fill="#238b45" d="M0,520 C400,450 700,600 1000,480 C1200,400 1350,550 1440,500 L1440,600 L0,600 Z"></path>
-            <!-- Very Dark Bottom Edge for contrast -->
             <path fill="#00441b" d="M0,580 C500,550 800,600 1200,570 C1350,560 1400,590 1440,580 L1440,600 L0,600 Z"></path>
         </svg>
     </div>
-    <!-- ========================================================================= -->
 
-    <!-- Elegant Navigation Bar -->
+    <!-- Navigation Bar -->
     <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-xl border-b border-brand-100 h-24 flex items-center shadow-sm" id="navbar">
         <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center">
             
@@ -193,7 +177,6 @@
             
             <!-- Auth Links -->
             <div class="flex items-center space-x-8">
-                <!-- Logged Out State -->
                 <div id="navAuthLoggedOut" class="flex items-center space-x-6">
                     <button onclick="openAuthModal('login')" class="font-sans-head font-semibold text-gray-500 hover:text-brand-800 transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] hidden sm:block">
                         Sign In
@@ -203,7 +186,6 @@
                     </button>
                 </div>
 
-                <!-- Logged In State -->
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
                     <div class="flex items-center gap-3 hidden md:flex border-r border-brand-200 pr-6">
                         <div class="w-9 h-9 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 shadow-inner-soft">
@@ -249,7 +231,6 @@
 
             <div class="w-full max-w-[1200px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center">
                 
-                <!-- Elegant System Heading -->
                 <div class="text-center w-full flex flex-col items-center mb-16" id="heroTextContainer">
                     <span class="bg-white/90 backdrop-blur-sm text-brand-700 px-6 py-2.5 rounded-full font-sans-head font-bold text-[11px] uppercase tracking-[0.25em] mb-8 border border-brand-200 shadow-sm inline-flex items-center gap-3">
                         <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
@@ -266,13 +247,10 @@
                     </p>
                 </div>
 
-                <!-- Professional Standalone Search Inputs -->
                 <form onsubmit="handleSearch(event)" class="w-full flex flex-col items-center gap-8 relative z-20">
                     
-                    <!-- Inputs Row -->
                     <div class="w-full flex flex-col lg:flex-row items-end gap-5 justify-center">
                         
-                        <!-- Generic Name Input -->
                         <div class="w-full lg:w-[38%] relative text-left">
                             <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-4">Generic Name / Medicine <span class="text-error">*</span></label>
                             <div class="relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400">
@@ -284,7 +262,6 @@
                             </div>
                         </div>
 
-                        <!-- Dosage Input (Optional) strictly mg, g, ml -->
                         <div class="w-full lg:w-[24%] relative text-left">
                             <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-4">Dosage (Optional)</label>
                             <div class="flex relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400 overflow-hidden h-[65px]">
@@ -301,7 +278,6 @@
                             </div>
                         </div>
 
-                        <!-- Barangay Dropdown -->
                         <div class="w-full lg:w-[38%] relative text-left" id="customDropdownContainer">
                             <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-4">Select Location <span class="text-error">*</span></label>
                             <div class="relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400 h-[65px]">
@@ -315,7 +291,6 @@
                                     <i class="fa-solid fa-chevron-down text-brand-800 text-sm transition-transform duration-300" id="dropdownIcon"></i>
                                 </div>
                                 
-                                <!-- Dropdown Menu -->
                                 <ul id="dropdownMenu" class="absolute top-[115%] left-0 w-full bg-white border border-brand-100 rounded-3xl shadow-luxury max-h-64 overflow-y-auto hidden z-[100] opacity-0 transition-all duration-300 py-3">
                                     <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Bangkal">Bangkal</li>
                                     <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Baraka">Baraka</li>
@@ -335,7 +310,6 @@
                         </div>
                     </div>
 
-                    <!-- Search Button -->
                     <div class="w-full flex justify-center mt-2">
                         <button type="submit" id="btnSearch" class="bg-brand-900 text-white font-sans-head font-bold text-sm px-12 py-4 h-[60px] min-w-[220px] rounded-full shadow-luxury hover:bg-brand-800 hover:shadow-luxury-hover hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
                             <span class="tracking-[0.1em] uppercase">Search</span>
@@ -348,7 +322,6 @@
         </section>
 
         <!-- ================= SEARCH RESULTS DISPLAY ================= -->
-        <!-- Will slide up when hero shrinks -->
         <section id="searchResults" class="hidden bg-white pb-24 pt-12 relative z-20 min-h-[55vh] border-t border-brand-100">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 pb-6 gap-4 border-b border-gray-100">
@@ -380,7 +353,6 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
                     
-                    <!-- Step 1 -->
                     <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
                         <div class="icon-container w-20 h-20 bg-white text-brand-700 rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(0,109,44,0.4)]">
                             <i class="fa-solid fa-lock"></i>
@@ -389,7 +361,6 @@
                         <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Our network is secure. You must be authenticated to view real-time data.</p>
                     </div>
 
-                    <!-- Step 2 -->
                     <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
                         <div class="icon-container w-20 h-20 bg-white text-brand-700 rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(0,109,44,0.4)]">
                             <i class="fa-solid fa-user-plus"></i>
@@ -398,7 +369,6 @@
                         <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Complete registration and verify your email to unlock platform access.</p>
                     </div>
 
-                    <!-- Step 3 -->
                     <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
                         <div class="icon-container w-20 h-20 bg-white text-brand-700 rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(0,109,44,0.4)]">
                             <i class="fa-solid fa-magnifying-glass"></i>
@@ -407,7 +377,6 @@
                         <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Input generic name (optional dosage) and location to view availability.</p>
                     </div>
 
-                    <!-- Step 4 -->
                     <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
                         <div class="icon-container w-20 h-20 bg-white text-brand-700 rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(0,109,44,0.4)]">
                             <i class="fa-solid fa-map-location-dot"></i>
@@ -450,7 +419,6 @@
                                 <i class="fa-solid fa-eye text-lg" id="eyeLogin"></i>
                             </button>
                         </div>
-                        <!-- Forgot Password properly placed on the RIGHT -->
                         <div class="flex justify-end mt-3 pr-1">
                             <button type="button" onclick="switchAuthView('forgot')" class="text-[10px] font-sans-head font-bold text-brand-600 hover:text-brand-800 uppercase tracking-widest transition-colors">Forgot Password?</button>
                         </div>
@@ -473,25 +441,21 @@
                     <p class="text-gray-500 font-inter text-sm">Create your verified profile.</p>
                 </div>
                 <form id="signup1Form" onsubmit="handleSignupStep1(event)">
-                    <!-- First Name (Full Width) -->
                     <div class="mb-4">
                         <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-1.5 pl-1">First Name</label>
                         <input type="text" id="regFname" required placeholder="John" 
                             class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <!-- Last Name (Full Width, below First Name) -->
                     <div class="mb-4">
                         <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-1.5 pl-1">Last Name</label>
                         <input type="text" id="regLname" required placeholder="Doe" 
                             class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <!-- Email -->
                     <div class="mb-4">
                         <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-1.5 pl-1">Email Address</label>
                         <input type="email" id="regEmail" autocomplete="email" required placeholder="name@example.com" 
                             class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
-                    <!-- Password (No Confirm Password) -->
                     <div class="mb-8">
                         <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-1.5 pl-1">Password <span class="text-gray-400 font-normal normal-case tracking-normal ml-1">(8+ chars, upper, lower, special)</span></label>
                         <div class="relative">
@@ -595,6 +559,17 @@
                         <p class="text-base font-inter font-medium text-charcoal" id="infoContact">Loading...</p>
                     </div>
                 </div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600 flex-shrink-0 mt-0.5">
+                        <i class="fa-solid fa-calendar-days text-base"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-sans-head font-bold uppercase tracking-[0.2em] text-gray-400 mb-1">Operating Days</p>
+                        <p class="text-base font-inter text-charcoal font-medium" id="infoDays">Loading...</p>
+                    </div>
+                </div>
+                
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600 flex-shrink-0 mt-0.5">
                         <i class="fa-solid fa-clock text-base"></i>
@@ -820,12 +795,13 @@
             if(targetEl) targetEl.classList.remove('hidden');
         }
 
-        function openInfoModal(name, branch, address, contact, hours) {
+        function openInfoModal(name, branch, address, contact, hours, days) {
             document.getElementById('infoPharmName').innerText = name;
             document.getElementById('infoBranch').innerText = branch;
             document.getElementById('infoAddress').innerText = address;
             document.getElementById('infoContact').innerText = contact || 'N/A';
             document.getElementById('infoHours').innerText = hours || 'Not specified';
+            document.getElementById('infoDays').innerText = days || 'Not specified';
             
             const modal = document.getElementById('infoModal');
             const content = document.getElementById('infoModalContent');
@@ -1052,12 +1028,18 @@
                 if (data.results && data.results.length > 0) {
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
-                        const shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
+                        // FIX: Added robust store image checking
+                        let shopImage = 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80';
+                        if (res.storeImage && typeof res.storeImage === 'string' && res.storeImage.length > 100 && res.storeImage !== "null") {
+                            shopImage = res.storeImage;
+                        }
+                        
                         const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
 
                         const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        const safeDays = (res.operatingDays || 'Not specified').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         
                         const openTimeStr = res.openTime || '';
                         const closeTimeStr = res.closeTime || '';
@@ -1078,7 +1060,7 @@
                                         : 
                                         `<span class="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-sm text-gray-500 px-4 py-2 rounded-full text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 border border-gray-200"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> CLOSED</span>`
                                     }
-                                    <img src="${shopImage}" alt="Pharmacy" class="w-full h-full object-cover filter contrast-[0.95] group-hover:scale-105 group-hover:brightness-105 transition-all duration-700">
+                                    <img src="${shopImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80';" alt="Pharmacy" class="w-full h-full object-cover filter contrast-[0.95] group-hover:scale-105 group-hover:brightness-105 transition-all duration-700">
                                 </div>
                                 <div class="p-8 flex flex-col flex-grow bg-white">
                                     <p class="text-brand-500 text-[10px] font-sans-head font-bold uppercase tracking-[0.25em] mb-2 truncate"><i class="fa-solid fa-location-dot mr-1"></i> ${res.branch}</p>
@@ -1096,7 +1078,7 @@
                                     </div>
 
                                     <div class="mt-auto grid grid-cols-2 gap-3">
-                                        <button onclick="openInfoModal('${safeName}', '${res.branch}', '${safeAddress}', '${safeContact}', '${safeHoursStr}')" 
+                                        <button onclick="openInfoModal('${safeName}', '${res.branch}', '${safeAddress}', '${safeContact}', '${safeHoursStr}', '${safeDays}')" 
                                             class="w-full bg-white border border-brand-200 text-brand-800 py-3.5 rounded-xl font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-50 hover:border-brand-300 transition-colors">
                                             Info
                                         </button>
