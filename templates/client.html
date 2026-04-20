@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oath of Care | Premium Pharmacy Locator</title>
     
-    <!-- Premium Fonts: Poppins (Clean UI), Playfair Display (Luxury Headings), Inter (Legible Body) -->
+    <!-- Premium Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -160,7 +160,6 @@
     <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-xl border-b border-brand-100 h-24 flex items-center shadow-sm" id="navbar">
         <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center">
             
-            <!-- BRAND LOGO -->
             <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
                 <div class="relative w-12 h-12 mr-2 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
                     <i class="fa-solid fa-location-dot text-[38px] text-brand-800 relative z-0" style="text-shadow: 2px 4px 6px rgba(0,68,27,0.2);"></i>
@@ -175,7 +174,6 @@
                 </div>
             </div>
             
-            <!-- Auth Links -->
             <div class="flex items-center space-x-8">
                 <div id="navAuthLoggedOut" class="flex items-center space-x-6">
                     <button onclick="openAuthModal('login')" class="font-sans-head font-semibold text-gray-500 hover:text-brand-800 transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] hidden sm:block">
@@ -248,9 +246,7 @@
                 </div>
 
                 <form onsubmit="handleSearch(event)" class="w-full flex flex-col items-center gap-8 relative z-20">
-                    
                     <div class="w-full flex flex-col lg:flex-row items-end gap-5 justify-center">
-                        
                         <div class="w-full lg:w-[38%] relative text-left">
                             <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-4">Generic Name / Medicine <span class="text-error">*</span></label>
                             <div class="relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400">
@@ -1028,7 +1024,8 @@
                 if (data.results && data.results.length > 0) {
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
-                        // FIX: Added robust store image checking
+                        // FIX: Secure Image Fallback System
+                        // If there is no store image, or it got corrupted, default to the luxury placeholder.
                         let shopImage = 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80';
                         if (res.storeImage && typeof res.storeImage === 'string' && res.storeImage.length > 100 && res.storeImage !== "null") {
                             shopImage = res.storeImage;
@@ -1039,7 +1036,13 @@
                         const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                        const safeDays = (res.operatingDays || 'Not specified').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        
+                        // FIX: Formatting the Operating Days to look clean and avoid cutoffs
+                        let formattedDays = res.operatingDays || 'Not specified';
+                        if(formattedDays === "Mon, Tue, Wed, Thu, Fri, Sat, Sun") {
+                            formattedDays = "Monday to Sunday (Everyday)";
+                        }
+                        const safeDays = formattedDays.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         
                         const openTimeStr = res.openTime || '';
                         const closeTimeStr = res.closeTime || '';
@@ -1054,12 +1057,14 @@
                             <div class="bg-white rounded-3xl border border-gray-100 shadow-input hover:shadow-luxury transition-all duration-500 flex flex-col group transform hover:-translate-y-1 overflow-hidden relative">
                                 <div class="h-1.5 w-full ${isStoreCurrentlyOpen ? 'bg-brand-500' : 'bg-gray-300'}"></div>
                                 
-                                <div class="h-48 overflow-hidden relative">
+                                <div class="h-48 overflow-hidden relative bg-brand-50 flex items-center justify-center">
                                     ${isStoreCurrentlyOpen ? 
                                         `<span class="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-sm text-brand-800 px-4 py-2 rounded-full text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 border border-brand-100"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span> OPEN</span>` 
                                         : 
                                         `<span class="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-sm text-gray-500 px-4 py-2 rounded-full text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 border border-gray-200"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> CLOSED</span>`
                                     }
+                                    
+                                    <!-- Double Fallback on the Image tag to completely prevent broken icons -->
                                     <img src="${shopImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80';" alt="Pharmacy" class="w-full h-full object-cover filter contrast-[0.95] group-hover:scale-105 group-hover:brightness-105 transition-all duration-700">
                                 </div>
                                 <div class="p-8 flex flex-col flex-grow bg-white">
