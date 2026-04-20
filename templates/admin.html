@@ -111,7 +111,6 @@
 </head>
 <body class="antialiased flex flex-col min-h-screen relative">
 
-    <!-- Luxury Background -->
     <div class="fixed inset-0 z-[-5] w-full h-full overflow-hidden bg-brand-50 pointer-events-none">
         <div class="absolute top-[10%] right-[30%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-yellow-50/60 rounded-full blur-[100px] transform translate-x-1/2"></div>
         <div class="absolute top-[15%] right-[25%] w-[20vw] h-[20vw] max-w-[250px] max-h-[250px] bg-white rounded-full blur-3xl transform translate-x-1/2 opacity-90"></div>
@@ -127,7 +126,6 @@
     <!-- Navigation Bar -->
     <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-xl border-b border-brand-100 h-24 flex items-center shadow-sm" id="navbar">
         <div class="w-full max-w-[1600px] mx-auto px-6 lg:px-12 flex justify-between items-center">
-            
             <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
                 <div class="relative w-12 h-12 mr-2 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
                     <i class="fa-solid fa-location-dot text-[38px] text-brand-800 relative z-0" style="text-shadow: 2px 4px 6px rgba(0,68,27,0.2);"></i>
@@ -144,11 +142,7 @@
             </div>
             
             <div class="flex items-center space-x-6">
-                <!-- Logged Out -->
-                <div id="navAuthLoggedOut" class="flex items-center space-x-6">
-                    <!-- Blank for logged out admins -->
-                </div>
-                <!-- Logged In -->
+                <div id="navAuthLoggedOut" class="flex items-center space-x-6"></div>
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
                     <div class="flex items-center gap-3 hidden md:flex border-r border-brand-200 pr-6">
                         <div class="w-9 h-9 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 shadow-inner-soft">
@@ -169,7 +163,6 @@
         <!-- ================= ADMIN LOGIN VIEW ================= -->
         <section id="view-login" class="view-section active flex-grow justify-center items-center py-10 relative z-10 min-h-[85vh]">
             <div class="bg-white p-10 sm:p-12 rounded-[2rem] shadow-luxury w-full max-w-[440px] relative transition-transform duration-300 border border-gray-100">
-                
                 <div class="text-center flex flex-col items-center mb-8">
                     <div class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center mb-6 border border-brand-100">
                         <i class="fa-solid fa-shield-halved text-brand-700 text-2xl"></i>
@@ -299,7 +292,7 @@
                                     <table class="w-full text-left min-w-[1000px]">
                                         <thead>
                                             <tr class="bg-brand-50 text-brand-800 font-sans-head font-bold text-[10px] uppercase tracking-widest border-b border-gray-200">
-                                                <th class="p-5 font-bold">Pharmacy and Branch</th>
+                                                <th class="p-5 font-bold">Pharmacy & Branch</th>
                                                 <th class="p-5 font-bold text-center">Successful (Yes)</th>
                                                 <th class="p-5 font-bold text-center">No Stock (No)</th>
                                                 <th class="p-5 font-bold text-center">Active Strikes</th>
@@ -423,24 +416,36 @@
                 
                 <!-- Images & Documents Side -->
                 <div class="space-y-6" id="revDocsSide">
-                    <div>
-                        <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">FDA License to Operate</p>
-                        <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
-                            <img id="revFdaImg" src="" alt="FDA License" class="w-full h-full object-contain bg-white hidden absolute inset-0">
-                            <span id="revFdaText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">Store Photo</p>
+                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
+                                <img id="revStoreImg" src="" alt="Store Photo" class="w-full h-full object-cover bg-white hidden absolute inset-0">
+                                <span id="revStoreText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">FDA License to Operate</p>
+                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
+                                <img id="revFdaImg" src="" alt="FDA License" class="w-full h-full object-cover bg-white hidden absolute inset-0">
+                                <span id="revFdaText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">Business Permit</p>
-                        <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
-                            <img id="revPermitImg" src="" alt="Business Permit" class="w-full h-full object-contain bg-white hidden absolute inset-0">
-                            <span id="revPermitText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">Business Permit</p>
+                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
+                                <img id="revPermitImg" src="" alt="Business Permit" class="w-full h-full object-cover bg-white hidden absolute inset-0">
+                                <span id="revPermitText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">PRC Pharmacist ID</p>
-                        <div class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col justify-center text-charcoal">
-                            <p class="font-mono text-xs text-brand-800 break-all" id="revPrcText">Encrypted Base64 Data</p>
+                        <div>
+                            <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">PRC Pharmacist ID</p>
+                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
+                                <img id="revPrcImg" src="" alt="PRC ID" class="w-full h-full object-cover bg-white hidden absolute inset-0">
+                                <span id="revPrcText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -663,31 +668,18 @@
             let stats = {};
             let pending = [];
 
-            // Robust fetch for stats
             try {
                 const statsRes = await fetch(`${API_URL}/api/admin/stats?filter=${filterDate}`);
-                if (statsRes.ok) {
-                    stats = await statsRes.json();
-                } else {
-                    console.warn("Backend API for stats returned an error:", statsRes.status);
-                }
-            } catch(e) {
-                console.error("Network error fetching stats:", e);
-            }
+                if (statsRes.ok) { stats = await statsRes.json(); } 
+                else { console.warn("Backend API for stats returned an error:", statsRes.status); }
+            } catch(e) { console.error("Network error fetching stats:", e); }
 
-            // Robust fetch for pending
             try {
                 const pendingRes = await fetch(`${API_URL}/api/admin/pending`);
-                if (pendingRes.ok) {
-                    pending = await pendingRes.json();
-                } else {
-                    console.warn("Backend API for pending returned an error:", pendingRes.status);
-                }
-            } catch(e) {
-                console.error("Network error fetching pending requests:", e);
-            }
+                if (pendingRes.ok) { pending = await pendingRes.json(); } 
+                else { console.warn("Backend API for pending returned an error:", pendingRes.status); }
+            } catch(e) { console.error("Network error fetching pending requests:", e); }
 
-            // Update UI safely
             const totalPharm = stats?.overview?.totalPharmacies ?? stats?.totalPharmacies ?? 0;
             const totalClients = stats?.overview?.totalClients ?? stats?.totalPatients ?? 0;
             const totalSearches = stats?.overview?.totalSearches ?? stats?.totalSearches ?? 0;
@@ -701,7 +693,6 @@
             const elSearch = document.getElementById('statSearch');
             if (elSearch) elSearch.innerText = totalSearches;
 
-            // Accuracy Table
             const tbody = document.getElementById('accuracyTable');
             if (tbody) {
                 tbody.innerHTML = '';
@@ -733,11 +724,9 @@
                 }
             }
 
-            // Applications Queue
             const reqContainer = document.getElementById('adminRequestsContainer');
             if (reqContainer) {
                 reqContainer.innerHTML = '';
-                
                 let allPending = [];
                 if (Array.isArray(pending)) {
                     allPending = pending.map(p => ({...p, type: 'pharmacy'}));
@@ -785,7 +774,6 @@
             } catch(e) { showToast('Action failed', 'error'); }
         }
 
-        // Logic to populate and trigger the Admin Review Modal
         function openAdminReview(id, type) {
             const safeType = type || 'pharmacy';
             const appData = globalPendingApplications.find(p => p.id === id && (p.type === safeType || !p.type));
@@ -824,20 +812,36 @@
                 document.getElementById('revHours').innerText = (appData.openTime && appData.closeTime) ? `${appData.openTime} - ${appData.closeTime}` : "Not specified";
                 
                 document.getElementById('revDocsSide').classList.remove('hidden');
-                // Handle FDA License
+                
+                // Store Photo
+                const storeImg = document.getElementById('revStoreImg');
+                const storeText = document.getElementById('revStoreText');
+                if(appData.storePhoto) { storeImg.src = appData.storePhoto; storeImg.classList.remove('hidden'); storeText.classList.add('hidden'); } 
+                else { storeImg.classList.add('hidden'); storeText.classList.remove('hidden'); }
+
+                // FDA License
                 const fdaImg = document.getElementById('revFdaImg');
                 const fdaText = document.getElementById('revFdaText');
                 if(appData.fdaLicense) { fdaImg.src = appData.fdaLicense; fdaImg.classList.remove('hidden'); fdaText.classList.add('hidden'); } 
                 else { fdaImg.classList.add('hidden'); fdaText.classList.remove('hidden'); }
 
-                // Handle Business Permit
+                // Business Permit
                 const permitImg = document.getElementById('revPermitImg');
                 const permitText = document.getElementById('revPermitText');
                 if(appData.permitPhoto) { permitImg.src = appData.permitPhoto; permitImg.classList.remove('hidden'); permitText.classList.add('hidden'); } 
                 else { permitImg.classList.add('hidden'); permitText.classList.remove('hidden'); }
                 
-                // Handle PRC ID Code
-                document.getElementById('revPrcText').innerText = appData.prcId || "No Data";
+                // PRC ID 
+                const prcImg = document.getElementById('revPrcImg');
+                const prcText = document.getElementById('revPrcText');
+                if(appData.prcId && appData.prcId.startsWith('data:image')) { 
+                    prcImg.src = appData.prcId; prcImg.classList.remove('hidden'); prcText.classList.add('hidden'); 
+                } else if(appData.prcId && appData.prcId !== 'Hidden for security') {
+                    // Try treating it as base64 string directly
+                    prcImg.src = appData.prcId; prcImg.classList.remove('hidden'); prcText.classList.add('hidden');
+                } else { 
+                    prcImg.classList.add('hidden'); prcText.classList.remove('hidden'); 
+                }
             }
 
             const modal = document.getElementById('adminReviewModal');
