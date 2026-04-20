@@ -722,6 +722,11 @@
                         
                         <div class="p-4 rounded-xl border border-brand-100 bg-brand-50/50 space-y-4">
                             <div>
+                                <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1">Pharmacy Store Photo</label>
+                                <p class="text-[9px] text-gray-400 mb-2">This will be shown to patients in search results.</p>
+                                <input type="file" id="regStorePhoto" required accept=".png, .jpeg, .jpg" class="w-full text-[10px] font-inter text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-sans-head file:font-bold file:uppercase file:tracking-widest file:bg-white file:text-brand-700 file:border file:border-brand-200 hover:file:bg-brand-50 cursor-pointer outline-none">
+                            </div>
+                            <div class="border-t border-brand-100/50 pt-3">
                                 <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1">FDA License to Operate</label>
                                 <input type="file" id="regFdaLicense" required accept=".png, .jpeg, .jpg, .pdf" class="w-full text-[10px] font-inter text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-sans-head file:font-bold file:uppercase file:tracking-widest file:bg-white file:text-brand-700 file:border file:border-brand-200 hover:file:bg-brand-50 cursor-pointer outline-none">
                             </div>
@@ -752,6 +757,7 @@
         
         let authState = JSON.parse(localStorage.getItem('ooc_user')) || { id: null, role: null, name: null };
         let tempPharmEmail = '';
+        let tempStorePhotoBase64 = null;
         let tempFdaBase64 = null;
         let tempPermitPhotoBase64 = null;
         let tempPrcIdBase64 = null;
@@ -909,10 +915,13 @@
                 document.getElementById('pharmSignupForm1').reset();
                 document.getElementById('pharmSignupForm2').reset();
                 document.getElementById('pharmSignupForm3').reset();
-                tempFdaBase64 = tempPermitPhotoBase64 = tempPrcIdBase64 = null;
+                tempStorePhotoBase64 = tempFdaBase64 = tempPermitPhotoBase64 = tempPrcIdBase64 = null;
             }, 300);
         }
 
+        document.getElementById('regStorePhoto').addEventListener('change', async function() {
+            if(this.files && this.files[0]) tempStorePhotoBase64 = await fileToBase64(this.files[0]);
+        });
         document.getElementById('regFdaLicense').addEventListener('change', async function() {
             if(this.files && this.files[0]) tempFdaBase64 = await fileToBase64(this.files[0]);
         });
@@ -969,8 +978,8 @@
         async function handlePharmSignupStep3(e) {
             e.preventDefault();
             const unlock = lockButton('btnPharmReg3', 'Submitting...');
-            if (!tempFdaBase64 || !tempPermitPhotoBase64 || !tempPrcIdBase64) {
-                showToast('Please upload all required legal documents.', 'error'); unlock(); return;
+            if (!tempStorePhotoBase64 || !tempFdaBase64 || !tempPermitPhotoBase64 || !tempPrcIdBase64) {
+                showToast('Please upload all required photos and legal documents.', 'error'); unlock(); return;
             }
             
             // Gather operating days
@@ -990,6 +999,7 @@
                 contactNumber: document.getElementById('regContact').value,
                 address: document.getElementById('regAddress').value,
                 mapLink: document.getElementById('regMapLink').value,
+                storePhoto: tempStorePhotoBase64,
                 fdaLicense: tempFdaBase64,
                 permitPhoto: tempPermitPhotoBase64,
                 prcIdEncoded: tempPrcIdBase64,
@@ -1370,4 +1380,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
