@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oath of Care | Pharmacy Partner Portal</title>
     
+    <!-- Premium Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome & Chart.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -259,13 +264,13 @@
                                         <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Operating Days</label>
                                         <!-- UPDATED: Use a separate class '.upd-day-pill' so it doesn't clash with Registration form -->
                                         <div class="flex justify-between gap-1 mb-4" id="updDaysContainer">
-                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Mon" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">M</div></label>
-                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Tue" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
-                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Wed" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">W</div></label>
-                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Thu" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
-                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Fri" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">F</div></label>
-                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Sat" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
-                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Sun" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Mon" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors opacity-60 cursor-not-allowed">M</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Tue" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors opacity-60 cursor-not-allowed">T</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Wed" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors opacity-60 cursor-not-allowed">W</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Thu" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors opacity-60 cursor-not-allowed">T</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Fri" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors opacity-60 cursor-not-allowed">F</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Sat" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors opacity-60 cursor-not-allowed">S</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Sun" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors opacity-60 cursor-not-allowed">S</div></label>
                                         </div>
 
                                         <div class="grid grid-cols-2 gap-4">
@@ -325,16 +330,17 @@
                             
                             <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                                 <div class="overflow-x-auto">
-                                    <table class="w-full text-left min-w-[900px]">
+                                    <table class="w-full text-left min-w-[1000px]">
                                         <thead>
                                             <tr class="bg-brand-50 text-brand-800 font-sans-head font-bold text-[10px] uppercase tracking-widest border-b border-gray-200">
-                                                <th class="p-5 font-bold">Generic Name</th>
-                                                <th class="p-5 font-bold">Medicine Name</th>
-                                                <th class="p-5 font-bold">Dosage</th>
-                                                <th class="p-5 font-bold">Category</th>
-                                                <th class="p-5 font-bold">Price (₱)</th>
-                                                <th class="p-5 font-bold text-center">Status</th>
-                                                <th class="p-5 font-bold text-right">Actions</th>
+                                                <th class="p-5 font-bold w-[25%]">Generic Name</th>
+                                                <!-- UPDATED: Brand Name -> Medicine Name -->
+                                                <th class="p-5 font-bold w-[20%]">Medicine Name</th>
+                                                <th class="p-5 font-bold w-[15%]">Dosage</th>
+                                                <th class="p-5 font-bold w-[15%]">Category</th>
+                                                <th class="p-5 font-bold w-[12%]">Price (₱)</th>
+                                                <th class="p-5 font-bold text-center w-[8%]">Status</th>
+                                                <th class="p-5 font-bold text-right w-[5%]">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="inventoryTable" class="divide-y divide-gray-100">
@@ -426,12 +432,13 @@
             <form id="addMedForm" onsubmit="submitAddMedicine(event)" class="space-y-5 block">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Generic Name</label>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Generic Name <span class="text-error">*</span></label>
                         <input type="text" required id="newMedGeneric" placeholder="e.g. Paracetamol" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                     <div>
-                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Medicine Name</label>
-                        <input type="text" id="newMedBrand" placeholder="e.g. Biogesic" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                        <!-- UPDATED: Brand Name -> Medicine Name AND REQUIRED -->
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Medicine Name <span class="text-error">*</span></label>
+                        <input type="text" required id="newMedBrand" placeholder="e.g. Biogesic" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                 </div>
                 
@@ -448,14 +455,14 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Price (₱)</label>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Price (₱) <span class="text-error">*</span></label>
                         <input type="number" step="0.01" required id="newMedPrice" placeholder="0.00" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Category</label>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Category <span class="text-error">*</span></label>
                         <div class="relative">
                             <select id="newMedCategory" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm appearance-none outline-none cursor-pointer pr-10">
                                 <option value="Over the Counter (OTC)">Over the Counter (OTC)</option>
@@ -486,6 +493,7 @@
                         <i class="fa-solid fa-circle-info text-brand-600 text-lg mt-0.5"></i>
                         <div>
                             <h4 class="font-sans-head font-bold text-brand-900 text-xs uppercase tracking-widest mb-1">CSV Requirements</h4>
+                            <!-- UPDATED CSV TEMPLATE TEXT -->
                             <p class="text-xs font-inter text-gray-600 mb-3">Headers required: <b>Generic Name, Medicine Name, Dosage, Unit, Price, Status, Category</b>.</p>
                             <button type="button" onclick="downloadCSVTemplate()" class="text-[9px] font-sans-head font-bold bg-white text-brand-700 px-3 py-1.5 rounded-lg border border-brand-200 shadow-sm hover:bg-brand-50 transition-colors">
                                 <i class="fa-solid fa-download mr-1"></i> Download Template
@@ -495,7 +503,7 @@
                 </div>
 
                 <div>
-                    <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Upload CSV File</label>
+                    <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Upload CSV File <span class="text-error">*</span></label>
                     <input type="file" id="csvFileInput" required accept=".csv" class="w-full text-sm font-inter text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-sans-head file:font-bold file:uppercase file:tracking-widest file:bg-brand-100 file:text-brand-800 hover:file:bg-brand-200 file:transition-colors cursor-pointer outline-none border border-gray-200 bg-white rounded-xl p-1.5 shadow-sm">
                 </div>
 
@@ -631,7 +639,6 @@
                             <h4 class="font-sans-head font-bold text-brand-800 text-[10px] uppercase tracking-widest mb-4 border-b border-brand-100 pb-2">Operating Hours</h4>
                             
                             <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Operating Days</label>
-                            <!-- UPDATED: Use a separate class '.reg-day-pill' so it doesn't clash with Update form -->
                             <div class="flex justify-between gap-1 mb-4" id="regDaysContainer">
                                 <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Mon" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">M</div></label>
                                 <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Tue" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
@@ -696,7 +703,7 @@
                             </div>
                             <div class="border-t border-brand-100/50 pt-3">
                                 <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1">PRC ID (Pharmacist)</label>
-                                <p class="text-[9px] text-gray-400 mb-2">Will be securely encoded prior to transmission.</p>
+                                <p class="text-[9px] text-gray-400 mb-2">Please upload a clear photo of your PRC ID.</p>
                                 <input type="file" id="regPrcId" required accept=".png, .jpeg, .jpg, .pdf" class="w-full text-[10px] font-inter text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-sans-head file:font-bold file:uppercase file:tracking-widest file:bg-white file:text-brand-700 file:border file:border-brand-200 hover:file:bg-brand-50 cursor-pointer outline-none">
                             </div>
                         </div>
@@ -791,8 +798,6 @@
         }
 
         // --- NEW OPTIMIZED IMAGE COMPRESSOR ---
-        // This resizes images down to 800px and saves as compressed JPEG. 
-        // Solves the browser freezing and broken payload errors.
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -926,9 +931,9 @@
         });
         document.getElementById('regPrcId').addEventListener('change', async function() {
             if(this.files && this.files[0]) {
-                const rawBase64 = await fileToBase64(this.files[0]);
-                tempPrcIdBase64 = "ENCODED_PRC_" + btoa(rawBase64.substring(0, 100)) + "..."; 
-                showToast("PRC ID securely encoded for transmission.", "success");
+                showToast("Compressing PRC ID...", "success");
+                tempPrcIdBase64 = await fileToBase64(this.files[0]);
+                showToast("PRC ID uploaded successfully.", "success");
             }
         });
 
@@ -978,7 +983,6 @@
                 showToast('Please upload all required photos and legal documents.', 'error'); unlock(); return;
             }
             
-            // Gather operating days safely from REGISTRATION tab only
             let selectedDays = [];
             document.querySelectorAll('.reg-day-pill:checked').forEach(cb => {
                 selectedDays.push(cb.value);
@@ -1068,8 +1072,9 @@
         }
 
         function toggleProfileEdit() {
-            const inputs = document.querySelectorAll('#profileUpdateForm input, #profileUpdateForm select');
+            const inputs = document.querySelectorAll('#profileUpdateForm input[type="text"], #profileUpdateForm input[type="url"], #profileUpdateForm select');
             const isDisabled = inputs[0].disabled;
+            
             inputs.forEach(input => {
                 input.disabled = !isDisabled;
                 if(!isDisabled) {
@@ -1080,6 +1085,18 @@
                     input.classList.remove('border-brand-200', 'bg-brand-50');
                 }
             });
+
+            // Unlock the custom day checkboxes
+            const dayCheckboxes = document.querySelectorAll('.upd-day-pill');
+            dayCheckboxes.forEach(cb => {
+                cb.disabled = !isDisabled;
+                if(!isDisabled) {
+                    cb.nextElementSibling.classList.remove('opacity-60', 'cursor-not-allowed');
+                } else {
+                    cb.nextElementSibling.classList.add('opacity-60', 'cursor-not-allowed');
+                }
+            });
+
             const btnEdit = document.getElementById('btnEditProfile');
             const btnSave = document.getElementById('btnUpdateProfile');
             if(isDisabled) {
@@ -1092,7 +1109,7 @@
                 btnEdit.classList.replace('bg-gray-100', 'bg-brand-50');
                 btnEdit.classList.replace('text-gray-600', 'text-brand-800');
                 btnSave.classList.add('hidden');
-                fetchPharmacyData(); 
+                fetchPharmacyData(); // Reset values
             }
         }
 
@@ -1128,7 +1145,7 @@
         });
 
         function downloadCSVTemplate() {
-            const csvContent = "data:text/csv;charset=utf-8,Generic Name,Medicine Name,Dosage,Unit,Price,Status,Category\nParacetamol,Biogesic,500,mg,10.00,In Stock,Over the Counter (OTC)\nAmoxicillin,,250,mg,15.50,Out of Stock,Prescription";
+            const csvContent = "data:text/csv;charset=utf-8,Generic Name,Medicine Name,Dosage,Unit,Price,Status,Category\nParacetamol,Biogesic,500,mg,10.00,In Stock,Over the Counter (OTC)\nAmoxicillin,Amoxil,250,mg,15.50,Out of Stock,Prescription";
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
@@ -1137,7 +1154,6 @@
         }
 
         // --- REAL CSV PARSING ENGINE ---
-        // Reads CSV file and pushes each row directly to the backend
         async function processBatchCSV(e) {
             e.preventDefault();
             const fileInput = document.getElementById('csvFileInput');
@@ -1156,16 +1172,14 @@
                 let successCount = 0;
 
                 for (let i = 1; i < rows.length; i++) {
-                    // Split row respecting standard commas
                     const cols = rows[i].split(',').map(c => c.trim());
-                    if (cols.length < 5) continue; // Skip bad rows
+                    if (cols.length < 5) continue; 
                     
                     const generic = cols[0];
-                    const brand = cols[1] || '';
+                    const brand = cols[1] || ''; // Medicine Name
                     const dosNum = cols[2] || '';
                     const dosUnit = cols[3] || '';
                     
-                    // Clean price string, remove peso sign if exists
                     let priceString = cols[4] || '0';
                     priceString = priceString.replace(/[^0-9.]/g, ''); 
                     const price = parseFloat(priceString) || 0;
@@ -1178,7 +1192,7 @@
                     const finalStatus = statusStr.toLowerCase().includes('out') ? 'Out of Stock' : 'In Stock';
 
                     try {
-                        await fetch(`${API_URL}/api/medicines`, {
+                        const res = await fetch(`${API_URL}/api/medicines`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ 
@@ -1192,7 +1206,7 @@
                                 pharmacyId: authState.id 
                             })
                         });
-                        successCount++;
+                        if (res.ok) successCount++;
                     } catch(e) {
                         console.error('Failed to upload row', i);
                     }
@@ -1219,6 +1233,7 @@
             } catch (error) { showToast('Requires Backend API update.', 'error'); fetchPharmacyData(); }
         }
 
+        // FULLY ENABLED INLINE EDITING 
         async function updateMedInline(medId, field, value) {
             try {
                 const response = await fetch(`${API_URL}/api/medicines/${medId}`, {
@@ -1226,12 +1241,13 @@
                     body: JSON.stringify({ [field]: value })
                 });
                 if(response.ok) showToast('Item updated.');
-                else showToast('Requires Backend API update.', 'error');
+                else showToast('Failed to save. Ensure Backend is updated.', 'error');
             } catch(e) { showToast('Network error', 'error'); }
         }
 
         async function fetchPharmacyData() {
             try {
+                // Populate Profile
                 const profileRes = await fetch(`${API_URL}/api/pharmacy/profile/${authState.id}`);
                 if(profileRes.ok) {
                     const profile = await profileRes.json();
@@ -1243,8 +1259,23 @@
                     
                     if(profile.openTime) document.getElementById('updOpenTime').value = profile.openTime;
                     if(profile.closeTime) document.getElementById('updCloseTime').value = profile.closeTime;
+                    
+                    // Maps the loaded Operating Days into the UI
+                    if(profile.operatingDays) {
+                        const days = profile.operatingDays.split(',').map(d => d.trim());
+                        document.querySelectorAll('.upd-day-pill').forEach(cb => {
+                            cb.checked = days.includes(cb.value);
+                            cb.nextElementSibling.classList.add('opacity-60', 'cursor-not-allowed'); // Lock UI initially
+                        });
+                    } else {
+                        document.querySelectorAll('.upd-day-pill').forEach(cb => {
+                            cb.checked = false;
+                            cb.nextElementSibling.classList.add('opacity-60', 'cursor-not-allowed');
+                        });
+                    }
                 }
 
+                // Populate Inventory
                 const medRes = await fetch(`${API_URL}/api/medicines/${authState.id}`);
                 const tbody = document.getElementById('inventoryTable');
                 tbody.innerHTML = '';
@@ -1254,15 +1285,41 @@
                     if(meds.length > 0) {
                         meds.forEach(med => {
                             let isOut = med.status === 'Out of Stock';
-                            let generic = med.genericName && med.genericName !== "" ? med.genericName : med.name; 
-                            let brand = med.brandName && med.brandName !== "" ? med.brandName : "N/A"; 
-                            let dosage = med.dosage && med.dosage !== "" ? med.dosage : "-";
+                            
+                            // 💡 SMART FALLBACK: If columns didn't save, reconstruct them securely from the name string.
+                            let generic = med.genericName;
+                            let brand = med.brandName;
+                            let dosage = med.dosage;
+
+                            if (!generic || generic === med.name) {
+                                let n = med.name;
+                                if (n.includes('(') && n.includes(')')) {
+                                    generic = n.split('(')[0].trim();
+                                    brand = n.substring(n.indexOf('(')+1, n.indexOf(')')).trim();
+                                    dosage = n.substring(n.indexOf(')')+1).trim();
+                                } else {
+                                    let parts = n.split(' ');
+                                    dosage = parts.pop();
+                                    generic = parts.join(' ').trim();
+                                    brand = "";
+                                }
+                            }
+                            
+                            generic = generic || "";
+                            brand = brand || "";
+                            dosage = dosage || "";
                             
                             tbody.innerHTML += `
                                 <tr class="hover:bg-brand-50/30 transition-colors group">
-                                    <td class="p-4 border-b border-gray-100 font-sans-head font-bold text-brand-900 text-xs">${generic}</td>
-                                    <td class="p-4 border-b border-gray-100 font-inter text-gray-600 text-xs">${brand}</td>
-                                    <td class="p-4 border-b border-gray-100 font-inter text-gray-500 text-xs">${dosage}</td>
+                                    <td class="p-4 border-b border-gray-100">
+                                        <input type="text" value="${generic}" class="editable-cell text-xs font-sans-head font-bold text-brand-900 bg-transparent w-full" onblur="updateMedInline(${med.id}, 'genericName', this.value)">
+                                    </td>
+                                    <td class="p-4 border-b border-gray-100">
+                                        <input type="text" value="${brand}" placeholder="N/A" class="editable-cell text-xs font-inter text-gray-600 bg-transparent w-full" onblur="updateMedInline(${med.id}, 'brandName', this.value)">
+                                    </td>
+                                    <td class="p-4 border-b border-gray-100">
+                                        <input type="text" value="${dosage}" placeholder="-" class="editable-cell text-xs font-inter text-gray-500 bg-transparent w-full" onblur="updateMedInline(${med.id}, 'dosage', this.value)">
+                                    </td>
                                     <td class="p-4 border-b border-gray-100">
                                         <select class="editable-cell text-xs font-inter text-charcoal bg-transparent appearance-none cursor-pointer" onchange="updateMedInline(${med.id}, 'category', this.value)">
                                             <option value="Over the Counter (OTC)" ${med.category==='Over the Counter (OTC)'?'selected':''}>OTC</option>
@@ -1332,7 +1389,6 @@
             e.preventDefault();
             const unlock = lockButton('btnUpdateProfile', 'Saving...');
             
-            // Gather operating days from UPDATE tab safely
             let selectedDays = [];
             document.querySelectorAll('.upd-day-pill:checked').forEach(cb => {
                 selectedDays.push(cb.value);
