@@ -5,16 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oath of Care | Pharmacy Partner Portal</title>
     
-    <!-- Premium Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome & Chart.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -23,27 +18,15 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f7fcf5',
-                            100: '#e5f5e0',
-                            200: '#c7e9c0',
-                            300: '#a1d99b',
-                            400: '#74c476',
-                            500: '#41ab5d',
-                            600: '#238b45',
-                            700: '#006d2c',
-                            800: '#00441b',
-                            900: '#002a11'
+                            50: '#f7fcf5', 100: '#e5f5e0', 200: '#c7e9c0', 300: '#a1d99b',
+                            400: '#74c476', 500: '#41ab5d', 600: '#238b45', 700: '#006d2c',
+                            800: '#00441b', 900: '#002a11'
                         },
-                        mocha: '#b08d6a',
-                        charcoal: '#1A1A1A',
-                        starkBlack: '#09090b',
-                        surface: '#FFFFFF',
-                        error: '#DC2626'
+                        mocha: '#b08d6a', charcoal: '#1A1A1A', starkBlack: '#09090b',
+                        surface: '#FFFFFF', error: '#DC2626'
                     },
                     fontFamily: {
-                        poppins: ['"Poppins"', 'sans-serif'],
-                        serif: ['"Playfair Display"', 'serif'],
-                        inter: ['"Inter"', 'sans-serif'],
+                        poppins: ['"Poppins"', 'sans-serif'], serif: ['"Playfair Display"', 'serif'], inter: ['"Inter"', 'sans-serif'],
                     },
                     boxShadow: {
                         'luxury': '0 20px 40px -15px rgba(0, 68, 27, 0.15)',
@@ -58,13 +41,7 @@
     </script>
 
     <style>
-        body {
-            background-color: #f7fcf5;
-            color: #1A1A1A;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-
+        body { background-color: #f7fcf5; color: #1A1A1A; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
         .font-sans-head { font-family: 'Poppins', sans-serif; }
 
@@ -74,40 +51,20 @@
             transition: background-color 5000s ease-in-out 0s;
         }
 
-        /* Read-only state styles for inputs */
-        input:disabled, select:disabled {
-            background-color: #f7fcf5 !important;
-            color: #6b7280 !important;
-            cursor: not-allowed;
-            border-color: transparent !important;
-            box-shadow: none !important;
-        }
-
-        select.no-custom-arrow {
-            background-image: none !important;
-        }
+        input:disabled, select:disabled { background-color: #f7fcf5 !important; color: #6b7280 !important; cursor: not-allowed; border-color: transparent !important; box-shadow: none !important; }
+        select.no-custom-arrow { background-image: none !important; }
         
         select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
+            -webkit-appearance: none; -moz-appearance: none;
             background-image: url("data:image/svg+xml;utf8,<svg fill='%23006d2c' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-            background-repeat: no-repeat;
-            background-position-x: 95%;
-            background-position-y: 50%;
-            background-size: 14px;
+            background-repeat: no-repeat; background-position-x: 95%; background-position-y: 50%; background-size: 14px;
         }
 
-        #toast-container {
-            position: fixed; bottom: 30px; right: 30px; z-index: 9999;
-            display: flex; flex-direction: column; gap: 15px;
-        }
+        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; }
         .toast {
-            background: #1A1A1A; color: #ffffff; padding: 18px 24px;
-            border-left: 4px solid #41ab5d; border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif;
-            font-size: 0.95rem; font-weight: 500;
+            background: #1A1A1A; color: #ffffff; padding: 18px 24px; border-left: 4px solid #41ab5d; border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 500;
         }
         .toast.show { transform: translateX(0); }
         .toast.error { border-left-color: #DC2626; }
@@ -118,30 +75,16 @@
 
         .view-section { display: none; opacity: 0; }
         .view-section.active { display: flex; animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
 
-        /* Custom Toggle Switch Styles */
         .table-toggle:checked + .table-toggle-label { background-color: #41ab5d; }
         
-        .editable-cell {
-            border: 1px solid transparent;
-            border-radius: 6px;
-            padding: 4px 8px;
-            transition: all 0.2s;
-            width: 100%;
-        }
+        .editable-cell { border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; transition: all 0.2s; width: 100%; }
         .editable-cell:hover { border-color: #c7e9c0; background: #fff; }
         .editable-cell:focus { border-color: #41ab5d; background: #fff; outline: none; box-shadow: 0 2px 8px rgba(0,109,44,0.1); }
         
         /* Checkbox Pills Styling */
-        .day-pill-checkbox:checked + div {
-            background-color: #00441b;
-            color: white;
-            border-color: #00441b;
-        }
+        .reg-day-pill:checked + div, .upd-day-pill:checked + div { background-color: #00441b; color: white; border-color: #00441b; }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen relative">
@@ -308,36 +251,54 @@
                                         <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Google Maps Link</label>
                                         <input type="url" id="updMap" required disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                                     </div>
-                                    <div class="md:col-span-2 grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
-                                        <div>
-                                            <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Opening Time</label>
-                                            <select id="updOpenTime" disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
-                                                <option value="12:00 AM">12:00 AM (Midnight)</option>
-                                                <option value="1:00 AM">1:00 AM</option><option value="2:00 AM">2:00 AM</option><option value="3:00 AM">3:00 AM</option>
-                                                <option value="4:00 AM">4:00 AM</option><option value="5:00 AM">5:00 AM</option><option value="6:00 AM">6:00 AM</option>
-                                                <option value="7:00 AM">7:00 AM</option><option value="8:00 AM" selected>8:00 AM</option><option value="9:00 AM">9:00 AM</option>
-                                                <option value="10:00 AM">10:00 AM</option><option value="11:00 AM">11:00 AM</option>
-                                                <option value="12:00 PM">12:00 PM (Noon)</option>
-                                                <option value="1:00 PM">1:00 PM</option><option value="2:00 PM">2:00 PM</option><option value="3:00 PM">3:00 PM</option>
-                                                <option value="4:00 PM">4:00 PM</option><option value="5:00 PM">5:00 PM</option><option value="6:00 PM">6:00 PM</option>
-                                                <option value="7:00 PM">7:00 PM</option><option value="8:00 PM">8:00 PM</option><option value="9:00 PM">9:00 PM</option>
-                                                <option value="10:00 PM">10:00 PM</option><option value="11:00 PM">11:00 PM</option>
-                                            </select>
+                                    
+                                    <!-- Store Hours Settings (UPDATE TAB) -->
+                                    <div class="md:col-span-2 p-4 rounded-xl border border-brand-100 bg-brand-50/30">
+                                        <h4 class="font-sans-head font-bold text-brand-800 text-[10px] uppercase tracking-widest mb-4 border-b border-brand-100 pb-2">Operating Hours</h4>
+                                        
+                                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Operating Days</label>
+                                        <!-- UPDATED: Use a separate class '.upd-day-pill' so it doesn't clash with Registration form -->
+                                        <div class="flex justify-between gap-1 mb-4" id="updDaysContainer">
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Mon" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">M</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Tue" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Wed" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">W</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Thu" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Fri" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">F</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Sat" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
+                                            <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only upd-day-pill" value="Sun" disabled><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
                                         </div>
-                                        <div>
-                                            <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Closing Time</label>
-                                            <select id="updCloseTime" disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
-                                                <option value="12:00 AM">12:00 AM (Midnight)</option>
-                                                <option value="1:00 AM">1:00 AM</option><option value="2:00 AM">2:00 AM</option><option value="3:00 AM">3:00 AM</option>
-                                                <option value="4:00 AM">4:00 AM</option><option value="5:00 AM">5:00 AM</option><option value="6:00 AM">6:00 AM</option>
-                                                <option value="7:00 AM">7:00 AM</option><option value="8:00 AM">8:00 AM</option><option value="9:00 AM">9:00 AM</option>
-                                                <option value="10:00 AM">10:00 AM</option><option value="11:00 AM">11:00 AM</option>
-                                                <option value="12:00 PM">12:00 PM (Noon)</option>
-                                                <option value="1:00 PM">1:00 PM</option><option value="2:00 PM">2:00 PM</option><option value="3:00 PM">3:00 PM</option>
-                                                <option value="4:00 PM">4:00 PM</option><option value="5:00 PM">5:00 PM</option><option value="6:00 PM">6:00 PM</option>
-                                                <option value="7:00 PM">7:00 PM</option><option value="8:00 PM" selected>8:00 PM</option><option value="9:00 PM">9:00 PM</option>
-                                                <option value="10:00 PM">10:00 PM</option><option value="11:00 PM">11:00 PM</option>
-                                            </select>
+
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Opening Time</label>
+                                                <select id="updOpenTime" disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                                                    <option value="12:00 AM">12:00 AM (Midnight)</option>
+                                                    <option value="1:00 AM">1:00 AM</option><option value="2:00 AM">2:00 AM</option><option value="3:00 AM">3:00 AM</option>
+                                                    <option value="4:00 AM">4:00 AM</option><option value="5:00 AM">5:00 AM</option><option value="6:00 AM">6:00 AM</option>
+                                                    <option value="7:00 AM">7:00 AM</option><option value="8:00 AM" selected>8:00 AM</option><option value="9:00 AM">9:00 AM</option>
+                                                    <option value="10:00 AM">10:00 AM</option><option value="11:00 AM">11:00 AM</option>
+                                                    <option value="12:00 PM">12:00 PM (Noon)</option>
+                                                    <option value="1:00 PM">1:00 PM</option><option value="2:00 PM">2:00 PM</option><option value="3:00 PM">3:00 PM</option>
+                                                    <option value="4:00 PM">4:00 PM</option><option value="5:00 PM">5:00 PM</option><option value="6:00 PM">6:00 PM</option>
+                                                    <option value="7:00 PM">7:00 PM</option><option value="8:00 PM">8:00 PM</option><option value="9:00 PM">9:00 PM</option>
+                                                    <option value="10:00 PM">10:00 PM</option><option value="11:00 PM">11:00 PM</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Closing Time</label>
+                                                <select id="updCloseTime" disabled class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
+                                                    <option value="12:00 AM">12:00 AM (Midnight)</option>
+                                                    <option value="1:00 AM">1:00 AM</option><option value="2:00 AM">2:00 AM</option><option value="3:00 AM">3:00 AM</option>
+                                                    <option value="4:00 AM">4:00 AM</option><option value="5:00 AM">5:00 AM</option><option value="6:00 AM">6:00 AM</option>
+                                                    <option value="7:00 AM">7:00 AM</option><option value="8:00 AM">8:00 AM</option><option value="9:00 AM">9:00 AM</option>
+                                                    <option value="10:00 AM">10:00 AM</option><option value="11:00 AM">11:00 AM</option>
+                                                    <option value="12:00 PM">12:00 PM (Noon)</option>
+                                                    <option value="1:00 PM">1:00 PM</option><option value="2:00 PM">2:00 PM</option><option value="3:00 PM">3:00 PM</option>
+                                                    <option value="4:00 PM">4:00 PM</option><option value="5:00 PM">5:00 PM</option><option value="6:00 PM">6:00 PM</option>
+                                                    <option value="7:00 PM">7:00 PM</option><option value="8:00 PM" selected>8:00 PM</option><option value="9:00 PM">9:00 PM</option>
+                                                    <option value="10:00 PM">10:00 PM</option><option value="11:00 PM">11:00 PM</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     
@@ -518,7 +479,7 @@
                 </div>
             </form>
 
-            <!-- BATCH UPLOAD FORM -->
+            <!-- BATCH UPLOAD FORM WITH REAL LOGIC -->
             <form id="batchUploadForm" onsubmit="processBatchCSV(event)" class="hidden space-y-5">
                 <div class="bg-brand-50 border border-brand-200 rounded-xl p-5 mb-2">
                     <div class="flex items-start gap-3">
@@ -649,7 +610,6 @@
                                     <option value="Bigte">Bigte</option>
                                     <option value="Bitungol">Bitungol</option>
                                     <option value="Poblacion">Poblacion</option>
-                                    <!-- Add other barangays as needed -->
                                 </select>
                             </div>
                             <div>
@@ -666,20 +626,20 @@
                             <input type="url" id="regMapLink" required placeholder="https://maps.google.com/..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-brand-500 transition-all text-charcoal font-inter text-sm outline-none">
                         </div>
 
-                        <!-- Store Hours Settings (NEW) -->
+                        <!-- Store Hours Settings -->
                         <div class="p-4 rounded-xl border border-brand-100 bg-brand-50/30">
                             <h4 class="font-sans-head font-bold text-brand-800 text-[10px] uppercase tracking-widest mb-4 border-b border-brand-100 pb-2">Operating Hours</h4>
                             
                             <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Operating Days</label>
-                            <!-- Day Selection Pills -->
-                            <div class="flex justify-between gap-1 mb-4">
-                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Mon" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">M</div></label>
-                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Tue" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
-                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Wed" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">W</div></label>
-                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Thu" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
-                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Fri" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">F</div></label>
-                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Sat" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
-                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only day-pill-checkbox" value="Sun" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
+                            <!-- UPDATED: Use a separate class '.reg-day-pill' so it doesn't clash with Update form -->
+                            <div class="flex justify-between gap-1 mb-4" id="regDaysContainer">
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Mon" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">M</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Tue" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Wed" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">W</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Thu" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">T</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Fri" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">F</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Sat" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
+                                <label class="flex-1 cursor-pointer relative"><input type="checkbox" class="peer sr-only reg-day-pill" value="Sun" checked><div class="text-center py-2 rounded-lg border border-gray-200 bg-white text-gray-400 text-[11px] font-sans-head font-bold transition-colors">S</div></label>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
@@ -830,11 +790,44 @@
             showToast('Signed out securely.');
         }
 
+        // --- NEW OPTIMIZED IMAGE COMPRESSOR ---
+        // This resizes images down to 800px and saves as compressed JPEG. 
+        // Solves the browser freezing and broken payload errors.
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800;
+                        const MAX_HEIGHT = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                    };
+                    img.onerror = (e) => reject(e);
+                };
                 reader.onerror = error => reject(error);
             });
         }
@@ -920,7 +913,10 @@
         }
 
         document.getElementById('regStorePhoto').addEventListener('change', async function() {
-            if(this.files && this.files[0]) tempStorePhotoBase64 = await fileToBase64(this.files[0]);
+            if(this.files && this.files[0]) {
+                showToast("Compressing store photo...", "success");
+                tempStorePhotoBase64 = await fileToBase64(this.files[0]);
+            }
         });
         document.getElementById('regFdaLicense').addEventListener('change', async function() {
             if(this.files && this.files[0]) tempFdaBase64 = await fileToBase64(this.files[0]);
@@ -982,9 +978,9 @@
                 showToast('Please upload all required photos and legal documents.', 'error'); unlock(); return;
             }
             
-            // Gather operating days
+            // Gather operating days safely from REGISTRATION tab only
             let selectedDays = [];
-            document.querySelectorAll('.day-pill-checkbox:checked').forEach(cb => {
+            document.querySelectorAll('.reg-day-pill:checked').forEach(cb => {
                 selectedDays.push(cb.value);
             });
             const operatingDays = selectedDays.join(', ');
@@ -1071,7 +1067,6 @@
             if(tab === 'reports') renderReports();
         }
 
-        // Profile Editing Logic
         function toggleProfileEdit() {
             const inputs = document.querySelectorAll('#profileUpdateForm input, #profileUpdateForm select');
             const isDisabled = inputs[0].disabled;
@@ -1097,7 +1092,7 @@
                 btnEdit.classList.replace('bg-gray-100', 'bg-brand-50');
                 btnEdit.classList.replace('text-gray-600', 'text-brand-800');
                 btnSave.classList.add('hidden');
-                fetchPharmacyData(); // Reset to original values
+                fetchPharmacyData(); 
             }
         }
 
@@ -1141,6 +1136,8 @@
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
+        // --- REAL CSV PARSING ENGINE ---
+        // Reads CSV file and pushes each row directly to the backend
         async function processBatchCSV(e) {
             e.preventDefault();
             const fileInput = document.getElementById('csvFileInput');
@@ -1152,11 +1149,60 @@
             reader.onload = async function(event) {
                 const text = event.target.result;
                 const rows = text.split('\n').map(r => r.trim()).filter(r => r);
+                
                 if (rows.length < 2) { unlock(); return showToast('CSV is empty.', 'error'); }
-                showToast(`Mock Batch Process: Sent ${rows.length - 1} items.`);
+                
+                showToast(`Processing ${rows.length - 1} records...`);
+                let successCount = 0;
+
+                for (let i = 1; i < rows.length; i++) {
+                    // Split row respecting standard commas
+                    const cols = rows[i].split(',').map(c => c.trim());
+                    if (cols.length < 5) continue; // Skip bad rows
+                    
+                    const generic = cols[0];
+                    const brand = cols[1] || '';
+                    const dosNum = cols[2] || '';
+                    const dosUnit = cols[3] || '';
+                    
+                    // Clean price string, remove peso sign if exists
+                    let priceString = cols[4] || '0';
+                    priceString = priceString.replace(/[^0-9.]/g, ''); 
+                    const price = parseFloat(priceString) || 0;
+                    
+                    const statusStr = cols[5] || 'In Stock';
+                    const category = cols[6] || 'Over the Counter (OTC)';
+
+                    const dosage = dosNum ? `${dosNum}${dosUnit}` : '';
+                    const legacyName = brand ? `${generic} (${brand}) ${dosage}`.trim() : `${generic} ${dosage}`.trim();
+                    const finalStatus = statusStr.toLowerCase().includes('out') ? 'Out of Stock' : 'In Stock';
+
+                    try {
+                        await fetch(`${API_URL}/api/medicines`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                name: legacyName, 
+                                genericName: generic, 
+                                brandName: brand, 
+                                dosage: dosage, 
+                                price: price, 
+                                status: finalStatus, 
+                                category: category, 
+                                pharmacyId: authState.id 
+                            })
+                        });
+                        successCount++;
+                    } catch(e) {
+                        console.error('Failed to upload row', i);
+                    }
+                }
+                
                 document.getElementById('addModal').classList.add('hidden');
                 document.getElementById('batchUploadForm').reset();
-                fetchPharmacyData(); unlock();
+                showToast(`Successfully uploaded ${successCount} medicines.`);
+                fetchPharmacyData();
+                unlock();
             };
             reader.readAsText(file);
         }
@@ -1195,7 +1241,6 @@
                     document.getElementById('updAddress').value = profile.address || '';
                     document.getElementById('updMap').value = profile.mapLink || '';
                     
-                    // Update Hours if available from API
                     if(profile.openTime) document.getElementById('updOpenTime').value = profile.openTime;
                     if(profile.closeTime) document.getElementById('updCloseTime').value = profile.closeTime;
                 }
@@ -1209,8 +1254,9 @@
                     if(meds.length > 0) {
                         meds.forEach(med => {
                             let isOut = med.status === 'Out of Stock';
-                            let generic = med.name; let brand = "N/A"; let dosage = "-";
-                            if(med.genericName) { generic = med.genericName; brand = med.brandName || "N/A"; dosage = med.dosage || "-"; }
+                            let generic = med.genericName && med.genericName !== "" ? med.genericName : med.name; 
+                            let brand = med.brandName && med.brandName !== "" ? med.brandName : "N/A"; 
+                            let dosage = med.dosage && med.dosage !== "" ? med.dosage : "-";
                             
                             tbody.innerHTML += `
                                 <tr class="hover:bg-brand-50/30 transition-colors group">
@@ -1285,6 +1331,14 @@
         async function handleUpdateProfile(e) {
             e.preventDefault();
             const unlock = lockButton('btnUpdateProfile', 'Saving...');
+            
+            // Gather operating days from UPDATE tab safely
+            let selectedDays = [];
+            document.querySelectorAll('.upd-day-pill:checked').forEach(cb => {
+                selectedDays.push(cb.value);
+            });
+            const operatingDays = selectedDays.join(', ');
+            
             try {
                 const res = await fetch(`${API_URL}/api/pharmacy/update`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1295,7 +1349,8 @@
                         address: document.getElementById('updAddress').value,
                         mapLink: document.getElementById('updMap').value,
                         openTime: document.getElementById('updOpenTime').value,
-                        closeTime: document.getElementById('updCloseTime').value
+                        closeTime: document.getElementById('updCloseTime').value,
+                        operatingDays: operatingDays
                     })
                 });
                 if(res.ok) { 
@@ -1308,7 +1363,6 @@
             } catch(e) { showToast('Update error', 'error'); } finally { unlock(); }
         }
 
-        // Analytics Rendering (Ngayon ay kumukuha na sa mismong Database)
         async function renderReports() {
             const filterDate = document.getElementById('reportDateFilter').value;
             const alertBox = document.getElementById('reportAlert');
@@ -1316,36 +1370,29 @@
             if (!authState.id) return;
             
             try {
-                // Magpakita ng loading state habang kinukuha ang data sa database
                 document.getElementById('repMostSearched').innerText = "Loading...";
                 document.getElementById('repMostClicked').innerText = "Loading...";
 
-                // Fetch real data from your backend
                 const response = await fetch(`${API_URL}/api/pharmacy/analytics/${authState.id}?filter=${filterDate}`);
                 
                 if (!response.ok) throw new Error('Hindi makuha ang data mula sa server.');
                 const data = await response.json();
                 
-                // Kunin ang bilang ng Yes at No mula sa database
                 const reportNo = data.feedback?.no || 0;
                 const reportYes = data.feedback?.yes || 0;
                 const totalFeedbacks = reportNo + reportYes;
                 
-                // Computin ang percentage ng "Out of Stock" (No)
                 const noPercentage = totalFeedbacks > 0 ? (reportNo / totalFeedbacks) * 100 : 0;
                 
-                // Ipakita ang warning kung higit 20% ang nagrereport na wala silang stock (at kung may sapat na bilang ng nag-report)
                 if(noPercentage > 20 && totalFeedbacks > 5) { 
                     alertBox.classList.remove('hidden'); 
                 } else { 
                     alertBox.classList.add('hidden'); 
                 }
 
-                // I-update ang teksto base sa database
                 document.getElementById('repMostSearched').innerText = data.mostSearched || "N/A";
                 document.getElementById('repMostClicked').innerText = data.mostClicked || "N/A";
 
-                // I-update ang Pie Chart gamit ang totoong datos
                 if(pieChartInstance) pieChartInstance.destroy();
                 const ctxPie = document.getElementById('pieChart').getContext('2d');
                 pieChartInstance = new Chart(ctxPie, {
@@ -1357,7 +1404,6 @@
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: "'Inter', sans-serif", size: 10 } } } }, cutout: '70%' }
                 });
 
-                // I-update ang Bar Chart gamit ang totoong datos
                 if(barChartInstance) barChartInstance.destroy();
                 const ctxBar = document.getElementById('barChart').getContext('2d');
                 barChartInstance = new Chart(ctxBar, {
@@ -1380,4 +1426,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
