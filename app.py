@@ -118,7 +118,7 @@ class Pharmacy(db.Model):
     ContactNumber = db.Column(db.String(20), nullable=False)
     FullAddress = db.Column(db.Text, nullable=False)
     GoogleMapLink = db.Column(db.Text, nullable=True)
-    LogoPhotoPath = db.Column(db.Text, nullable=True) # Used for Store Photo
+    LogoPhotoPath = db.Column(db.Text, nullable=True)
     FDALicense = db.Column(db.Text, nullable=True) 
     PermitPhotoPath = db.Column(db.Text, nullable=True)
     PRC_ID = db.Column(db.Text, nullable=True) 
@@ -147,10 +147,10 @@ class PharmacyStatus(db.Model):
 class Medicine(db.Model):
     __tablename__ = 'medicine'
     MedicineID = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    MedicineName = db.Column(db.String(150), nullable=False) # Legacy concat
-    GenericName = db.Column(db.String(150), nullable=True) # NEW
-    BrandName = db.Column(db.String(150), nullable=True) # NEW
-    Dosage = db.Column(db.String(50), nullable=True) # NEW
+    MedicineName = db.Column(db.String(150), nullable=False)
+    GenericName = db.Column(db.String(150), nullable=True)
+    BrandName = db.Column(db.String(150), nullable=True)
+    Dosage = db.Column(db.String(50), nullable=True)
     Description = db.Column(db.Text, nullable=True)
     Price = db.Column(db.Numeric(10, 2), nullable=False)
     IsPrescriptionRequired = db.Column(db.Boolean, default=False)
@@ -353,7 +353,15 @@ def get_pharmacy_profile(pharm_id):
     try:
         pharmacy = Pharmacy.query.get(pharm_id)
         if not pharmacy: return jsonify({'error': 'Pharmacy not found'}), 404
-        return jsonify({'name': pharmacy.PharmacyName, 'contact': pharmacy.ContactNumber, 'address': pharmacy.FullAddress, 'mapLink': pharmacy.GoogleMapLink, 'openTime': pharmacy.OpenTime, 'closeTime': pharmacy.CloseTime}), 200
+        return jsonify({
+            'name': pharmacy.PharmacyName, 
+            'contact': pharmacy.ContactNumber, 
+            'address': pharmacy.FullAddress, 
+            'mapLink': pharmacy.GoogleMapLink, 
+            'openTime': pharmacy.OpenTime, 
+            'closeTime': pharmacy.CloseTime,
+            'operatingDays': getattr(pharmacy, 'OperatingDays', '')
+        }), 200
     except Exception as e:
         return jsonify({'error': 'Database error'}), 500
 
@@ -370,6 +378,9 @@ def update_pharmacy():
             pharmacy.GoogleMapLink = data.get('mapLink')
             pharmacy.OpenTime = data.get('openTime')
             pharmacy.CloseTime = data.get('closeTime')
+            if 'operatingDays' in data:
+                pharmacy.OperatingDays = data.get('operatingDays')
+                
             db.session.commit()
             return jsonify({'message': 'Profile updated successfully!'}), 200
         return jsonify({'error': 'Pharmacy not found'}), 404
@@ -463,6 +474,15 @@ def handle_medicine(med_id):
             if 'price' in data: med.Price = data['price']
             if 'category' in data: med.Description = data['category']
             
+            if 'genericName' in data: med.GenericName = data['genericName']
+            if 'brandName' in data: med.BrandName = data['brandName']
+            if 'dosage' in data: med.Dosage = data['dosage']
+            
+            g = med.GenericName or ''
+            b = med.BrandName or ''
+            d = med.Dosage or ''
+            med.MedicineName = f"{g} ({b}) {d}".strip() if b else f"{g} {d}".strip()
+            
             status = PharmacyStatus.query.filter_by(PharmacyID=med.PharmacyID).first()
             if status:
                 if status.IsDeactivated:
@@ -512,13 +532,12 @@ def search_medicine():
                 'inStock': med.InStock,
                 'strikes': getattr(status, 'StrikeCount', 0),
                 'storeImage': pharm.LogoPhotoPath, 
-                'operatingDays': getattr(pharm, 'OperatingDays', 'Not specified'), # FIX: Include OperatingDays in Search Results
+                'operatingDays': getattr(pharm, 'OperatingDays', 'Not specified'),
                 'openTime': pharm.OpenTime,
                 'closeTime': pharm.CloseTime,
                 'contactNumber': pharm.ContactNumber
             })
             
-            # LOG VISIBILITY FOR ANALYTICS
             try:
                 vis_log = PharmacyVisibilityLog(PharmacyID=pharm.PharmacyID, Action='Appeared', MedicineName=med.MedicineName)
                 db.session.add(vis_log)
@@ -563,7 +582,6 @@ def report_pharmacy_stock():
         if status and pharmacy and is_out_of_stock:
             account = PharmacyAccount.query.get(pharmacy.PharmacyAccountID)
             
-            # 1. SPECIFIC MEDICINE PENALTY
             if medicine_name:
                 medicine = Medicine.query.filter(Medicine.PharmacyID == pharm_id, Medicine.MedicineName == medicine_name).first()
                 if medicine:
@@ -579,7 +597,6 @@ def report_pharmacy_stock():
                         body = f'Notice: "{medicine.MedicineName}" has received 10 out-of-stock reports and was automatically marked as OUT OF STOCK to protect the reliability of the network.'
                         send_async_email(account.Email, subject, body)
 
-            # 2. OVERALL PHARMACY PENALTY
             status.StrikeCount += 1
             status.TotalLifetimeStrikes = getattr(status, 'TotalLifetimeStrikes', 0) + 1
             
@@ -705,7 +722,6 @@ def get_admin_stats():
                 'isDeactivated': getattr(status, 'IsDeactivated', False)
             })
 
-        # Display descending order of flags
         accuracy_data.sort(key=lambda x: x['strikes'], reverse=True)
 
         return jsonify({
@@ -760,7 +776,7 @@ def get_pending_applications():
                     'email': a.Email
                 })
         except Exception:
-            pass # Fallback in case Auto-Patcher has not been completed
+            pass
 
         return jsonify({
             'pharmacies': pharm_results,
@@ -775,7 +791,7 @@ def resolve_application():
     data = request.json
     app_id = data.get('id')
     app_type = data.get('type')
-    action = data.get('action') # 'approve' or 'reject'
+    action = data.get('action') 
 
     try:
         if app_type == 'pharmacy':
@@ -821,7 +837,7 @@ def toggle_pharmacy():
         if status:
             status.IsDeactivated = not status.IsDeactivated
             if status.IsDeactivated:
-                status.StrikeCount = 0 # Cleaning the slate during active deactivation
+                status.StrikeCount = 0 
             db.session.commit()
             return jsonify({'message': 'Pharmacy status toggled'}), 200
         return jsonify({'error': 'Not found'}), 404
@@ -840,7 +856,6 @@ def register_admin():
 
     hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
     try:
-        # Default IsApproved to false requiring manual approval from DB or SuperAdmin
         new_admin = Admin(Email=email, PasswordHash=hashed_pw, IsApproved=False)
         db.session.add(new_admin)
         db.session.commit()
@@ -851,7 +866,6 @@ def register_admin():
 
 def run_auto_deletion_check():
     try:
-        # DELETE FOR 3 MONTHS (90 days) OF DEACTIVATION
         three_months_ago = datetime.utcnow() - timedelta(days=90)
         abandoned_pharmacies = PharmacyStatus.query.filter(
             PharmacyStatus.IsDeactivated == True,
@@ -918,7 +932,6 @@ with app.app_context():
         db.session.commit()
     except Exception: db.session.rollback()
     
-    # NEW AUTOPATCHERS FOR MEDICINE BRAND/DOSAGE
     try:
         db.session.execute(text('ALTER TABLE medicine ADD COLUMN "GenericName" VARCHAR(150);'))
         db.session.commit()
