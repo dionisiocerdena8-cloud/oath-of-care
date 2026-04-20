@@ -9,7 +9,7 @@ from flask_bcrypt import Bcrypt
 from sqlalchemy import text, func
 from collections import defaultdict
 import threading
-import requests # Used for Brevo API
+import requests
 
 # Setup Flask to look for HTML files in the 'templates' folder
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -44,7 +44,6 @@ verification_codes = {}
 # ==========================================
 # BREVO API EMAIL SETUP
 # ==========================================
-# SAFE METHOD: Retrieving the key from Railway Variables (Environment)
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 SENDER_EMAIL = 'oathofcare@gmail.com'
 SENDER_NAME = 'Oath of Care System'
@@ -77,7 +76,6 @@ def send_brevo_email_task(to_email, subject, body_text):
         print(f"❌ [BREVO EXCEPTION] Network Error: {e}")
 
 def send_async_email(to_email, subject, body_text):
-    # Using Threading to prevent frontend timeout while sending to the API
     threading.Thread(target=send_brevo_email_task, args=(to_email, subject, body_text)).start()
 
 # ==========================================
@@ -89,6 +87,7 @@ class Admin(db.Model):
     Email = db.Column(db.String(120), unique=True, nullable=False)
     PasswordHash = db.Column(db.String(255), nullable=False)
     IsFirstLogin = db.Column(db.Boolean, default=True)
+    IsApproved = db.Column(db.Boolean, default=False) # NEW: Added for Admin Approval System
 
 class ClientAccount(db.Model):
     __tablename__ = 'patient_account'
@@ -119,8 +118,11 @@ class Pharmacy(db.Model):
     ContactNumber = db.Column(db.String(20), nullable=False)
     FullAddress = db.Column(db.Text, nullable=False)
     GoogleMapLink = db.Column(db.Text, nullable=True)
-    LogoPhotoPath = db.Column(db.Text, nullable=True)
+    LogoPhotoPath = db.Column(db.Text, nullable=True) # Kept for backward compatibility
+    FDALicense = db.Column(db.Text, nullable=True) # NEW: Updated field
     PermitPhotoPath = db.Column(db.Text, nullable=True)
+    PRC_ID = db.Column(db.Text, nullable=True) # NEW: Updated field
+    OperatingDays = db.Column(db.String(100), nullable=True) # NEW: Updated field
     IsActive = db.Column(db.Boolean, default=False)
     OpenTime = db.Column(db.String(50), nullable=True)
     CloseTime = db.Column(db.String(50), nullable=True)
@@ -138,19 +140,19 @@ class PharmacyStatus(db.Model):
     LastLogin = db.Column(db.DateTime, nullable=True)
     IsDeactivated = db.Column(db.Boolean, default=False)
     IsArchived = db.Column(db.Boolean, default=False)
-    StrikeCount = db.Column(db.Integer, default=0) # Active penalty (resets upon update)
-    TotalLifetimeStrikes = db.Column(db.Integer, default=0) # Non-resetting total 'No' for admin reports
+    StrikeCount = db.Column(db.Integer, default=0) 
+    TotalLifetimeStrikes = db.Column(db.Integer, default=0) 
     LastStockUpdate = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Medicine(db.Model):
     __tablename__ = 'medicine'
     MedicineID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     MedicineName = db.Column(db.String(150), nullable=False)
-    Description = db.Column(db.Text, nullable=True) # Used as Category
+    Description = db.Column(db.Text, nullable=True)
     Price = db.Column(db.Numeric(10, 2), nullable=False)
     IsPrescriptionRequired = db.Column(db.Boolean, default=False)
     InStock = db.Column(db.Boolean, default=True)
-    StrikeCount = db.Column(db.Integer, default=0) # Strike for a specific medicine
+    StrikeCount = db.Column(db.Integer, default=0)
     PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
 
 class SearchLog(db.Model):
@@ -174,7 +176,7 @@ class PharmacyVisibilityLog(db.Model):
     __tablename__ = 'pharmacy_visibility_log'
     LogID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
-    Action = db.Column(db.String(50)) # 'Appeared', 'Clicked'
+    Action = db.Column(db.String(50))
     MedicineName = db.Column(db.String(150), nullable=True)
     CreatedAt = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -207,14 +209,8 @@ def send_verification():
     
     try:
         subject = 'Oath of Care - Verification Code'
-        body = f"""Your 6-digit verification code for Oath of Care is: {code}
-
-NOTE: Please check your SPAM or JUNK folder if you do not see this in your inbox.
-Do not share this code with anyone."""
-        
-        # Using Brevo API from Environment Variables
+        body = f"Your 6-digit verification code for Oath of Care is: {code}\n\nNOTE: Please check your SPAM or JUNK folder if you do not see this in your inbox.\nDo not share this code with anyone."
         send_async_email(email, subject, body)
-        
         return jsonify({'message': 'Verification code sent successfully. Please check your Inbox and Spam folders.'})
     except Exception as e:
         print("Mail Error:", e)
@@ -280,8 +276,10 @@ def register_pharmacy():
             ContactNumber=data.get('contactNumber'),
             FullAddress=data.get('address'),
             GoogleMapLink=data.get('mapLink'),
-            LogoPhotoPath=data.get('storePhoto'), 
+            FDALicense=data.get('fdaLicense'),        # UPDATED Mapping
             PermitPhotoPath=data.get('permitPhoto'), 
+            PRC_ID=data.get('prcIdEncoded'),          # UPDATED Mapping
+            OperatingDays=data.get('operatingDays'),  # UPDATED Mapping
             OpenTime=data.get('openTime'),
             CloseTime=data.get('closeTime'),
             BarangayID=barangay.BarangayID,
@@ -323,6 +321,8 @@ def login():
     elif role == 'admin':
         admin = Admin.query.filter_by(Email=email).first()
         if admin and bcrypt.check_password_hash(admin.PasswordHash, password):
+            if not getattr(admin, 'IsApproved', True): # Guard check
+                return jsonify({'error': 'Your admin account is pending approval.'}), 403
             return jsonify({'message': 'Admin login successful', 'id': admin.AdminID, 'role': 'admin'}), 200
 
     return jsonify({'error': 'Invalid email or password'}), 401
@@ -400,7 +400,7 @@ def add_medicine():
         if status:
             if status.IsDeactivated:
                 status.IsDeactivated = False
-                status.StrikeCount = 0 # Resets penalty upon update (Reactivation)
+                status.StrikeCount = 0
             status.LastStockUpdate = datetime.utcnow()
 
         db.session.commit()
@@ -416,12 +416,12 @@ def update_med_status(med_id):
         med = Medicine.query.get(med_id)
         if med:
             med.InStock = (data.get('status') == 'In Stock')
-            med.StrikeCount = 0 # Resets the specific medicine strike if updated manually
+            med.StrikeCount = 0
             status = PharmacyStatus.query.filter_by(PharmacyID=med.PharmacyID).first()
             if status:
                 if status.IsDeactivated:
                     status.IsDeactivated = False
-                    status.StrikeCount = 0 # Resets penalty upon update
+                    status.StrikeCount = 0
                 status.LastStockUpdate = datetime.utcnow()
             db.session.commit()
             return jsonify({'success': True}), 200
@@ -546,7 +546,7 @@ def report_pharmacy_stock():
         if status and pharmacy and is_out_of_stock:
             account = PharmacyAccount.query.get(pharmacy.PharmacyAccountID)
             
-            # 1. SPECIFIC MEDICINE PENALTY (5 Warning / 10 Auto-OOS)
+            # 1. SPECIFIC MEDICINE PENALTY
             if medicine_name:
                 medicine = Medicine.query.filter(Medicine.PharmacyID == pharm_id, Medicine.MedicineName == medicine_name).first()
                 if medicine:
@@ -557,12 +557,12 @@ def report_pharmacy_stock():
                         send_async_email(account.Email, subject, body)
                     elif medicine.StrikeCount >= 10:
                         medicine.InStock = False
-                        medicine.StrikeCount = 0 # Reset specific medicine strike
+                        medicine.StrikeCount = 0
                         subject = 'Oath of Care - Medicine Auto-Disabled'
                         body = f'Notice: "{medicine.MedicineName}" has received 10 out-of-stock reports and was automatically marked as OUT OF STOCK to protect the reliability of the network.'
                         send_async_email(account.Email, subject, body)
 
-            # 2. OVERALL PHARMACY PENALTY (20 Warning / 30 Deactivation)
+            # 2. OVERALL PHARMACY PENALTY
             status.StrikeCount += 1
             status.TotalLifetimeStrikes = getattr(status, 'TotalLifetimeStrikes', 0) + 1
             
@@ -573,7 +573,7 @@ def report_pharmacy_stock():
                 
             elif status.StrikeCount >= 30:
                 status.IsDeactivated = True
-                status.StrikeCount = 0 # Will reset actively upon deactivation, so when they reactivate it's clean.
+                status.StrikeCount = 0 
                 subject = 'Oath of Care - Account Deactivated'
                 body = 'Your pharmacy has been deactivated due to 30 out-of-stock reports. You must log in and manually update your inventory to restore your visibility in searches.'
                 send_async_email(account.Email, subject, body)
@@ -585,10 +585,6 @@ def report_pharmacy_stock():
         print("Reporting Error:", e)
         return jsonify({'error': 'Failed to process report'}), 500
 
-
-# ==========================================
-# PHARMACY ANALYTICS ENDPOINT (REAL DATABASE)
-# ==========================================
 @app.route('/api/pharmacy/analytics/<int:pharm_id>', methods=['GET'])
 def get_pharmacy_analytics(pharm_id):
     filter_date = request.args.get('filter', '30days')
@@ -604,12 +600,10 @@ def get_pharmacy_analytics(pharm_id):
         start_date = datetime.min
 
     try:
-        # 1. PIE CHART: Feedback Data
         reports = PharmacyReport.query.filter(PharmacyReport.PharmacyID == pharm_id, PharmacyReport.ReportDate >= start_date).all()
         yes_count = sum(1 for r in reports if not r.IsOutOfStock)
         no_count = sum(1 for r in reports if r.IsOutOfStock)
 
-        # 2. VISIBILITY LOGS: Most Searched & Most Clicked
         vis_logs = PharmacyVisibilityLog.query.filter(PharmacyVisibilityLog.PharmacyID == pharm_id, PharmacyVisibilityLog.CreatedAt >= start_date).all()
         
         appeared_meds = [log.MedicineName for log in vis_logs if log.Action == 'Appeared' and log.MedicineName]
@@ -618,7 +612,6 @@ def get_pharmacy_analytics(pharm_id):
         most_searched = max(set(appeared_meds), key=appeared_meds.count) if appeared_meds else "N/A"
         most_clicked = max(set(clicked_meds), key=clicked_meds.count) if clicked_meds else "N/A"
 
-        # 3. BAR CHART: Visibility vs Clicks over time
         appear_counts = defaultdict(int)
         click_counts = defaultdict(int)
         
@@ -648,8 +641,196 @@ def get_pharmacy_analytics(pharm_id):
 
 
 # ==========================================
-# ADMIN ENDPOINTS & AUTO-DELETION
+# ADMIN ENDPOINTS (UPDATED & IMPLEMENTED)
 # ==========================================
+
+@app.route('/api/admin/stats', methods=['GET'])
+def get_admin_stats():
+    filter_date = request.args.get('filter', 'all')
+    now = datetime.utcnow()
+    if filter_date == 'today':
+        start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif filter_date == '7days':
+        start_date = now - timedelta(days=7)
+    elif filter_date == '30days':
+        start_date = now - timedelta(days=30)
+    else:
+        start_date = datetime.min
+
+    try:
+        total_pharmacies = db.session.query(PharmacyStatus).filter(PharmacyStatus.AccountStatus == 'Approved').count()
+        total_clients = db.session.query(ClientAccount).count()
+        total_searches = db.session.query(SearchLog).filter(SearchLog.CreatedAt >= start_date).count()
+
+        pharmacies = db.session.query(Pharmacy, PharmacyStatus, Barangay)\
+            .join(PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID)\
+            .join(Barangay, Pharmacy.BarangayID == Barangay.BarangayID)\
+            .filter(PharmacyStatus.AccountStatus == 'Approved').all()
+
+        accuracy_data = []
+        for p, status, b in pharmacies:
+            reports = db.session.query(PharmacyReport).filter(
+                PharmacyReport.PharmacyID == p.PharmacyID,
+                PharmacyReport.ReportDate >= start_date
+            ).all()
+
+            yes_count = sum(1 for r in reports if not r.IsOutOfStock)
+            no_count = sum(1 for r in reports if r.IsOutOfStock)
+
+            accuracy_data.append({
+                'id': p.PharmacyID,
+                'name': p.PharmacyName,
+                'branch': b.BarangayName,
+                'yesCount': yes_count,
+                'noCount': no_count,
+                'strikes': getattr(status, 'StrikeCount', 0),
+                'lifetimeStrikes': getattr(status, 'TotalLifetimeStrikes', 0),
+                'isDeactivated': getattr(status, 'IsDeactivated', False)
+            })
+
+        # Display descending order of flags
+        accuracy_data.sort(key=lambda x: x['strikes'], reverse=True)
+
+        return jsonify({
+            'overview': {
+                'totalPharmacies': total_pharmacies,
+                'totalClients': total_clients,
+                'totalSearches': total_searches
+            },
+            'accuracyData': accuracy_data
+        }), 200
+    except Exception as e:
+        print("Admin Stats Error:", e)
+        return jsonify({'error': 'Failed to fetch admin stats'}), 500
+
+@app.route('/api/admin/pending', methods=['GET'])
+def get_pending_applications():
+    try:
+        pending_pharms = db.session.query(Pharmacy, PharmacyAccount, Barangay)\
+            .join(PharmacyAccount, Pharmacy.PharmacyAccountID == PharmacyAccount.PharmacyAccountID)\
+            .join(Barangay, Pharmacy.BarangayID == Barangay.BarangayID)\
+            .join(PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID)\
+            .filter(PharmacyStatus.AccountStatus == 'Pending').all()
+
+        pharm_results = []
+        for p, acc, b in pending_pharms:
+            pharm_results.append({
+                'type': 'pharmacy',
+                'id': p.PharmacyID,
+                'name': p.PharmacyName,
+                'email': acc.Email,
+                'contact': p.ContactNumber,
+                'branch': b.BarangayName,
+                'address': p.FullAddress,
+                'mapLink': p.GoogleMapLink,
+                'operatingDays': getattr(p, 'OperatingDays', 'Not specified'),
+                'openTime': p.OpenTime,
+                'closeTime': p.CloseTime,
+                'fdaLicense': getattr(p, 'FDALicense', p.LogoPhotoPath),
+                'permitPhoto': p.PermitPhotoPath,
+                'prcId': getattr(p, 'PRC_ID', 'Hidden for security')
+            })
+
+        pending_admins = []
+        try:
+            admins = Admin.query.filter(Admin.IsApproved == False).all()
+            for a in admins:
+                pending_admins.append({
+                    'type': 'admin',
+                    'id': a.AdminID,
+                    'name': 'System Administrator',
+                    'email': a.Email
+                })
+        except Exception:
+            pass # Fallback in case Auto-Patcher has not been completed
+
+        return jsonify({
+            'pharmacies': pharm_results,
+            'admins': pending_admins
+        }), 200
+    except Exception as e:
+        print("Pending Error:", e)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/resolve', methods=['POST'])
+def resolve_application():
+    data = request.json
+    app_id = data.get('id')
+    app_type = data.get('type')
+    action = data.get('action') # 'approve' or 'reject'
+
+    try:
+        if app_type == 'pharmacy':
+            status = PharmacyStatus.query.filter_by(PharmacyID=app_id).first()
+            pharmacy = Pharmacy.query.get(app_id)
+            if status and pharmacy:
+                account = PharmacyAccount.query.get(pharmacy.PharmacyAccountID)
+                if action == 'approve':
+                    status.AccountStatus = 'Approved'
+                    db.session.commit()
+                    send_async_email(account.Email, "Oath of Care - Application Approved", "Your pharmacy application has been approved. You can now log in and manage your inventory.")
+                elif action == 'reject':
+                    db.session.delete(status)
+                    db.session.delete(pharmacy)
+                    db.session.delete(account)
+                    db.session.commit()
+                    send_async_email(account.Email, "Oath of Care - Application Rejected", "Unfortunately, your pharmacy application was rejected during review.")
+
+        elif app_type == 'admin':
+            admin = Admin.query.get(app_id)
+            if admin:
+                if action == 'approve':
+                    admin.IsApproved = True
+                    db.session.commit()
+                    send_async_email(admin.Email, "Oath of Care - Admin Access Granted", "Your admin access has been approved and you can now log in.")
+                elif action == 'reject':
+                    db.session.delete(admin)
+                    db.session.commit()
+                    send_async_email(admin.Email, "Oath of Care - Admin Access Denied", "Your request for admin access has been denied.")
+
+        return jsonify({'message': f'Successfully {action}d'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print("Resolve Error:", e)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/toggle-pharmacy', methods=['POST'])
+def toggle_pharmacy():
+    data = request.json
+    pharm_id = data.get('pharmacyId')
+    try:
+        status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
+        if status:
+            status.IsDeactivated = not status.IsDeactivated
+            if status.IsDeactivated:
+                status.StrikeCount = 0 # Cleaning the slate during active deactivation
+            db.session.commit()
+            return jsonify({'message': 'Pharmacy status toggled'}), 200
+        return jsonify({'error': 'Not found'}), 404
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/register', methods=['POST'])
+def register_admin():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+
+    if Admin.query.filter_by(Email=email).first():
+        return jsonify({'error': 'Email is already registered'}), 400
+
+    hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
+    try:
+        # Default IsApproved to false requiring manual approval from DB or SuperAdmin
+        new_admin = Admin(Email=email, PasswordHash=hashed_pw, IsApproved=False)
+        db.session.add(new_admin)
+        db.session.commit()
+        return jsonify({'message': 'Admin registration submitted for approval.'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Database error'}), 500
+
 def run_auto_deletion_check():
     try:
         # DELETE FOR 3 MONTHS (90 days) OF DEACTIVATION
@@ -671,7 +852,6 @@ def run_auto_deletion_check():
     except Exception as e:
         db.session.rollback()
 
-# ... other admin endpoints (get_pending_pharmacies, resolve_application) remain unchanged ...
 
 # ==========================================
 # RUN SERVER & INITIALIZE DATABASE
@@ -680,7 +860,7 @@ with app.app_context():
     db.create_all()
     
     # === DATABASE AUTO-PATCHER ===
-    # Safely adds new columns and tables if they don't exist yet
+    # Safely adds new columns and tables if they don't exist yet protecting production db
     try:
         db.session.execute(text('ALTER TABLE pharmacy_status ADD COLUMN "StrikeCount" INTEGER DEFAULT 0;'))
         db.session.commit()
@@ -698,6 +878,27 @@ with app.app_context():
 
     try:
         db.session.execute(text('ALTER TABLE pharmacy_status ADD COLUMN "LastStockUpdate" TIMESTAMP;'))
+        db.session.commit()
+    except Exception: db.session.rollback()
+    
+    # === NEW AUTO-PATCHERS FOR UI UPDATES ===
+    try:
+        db.session.execute(text('ALTER TABLE admin ADD COLUMN "IsApproved" BOOLEAN DEFAULT FALSE;'))
+        db.session.commit()
+    except Exception: db.session.rollback()
+
+    try:
+        db.session.execute(text('ALTER TABLE pharmacy ADD COLUMN "FDALicense" TEXT;'))
+        db.session.commit()
+    except Exception: db.session.rollback()
+
+    try:
+        db.session.execute(text('ALTER TABLE pharmacy ADD COLUMN "PRC_ID" TEXT;'))
+        db.session.commit()
+    except Exception: db.session.rollback()
+
+    try:
+        db.session.execute(text('ALTER TABLE pharmacy ADD COLUMN "OperatingDays" VARCHAR(100);'))
         db.session.commit()
     except Exception: db.session.rollback()
 
