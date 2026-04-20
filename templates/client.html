@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oath of Care | Premium Pharmacy Locator</title>
     
-    <!-- Premium Fonts -->
+    <!-- Premium Fonts: Poppins (Clean UI), Playfair Display (Luxury Headings), Inter (Legible Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -66,10 +66,7 @@
         h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
         .font-sans-head { font-family: 'Poppins', sans-serif; }
 
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover, 
-        input:-webkit-autofill:focus, 
-        input:-webkit-autofill:active{
+        input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
             -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
             -webkit-text-fill-color: #1A1A1A !important;
             transition: background-color 5000s ease-in-out 0s;
@@ -121,32 +118,22 @@
             padding-top: 6rem;
             padding-bottom: 2rem;
         }
-        #heroSection.is-shrunk #heroTextContainer {
-            margin-bottom: 2rem !important;
-        }
-        #heroSection.is-shrunk #heroTitle {
-            font-size: 2rem !important;
-            margin-bottom: 0.5rem;
-        }
-        #heroSection.is-shrunk #heroSubtitle {
-            font-size: 0.875rem !important;
-        }
+        #heroSection.is-shrunk #heroTextContainer { margin-bottom: 2rem !important; }
+        #heroSection.is-shrunk #heroTitle { font-size: 2rem !important; margin-bottom: 0.5rem; }
+        #heroSection.is-shrunk #heroSubtitle { font-size: 0.875rem !important; }
         @media (min-width: 768px) {
-            #heroSection.is-shrunk #heroTitle {
-                font-size: 2.75rem !important;
-            }
-            #heroSection.is-shrunk #heroSubtitle {
-                font-size: 1rem !important;
-            }
+            #heroSection.is-shrunk #heroTitle { font-size: 2.75rem !important; }
+            #heroSection.is-shrunk #heroSubtitle { font-size: 1rem !important; }
         }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen relative">
 
-    <!-- Background -->
+    <!-- ================= BACKGROUND ================= -->
     <div class="fixed inset-0 z-[-5] w-full h-full overflow-hidden bg-brand-50 pointer-events-none">
         <div class="absolute top-[10%] right-[30%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-yellow-50/60 rounded-full blur-[100px] transform translate-x-1/2"></div>
         <div class="absolute top-[15%] right-[25%] w-[20vw] h-[20vw] max-w-[250px] max-h-[250px] bg-white rounded-full blur-3xl transform translate-x-1/2 opacity-90"></div>
+        
         <svg class="absolute bottom-0 w-full h-[60vh] min-h-[400px]" preserveAspectRatio="none" viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg">
             <path fill="#e5f5e0" d="M0,250 C300,150 600,300 900,200 C1200,100 1350,250 1440,280 L1440,600 L0,600 Z"></path>
             <path fill="#c7e9c0" d="M0,350 C250,450 450,250 750,300 C1050,350 1250,200 1440,250 L1440,600 L0,600 Z"></path>
@@ -156,10 +143,9 @@
         </svg>
     </div>
 
-    <!-- Navigation Bar -->
+    <!-- ================= NAVIGATION ================= -->
     <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-xl border-b border-brand-100 h-24 flex items-center shadow-sm" id="navbar">
         <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center">
-            
             <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
                 <div class="relative w-12 h-12 mr-2 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
                     <i class="fa-solid fa-location-dot text-[38px] text-brand-800 relative z-0" style="text-shadow: 2px 4px 6px rgba(0,68,27,0.2);"></i>
@@ -176,12 +162,8 @@
             
             <div class="flex items-center space-x-8">
                 <div id="navAuthLoggedOut" class="flex items-center space-x-6">
-                    <button onclick="openAuthModal('login')" class="font-sans-head font-semibold text-gray-500 hover:text-brand-800 transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] hidden sm:block">
-                        Sign In
-                    </button>
-                    <button onclick="openAuthModal('signup1')" class="bg-brand-800 text-white px-8 py-3.5 rounded-full font-sans-head font-semibold text-[11px] uppercase tracking-[0.15em] transition-all duration-300 hover:bg-brand-700 shadow-luxury hover:shadow-luxury-hover hover:-translate-y-0.5">
-                        Sign Up
-                    </button>
+                    <button onclick="openAuthModal('login')" class="font-sans-head font-semibold text-gray-500 hover:text-brand-800 transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] hidden sm:block">Sign In</button>
+                    <button onclick="openAuthModal('signup1')" class="bg-brand-800 text-white px-8 py-3.5 rounded-full font-sans-head font-semibold text-[11px] uppercase tracking-[0.15em] transition-all duration-300 hover:bg-brand-700 shadow-luxury hover:shadow-luxury-hover hover:-translate-y-0.5">Sign Up</button>
                 </div>
 
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
@@ -191,11 +173,9 @@
                         </div>
                         <span id="navUserName" class="font-sans-head font-medium text-charcoal text-sm"></span>
                     </div>
-                    
                     <button onclick="toggleHistoryPanel()" class="font-sans-head font-semibold text-brand-700 hover:text-brand-500 transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] flex items-center gap-2">
                         <i class="fa-solid fa-clock-rotate-left text-sm"></i> My Visits
                     </button>
-                    
                     <button onclick="handleLogout()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-error hover:bg-red-50 transition-colors">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </button>
@@ -204,7 +184,7 @@
         </div>
     </nav>
 
-    <!-- My Visits Sliding Panel -->
+    <!-- My Visits Panel -->
     <div id="historyOverlay" class="fixed inset-0 bg-brand-900/30 backdrop-blur-sm z-[140] hidden opacity-0 transition-opacity duration-300" onclick="toggleHistoryPanel()"></div>
     <div id="historyPanel" class="fixed right-0 top-0 h-full w-full max-w-md bg-white transform translate-x-full transition-transform duration-500 ease-in-out z-[150] flex flex-col border-l border-brand-100 shadow-2xl">
         <div class="p-8 border-b border-brand-100 bg-brand-50/50 flex justify-between items-center">
@@ -229,6 +209,7 @@
 
             <div class="w-full max-w-[1200px] mx-auto px-6 lg:px-12 relative z-10 flex flex-col items-center">
                 
+                <!-- Elegant System Heading -->
                 <div class="text-center w-full flex flex-col items-center mb-16" id="heroTextContainer">
                     <span class="bg-white/90 backdrop-blur-sm text-brand-700 px-6 py-2.5 rounded-full font-sans-head font-bold text-[11px] uppercase tracking-[0.25em] mb-8 border border-brand-200 shadow-sm inline-flex items-center gap-3">
                         <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
@@ -236,9 +217,7 @@
                     </span>
                     <h1 id="heroTitle" class="font-serif text-charcoal text-[2.8rem] sm:text-5xl md:text-6xl lg:text-[4.8rem] leading-[1.15] mb-6 drop-shadow-sm">
                         Locate Essential Medicines <br class="hidden md:block"/> 
-                        <span class="text-brand-800 relative">
-                            With Precision.
-                        </span>
+                        <span class="text-brand-800 relative">With Precision.</span>
                     </h1>
                     <p id="heroSubtitle" class="text-base md:text-lg text-charcoal/80 font-inter font-light max-w-2xl leading-relaxed bg-white/40 backdrop-blur-sm p-4 rounded-xl">
                         Discover verified pharmacies and available medicines in real-time. Authentication is required to maintain the integrity of our professional network.
@@ -247,6 +226,8 @@
 
                 <form onsubmit="handleSearch(event)" class="w-full flex flex-col items-center gap-8 relative z-20">
                     <div class="w-full flex flex-col lg:flex-row items-end gap-5 justify-center">
+                        
+                        <!-- Generic Name Input -->
                         <div class="w-full lg:w-[38%] relative text-left">
                             <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-4">Generic Name / Medicine <span class="text-error">*</span></label>
                             <div class="relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400">
@@ -258,6 +239,7 @@
                             </div>
                         </div>
 
+                        <!-- Dosage Input (Optional) -->
                         <div class="w-full lg:w-[24%] relative text-left">
                             <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-4">Dosage (Optional)</label>
                             <div class="flex relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400 overflow-hidden h-[65px]">
@@ -274,11 +256,11 @@
                             </div>
                         </div>
 
+                        <!-- Barangay Dropdown -->
                         <div class="w-full lg:w-[38%] relative text-left" id="customDropdownContainer">
                             <label class="block font-sans-head font-bold text-charcoal text-[11px] uppercase tracking-widest mb-2 pl-4">Select Location <span class="text-error">*</span></label>
                             <div class="relative bg-white rounded-full shadow-input focus-within:shadow-input-focus border border-transparent focus-within:border-brand-400 transition-all duration-400 h-[65px]">
                                 <input type="hidden" id="searchBarangayInput" required>
-                                
                                 <div id="dropdownTrigger" class="w-full pl-14 pr-6 py-4 bg-transparent flex justify-between items-center cursor-pointer h-full rounded-full">
                                     <div class="absolute left-6 top-1/2 transform -translate-y-1/2 pointer-events-none">
                                         <i class="fa-solid fa-map-location-dot text-brand-500 text-lg"></i>
@@ -286,7 +268,6 @@
                                     <span id="dropdownSelectedText" class="font-inter text-base text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis">Select Barangay...</span>
                                     <i class="fa-solid fa-chevron-down text-brand-800 text-sm transition-transform duration-300" id="dropdownIcon"></i>
                                 </div>
-                                
                                 <ul id="dropdownMenu" class="absolute top-[115%] left-0 w-full bg-white border border-brand-100 rounded-3xl shadow-luxury max-h-64 overflow-y-auto hidden z-[100] opacity-0 transition-all duration-300 py-3">
                                     <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Bangkal">Bangkal</li>
                                     <li class="px-6 py-3.5 hover:bg-brand-50 hover:text-brand-800 hover:pl-8 cursor-pointer font-inter font-medium text-sm text-charcoal transition-all duration-200 dropdown-item" data-value="Baraka">Baraka</li>
@@ -306,6 +287,7 @@
                         </div>
                     </div>
 
+                    <!-- Search Button -->
                     <div class="w-full flex justify-center mt-2">
                         <button type="submit" id="btnSearch" class="bg-brand-900 text-white font-sans-head font-bold text-sm px-12 py-4 h-[60px] min-w-[220px] rounded-full shadow-luxury hover:bg-brand-800 hover:shadow-luxury-hover hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
                             <span class="tracking-[0.1em] uppercase">Search</span>
@@ -349,6 +331,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
                     
+                    <!-- Step 1 -->
                     <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
                         <div class="icon-container w-20 h-20 bg-white text-brand-700 rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(0,109,44,0.4)]">
                             <i class="fa-solid fa-lock"></i>
@@ -357,6 +340,7 @@
                         <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Our network is secure. You must be authenticated to view real-time data.</p>
                     </div>
 
+                    <!-- Step 2 -->
                     <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
                         <div class="icon-container w-20 h-20 bg-white text-brand-700 rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(0,109,44,0.4)]">
                             <i class="fa-solid fa-user-plus"></i>
@@ -365,6 +349,7 @@
                         <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Complete registration and verify your email to unlock platform access.</p>
                     </div>
 
+                    <!-- Step 3 -->
                     <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
                         <div class="icon-container w-20 h-20 bg-white text-brand-700 rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(0,109,44,0.4)]">
                             <i class="fa-solid fa-magnifying-glass"></i>
@@ -373,6 +358,7 @@
                         <p class="text-brand-50 font-inter text-sm font-light leading-relaxed max-w-[280px]">Input generic name (optional dosage) and location to view availability.</p>
                     </div>
 
+                    <!-- Step 4 -->
                     <div class="card-3d bg-brand-900 border border-brand-800 rounded-3xl p-10 flex flex-col items-center text-center relative z-10">
                         <div class="icon-container w-20 h-20 bg-white text-brand-700 rounded-full flex items-center justify-center text-3xl mb-8 shadow-[0_8px_20px_rgba(0,109,44,0.4)]">
                             <i class="fa-solid fa-map-location-dot"></i>
@@ -555,7 +541,6 @@
                         <p class="text-base font-inter font-medium text-charcoal" id="infoContact">Loading...</p>
                     </div>
                 </div>
-                
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600 flex-shrink-0 mt-0.5">
                         <i class="fa-solid fa-calendar-days text-base"></i>
@@ -565,7 +550,6 @@
                         <p class="text-base font-inter text-charcoal font-medium" id="infoDays">Loading...</p>
                     </div>
                 </div>
-                
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600 flex-shrink-0 mt-0.5">
                         <i class="fa-solid fa-clock text-base"></i>
@@ -593,7 +577,7 @@
                 <i class="fa-solid fa-times text-xl"></i>
             </button>
 
-            <!-- Route Navigation Card (Moved to Top Right, directly below the X button) -->
+            <!-- Route Navigation Card -->
             <div class="absolute top-24 right-6 z-20 bg-white/95 backdrop-blur-sm px-7 py-6 rounded-[1.5rem] shadow-luxury border border-brand-100 flex flex-col gap-1 min-w-[280px] max-w-[calc(100%-3rem)] md:max-w-md">
                 <h3 class="text-3xl font-serif text-brand-900 leading-tight mb-1">Route Navigation</h3>
                 <p class="text-brand-600 font-sans-head uppercase tracking-[0.15em] font-bold text-[11px]" id="mapDestText">DESTINATION: MERCURY DRUG</p>
@@ -694,7 +678,7 @@
             if(!btn) return () => {};
             const originalHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="ml-2 font-inter text-sm">Processing...</span>';
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="ml-2 font-inter text-sm">Processing...</span>`;
             btn.classList.add('opacity-80', 'cursor-not-allowed');
             return () => {
                 btn.disabled = false;
@@ -1024,20 +1008,20 @@
                 if (data.results && data.results.length > 0) {
                     grid.innerHTML = ''; 
                     data.results.forEach(res => {
-                        // FIX: Secure Image Fallback System
-                        // If there is no store image, or it got corrupted, default to the luxury placeholder.
-                        let shopImage = 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80';
-                        if (res.storeImage && typeof res.storeImage === 'string' && res.storeImage.length > 100 && res.storeImage !== "null") {
-                            shopImage = res.storeImage;
-                        }
-                        
+                        const shopImage = res.storeImage ? res.storeImage : 'https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80'; 
                         const pharmId = res.pharmacyId || Math.floor(Math.random() * 10000); 
 
                         const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                        const safeMedicine = (res.medicine || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         
-                        // FIX: Formatting the Operating Days to look clean and avoid cutoffs
+                        // Properly extract generic, brand, and dosage from the new backend payload
+                        let generic = res.genericName || res.item || res.medicine || "N/A"; 
+                        let brand = res.brandName || "N/A"; 
+                        let dosage = res.dosage || "-";
+                        
+                        const displayMedicine = brand !== "N/A" ? `${generic} (${brand})` : generic;
+                        const safeMedicine = displayMedicine.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        
                         let formattedDays = res.operatingDays || 'Not specified';
                         if(formattedDays === "Mon, Tue, Wed, Thu, Fri, Sat, Sun") {
                             formattedDays = "Monday to Sunday (Everyday)";
@@ -1057,24 +1041,30 @@
                             <div class="bg-white rounded-3xl border border-gray-100 shadow-input hover:shadow-luxury transition-all duration-500 flex flex-col group transform hover:-translate-y-1 overflow-hidden relative">
                                 <div class="h-1.5 w-full ${isStoreCurrentlyOpen ? 'bg-brand-500' : 'bg-gray-300'}"></div>
                                 
-                                <div class="h-48 overflow-hidden relative bg-brand-50 flex items-center justify-center">
+                                <div class="h-48 overflow-hidden relative bg-white flex items-center justify-center p-6 border-b border-gray-50">
                                     ${isStoreCurrentlyOpen ? 
                                         `<span class="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-sm text-brand-800 px-4 py-2 rounded-full text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 border border-brand-100"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span> OPEN</span>` 
                                         : 
                                         `<span class="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-sm text-gray-500 px-4 py-2 rounded-full text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 border border-gray-200"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> CLOSED</span>`
                                     }
-                                    
-                                    <!-- Double Fallback on the Image tag to completely prevent broken icons -->
-                                    <img src="${shopImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80';" alt="Pharmacy" class="w-full h-full object-cover filter contrast-[0.95] group-hover:scale-105 group-hover:brightness-105 transition-all duration-700">
+                                    <img src="${shopImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1586015555437-679bc3ebcc5e?w=800&q=80';" alt="Pharmacy Logo" class="w-full h-full object-contain filter group-hover:scale-105 transition-transform duration-700">
                                 </div>
-                                <div class="p-8 flex flex-col flex-grow bg-white">
+                                <div class="p-8 flex flex-col flex-grow bg-brand-50/30">
                                     <p class="text-brand-500 text-[10px] font-sans-head font-bold uppercase tracking-[0.25em] mb-2 truncate"><i class="fa-solid fa-location-dot mr-1"></i> ${res.branch}</p>
                                     <h3 class="text-2xl font-serif text-brand-800 mb-6 line-clamp-1 leading-tight">${safeName}</h3>
                                     
-                                    <div class="mb-8 space-y-3 bg-brand-50/50 p-5 rounded-2xl border border-brand-100/50">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500">Generic Name</span>
-                                            <span class="text-sm font-inter font-medium text-charcoal truncate ml-2 text-right">${safeMedicine}</span>
+                                    <div class="mb-6 space-y-3 bg-white p-5 rounded-2xl border border-brand-100/50 shadow-sm">
+                                        <div class="flex justify-between items-start">
+                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500 mt-1">Generic</span>
+                                            <span class="text-sm font-inter font-medium text-charcoal text-right ml-2">${generic}</span>
+                                        </div>
+                                        <div class="flex justify-between items-start border-t border-brand-100/50 pt-3">
+                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500 mt-1">Brand</span>
+                                            <span class="text-sm font-inter font-medium text-charcoal text-right ml-2">${brand}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center border-t border-brand-100/50 pt-3">
+                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500">Dosage</span>
+                                            <span class="text-sm font-sans-head font-bold text-brand-800">${dosage}</span>
                                         </div>
                                         <div class="flex justify-between items-center border-t border-brand-100/50 pt-3">
                                             <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500">Price</span>
@@ -1084,11 +1074,11 @@
 
                                     <div class="mt-auto grid grid-cols-2 gap-3">
                                         <button onclick="openInfoModal('${safeName}', '${res.branch}', '${safeAddress}', '${safeContact}', '${safeHoursStr}', '${safeDays}')" 
-                                            class="w-full bg-white border border-brand-200 text-brand-800 py-3.5 rounded-xl font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-50 hover:border-brand-300 transition-colors">
+                                            class="w-full bg-white border border-brand-200 text-brand-800 py-3.5 rounded-xl font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-50 hover:border-brand-300 transition-colors shadow-sm">
                                             Info
                                         </button>
                                         <button onclick="requestDirections('${safeAddress}', '${safeName}', '${pharmId}', '${safeMedicine}')" 
-                                            class="w-full bg-brand-800 text-white py-3.5 rounded-xl font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-700 shadow-soft hover:shadow-md transition-all">
+                                            class="w-full bg-brand-800 text-white py-3.5 rounded-xl font-sans-head font-bold text-[10px] uppercase tracking-widest hover:bg-brand-700 shadow-luxury hover:shadow-luxury-hover transition-all">
                                             Route
                                         </button>
                                     </div>
