@@ -973,7 +973,9 @@
 
             const unlock = lockButton('btnSearch');
             
-            const combinedMedicineQuery = dosageNum ? `${medicine} ${dosageNum}${dosageUnit}`.trim() : medicine;
+            // NOTE: Do not combine dosage in the backend query to maximize matches.
+            // We will filter the dosage on the frontend.
+            const requestedDosage = dosageNum ? `${dosageNum}${dosageUnit}`.toLowerCase() : '';
             const displayDosage = dosageNum ? `(${dosageNum}${dosageUnit})` : '';
             
             document.getElementById('searchQueryText').innerHTML = `Query: <strong class="text-brand-800">${medicine} ${displayDosage}</strong> in <strong class="text-brand-800">${barangay}</strong>`;
@@ -985,12 +987,13 @@
             grid.innerHTML = '<div class="col-span-full text-center py-20"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-brand-600 mb-4 block"></i><p class="text-gray-400 font-sans-head font-bold uppercase tracking-widest text-[11px]">Retrieving secure data...</p></div>';
             
             try {
+                // Send ONLY the medicine name
                 const response = await fetch(`${API_URL}/api/search`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ medicine: combinedMedicineQuery, barangay: barangay, patientId: authState.id })
+                    body: JSON.stringify({ medicine: medicine, barangay: barangay, patientId: authState.id })
                 });
                 
-                const data = await response.json();
+                let data = await response.json();
                 
                 if (response.status === 429) {
                     showToast(data.error, 'error');
@@ -999,11 +1002,18 @@
                 }
                 if (!response.ok) throw new Error(data.error || `HTTP Error ${response.status}`);
                 
-                // Animation: Shrink Hero Concisely (Without removing content)
-                const hero = document.getElementById('heroSection');
-                if (hero) {
-                    hero.classList.add('is-shrunk');
+                // FRONTEND DOSAGE FILTERING
+                if (data.results && requestedDosage !== '') {
+                    data.results = data.results.filter(res => {
+                        const resDosage = (res.dosage || '').toLowerCase();
+                        const resMedName = (res.medicine || '').toLowerCase();
+                        const resGeneric = (res.genericName || '').toLowerCase();
+                        return resDosage.includes(requestedDosage) || resMedName.includes(requestedDosage) || resGeneric.includes(requestedDosage);
+                    });
                 }
+                
+                const hero = document.getElementById('heroSection');
+                if (hero) hero.classList.add('is-shrunk');
                 
                 if (data.results && data.results.length > 0) {
                     grid.innerHTML = ''; 
@@ -1014,10 +1024,26 @@
                         const safeAddress = (res.address || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         const safeName = (res.pharmacyName || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         
-                        // Properly extract generic, brand, and dosage from the new backend payload
-                        let generic = res.genericName || res.item || res.medicine || "N/A"; 
-                        let brand = res.brandName || "N/A"; 
-                        let dosage = res.dosage || "-";
+                        let rawGeneric = res.genericName || res.item || res.medicine || "N/A"; 
+                        let rawBrand = res.brandName || "N/A"; 
+                        let rawDosage = res.dosage || "-";
+                        
+                        // FIX: Legacy Parser for old messy strings like "Paracetamol (Biogesic) 500mg"
+                        if (rawBrand === "N/A" || !rawBrand) {
+                            const match = rawGeneric.match(/^(.*?)\s*\((.*?)\)\s*(.*)$/);
+                            if (match) {
+                                rawGeneric = match[1].trim();
+                                rawBrand = match[2].trim();
+                                if ((rawDosage === "-" || !rawDosage) && match[3]) {
+                                    rawDosage = match[3].trim();
+                                }
+                            }
+                        }
+                        
+                        // Clean quotes
+                        let generic = rawGeneric.replace(/^["']|["']$/g, '').trim();
+                        let brand = rawBrand.replace(/^["']|["']$/g, '').trim();
+                        let dosage = rawDosage.replace(/^["']|["']$/g, '').trim();
                         
                         const displayMedicine = brand !== "N/A" ? `${generic} (${brand})` : generic;
                         const safeMedicine = displayMedicine.replace(/'/g, "\\'").replace(/"/g, "&quot;");
@@ -1034,7 +1060,6 @@
                         const safeHoursStr = hoursStr.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                         
                         const safeContact = (res.contactNumber || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                        
                         const isStoreCurrentlyOpen = isStoreOpen(openTimeStr, closeTimeStr);
 
                         grid.innerHTML += `
@@ -1053,20 +1078,20 @@
                                     <p class="text-brand-500 text-[10px] font-sans-head font-bold uppercase tracking-[0.25em] mb-2 truncate"><i class="fa-solid fa-location-dot mr-1"></i> ${res.branch}</p>
                                     <h3 class="text-2xl font-serif text-brand-800 mb-6 line-clamp-1 leading-tight">${safeName}</h3>
                                     
-                                    <div class="mb-6 space-y-3 bg-white p-5 rounded-2xl border border-brand-100/50 shadow-sm">
-                                        <div class="flex justify-between items-start">
-                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500 mt-1">Generic</span>
-                                            <span class="text-sm font-inter font-medium text-charcoal text-right ml-2">${generic}</span>
+                                    <div class="mb-6 bg-white p-5 rounded-2xl border border-brand-100/50 shadow-sm flex flex-col gap-3">
+                                        <div class="flex flex-col">
+                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500 mb-1">Generic Name</span>
+                                            <span class="text-sm font-inter font-semibold text-charcoal leading-tight">${generic}</span>
                                         </div>
-                                        <div class="flex justify-between items-start border-t border-brand-100/50 pt-3">
-                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500 mt-1">Brand</span>
-                                            <span class="text-sm font-inter font-medium text-charcoal text-right ml-2">${brand}</span>
+                                        <div class="flex flex-col border-t border-brand-100/50 pt-3">
+                                            <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500 mb-1">Brand Name</span>
+                                            <span class="text-sm font-inter font-medium text-charcoal leading-tight">${brand}</span>
                                         </div>
-                                        <div class="flex justify-between items-center border-t border-brand-100/50 pt-3">
+                                        <div class="flex justify-between items-center border-t border-brand-100/50 pt-3 mt-1">
                                             <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500">Dosage</span>
                                             <span class="text-sm font-sans-head font-bold text-brand-800">${dosage}</span>
                                         </div>
-                                        <div class="flex justify-between items-center border-t border-brand-100/50 pt-3">
+                                        <div class="flex justify-between items-center border-t border-brand-100/50 pt-3 mt-1">
                                             <span class="text-[10px] font-sans-head font-bold uppercase tracking-[0.15em] text-gray-500">Price</span>
                                             <span class="text-xl font-sans-head font-bold text-brand-700">₱${res.price}</span>
                                         </div>
