@@ -87,7 +87,7 @@ class Admin(db.Model):
     Email = db.Column(db.String(120), unique=True, nullable=False)
     PasswordHash = db.Column(db.String(255), nullable=False)
     IsFirstLogin = db.Column(db.Boolean, default=True)
-    IsApproved = db.Column(db.Boolean, default=False) # NEW: Added for Admin Approval System
+    IsApproved = db.Column(db.Boolean, default=False)
 
 class ClientAccount(db.Model):
     __tablename__ = 'patient_account'
@@ -118,11 +118,11 @@ class Pharmacy(db.Model):
     ContactNumber = db.Column(db.String(20), nullable=False)
     FullAddress = db.Column(db.Text, nullable=False)
     GoogleMapLink = db.Column(db.Text, nullable=True)
-    LogoPhotoPath = db.Column(db.Text, nullable=True) # Kept for backward compatibility
-    FDALicense = db.Column(db.Text, nullable=True) # NEW: Updated field
+    LogoPhotoPath = db.Column(db.Text, nullable=True) # Used for Store Photo
+    FDALicense = db.Column(db.Text, nullable=True) 
     PermitPhotoPath = db.Column(db.Text, nullable=True)
-    PRC_ID = db.Column(db.Text, nullable=True) # NEW: Updated field
-    OperatingDays = db.Column(db.String(100), nullable=True) # NEW: Updated field
+    PRC_ID = db.Column(db.Text, nullable=True) 
+    OperatingDays = db.Column(db.String(100), nullable=True) 
     IsActive = db.Column(db.Boolean, default=False)
     OpenTime = db.Column(db.String(50), nullable=True)
     CloseTime = db.Column(db.String(50), nullable=True)
@@ -147,7 +147,10 @@ class PharmacyStatus(db.Model):
 class Medicine(db.Model):
     __tablename__ = 'medicine'
     MedicineID = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    MedicineName = db.Column(db.String(150), nullable=False)
+    MedicineName = db.Column(db.String(150), nullable=False) # Legacy concat
+    GenericName = db.Column(db.String(150), nullable=True) # NEW
+    BrandName = db.Column(db.String(150), nullable=True) # NEW
+    Dosage = db.Column(db.String(50), nullable=True) # NEW
     Description = db.Column(db.Text, nullable=True)
     Price = db.Column(db.Numeric(10, 2), nullable=False)
     IsPrescriptionRequired = db.Column(db.Boolean, default=False)
@@ -276,10 +279,11 @@ def register_pharmacy():
             ContactNumber=data.get('contactNumber'),
             FullAddress=data.get('address'),
             GoogleMapLink=data.get('mapLink'),
-            FDALicense=data.get('fdaLicense'),        # UPDATED Mapping
+            LogoPhotoPath=data.get('storePhoto'),
+            FDALicense=data.get('fdaLicense'),        
             PermitPhotoPath=data.get('permitPhoto'), 
-            PRC_ID=data.get('prcIdEncoded'),          # UPDATED Mapping
-            OperatingDays=data.get('operatingDays'),  # UPDATED Mapping
+            PRC_ID=data.get('prcIdEncoded'),          
+            OperatingDays=data.get('operatingDays'),  
             OpenTime=data.get('openTime'),
             CloseTime=data.get('closeTime'),
             BarangayID=barangay.BarangayID,
@@ -321,7 +325,7 @@ def login():
     elif role == 'admin':
         admin = Admin.query.filter_by(Email=email).first()
         if admin and bcrypt.check_password_hash(admin.PasswordHash, password):
-            if not getattr(admin, 'IsApproved', True): # Guard check
+            if not getattr(admin, 'IsApproved', True): 
                 return jsonify({'error': 'Your admin account is pending approval.'}), 403
             return jsonify({'message': 'Admin login successful', 'id': admin.AdminID, 'role': 'admin'}), 200
 
@@ -377,7 +381,16 @@ def update_pharmacy():
 def get_medicines(pharm_id):
     try:
         medicines = Medicine.query.filter_by(PharmacyID=pharm_id).all()
-        results = [{'id': med.MedicineID, 'name': med.MedicineName, 'category': med.Description, 'price': str(med.Price), 'status': 'In Stock' if med.InStock else 'Out of Stock'} for med in medicines]
+        results = [{
+            'id': med.MedicineID, 
+            'name': med.MedicineName, 
+            'genericName': getattr(med, 'GenericName', med.MedicineName),
+            'brandName': getattr(med, 'BrandName', 'N/A'),
+            'dosage': getattr(med, 'Dosage', '-'),
+            'category': med.Description, 
+            'price': str(med.Price), 
+            'status': 'In Stock' if med.InStock else 'Out of Stock'
+        } for med in medicines]
         return jsonify(results), 200
     except Exception as e:
         return jsonify({'error': 'Failed to load inventory'}), 500
@@ -389,6 +402,9 @@ def add_medicine():
     try:
         new_med = Medicine(
             MedicineName=data.get('name'),
+            GenericName=data.get('genericName'),
+            BrandName=data.get('brandName'),
+            Dosage=data.get('dosage'),
             Price=data.get('price'),
             Description=data.get('category'),
             InStock=True if data.get('status') == 'In Stock' else False,
@@ -495,13 +511,14 @@ def search_medicine():
                 'address': pharm.FullAddress,
                 'inStock': med.InStock,
                 'strikes': getattr(status, 'StrikeCount', 0),
-                'storeImage': pharm.LogoPhotoPath,
+                'storeImage': pharm.LogoPhotoPath, 
+                'operatingDays': getattr(pharm, 'OperatingDays', 'Not specified'), # FIX: Include OperatingDays in Search Results
                 'openTime': pharm.OpenTime,
                 'closeTime': pharm.CloseTime,
                 'contactNumber': pharm.ContactNumber
             })
             
-            # LOG VISIBILITY FOR ANALYTICS (Appeared in Search)
+            # LOG VISIBILITY FOR ANALYTICS
             try:
                 vis_log = PharmacyVisibilityLog(PharmacyID=pharm.PharmacyID, Action='Appeared', MedicineName=med.MedicineName)
                 db.session.add(vis_log)
@@ -726,9 +743,10 @@ def get_pending_applications():
                 'operatingDays': getattr(p, 'OperatingDays', 'Not specified'),
                 'openTime': p.OpenTime,
                 'closeTime': p.CloseTime,
-                'fdaLicense': getattr(p, 'FDALicense', p.LogoPhotoPath),
+                'storePhoto': p.LogoPhotoPath, 
+                'fdaLicense': getattr(p, 'FDALicense', ''),
                 'permitPhoto': p.PermitPhotoPath,
-                'prcId': getattr(p, 'PRC_ID', 'Hidden for security')
+                'prcId': getattr(p, 'PRC_ID', '')
             })
 
         pending_admins = []
@@ -860,7 +878,6 @@ with app.app_context():
     db.create_all()
     
     # === DATABASE AUTO-PATCHER ===
-    # Safely adds new columns and tables if they don't exist yet protecting production db
     try:
         db.session.execute(text('ALTER TABLE pharmacy_status ADD COLUMN "StrikeCount" INTEGER DEFAULT 0;'))
         db.session.commit()
@@ -881,7 +898,6 @@ with app.app_context():
         db.session.commit()
     except Exception: db.session.rollback()
     
-    # === NEW AUTO-PATCHERS FOR UI UPDATES ===
     try:
         db.session.execute(text('ALTER TABLE admin ADD COLUMN "IsApproved" BOOLEAN DEFAULT FALSE;'))
         db.session.commit()
@@ -901,9 +917,22 @@ with app.app_context():
         db.session.execute(text('ALTER TABLE pharmacy ADD COLUMN "OperatingDays" VARCHAR(100);'))
         db.session.commit()
     except Exception: db.session.rollback()
+    
+    # NEW AUTOPATCHERS FOR MEDICINE BRAND/DOSAGE
+    try:
+        db.session.execute(text('ALTER TABLE medicine ADD COLUMN "GenericName" VARCHAR(150);'))
+        db.session.commit()
+    except Exception: db.session.rollback()
+    try:
+        db.session.execute(text('ALTER TABLE medicine ADD COLUMN "BrandName" VARCHAR(150);'))
+        db.session.commit()
+    except Exception: db.session.rollback()
+    try:
+        db.session.execute(text('ALTER TABLE medicine ADD COLUMN "Dosage" VARCHAR(50);'))
+        db.session.commit()
+    except Exception: db.session.rollback()
 
     # === MASTER ADMIN OVERRIDE ===
-    # Prevents the original creator from being locked out by the new approval system
     try:
         master_admin = Admin.query.filter_by(Email='oathofcare@gmail.com').first()
         if master_admin and not master_admin.IsApproved:
