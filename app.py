@@ -50,7 +50,7 @@ SENDER_NAME = 'Oath of Care System'
 
 def send_brevo_email_task(to_email, subject, body_text):
     if not BREVO_API_KEY:
-        print("❌ [BREVO ERROR] No API Key set in Environment Variables!")
+        print("❌ [BREVO ERROR] Walang API Key na nakalagay sa Environment Variables!")
         return
 
     url = "https://api.brevo.com/v3/smtp/email"
@@ -69,7 +69,7 @@ def send_brevo_email_task(to_email, subject, body_text):
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=15)
         if response.status_code in [200, 201, 202]:
-            print(f"✅ [BREVO] Successfully sent email to: {to_email}")
+            print(f"✅ [BREVO] Matagumpay na naipadala ang email kay: {to_email}")
         else:
             print(f"❌ [BREVO ERROR] Code: {response.status_code}, Response: {response.text}")
     except Exception as e:
@@ -948,11 +948,28 @@ with app.app_context():
     # === MASTER ADMIN OVERRIDE ===
     try:
         master_admin = Admin.query.filter_by(Email='oathofcare@gmail.com').first()
-        if master_admin and not master_admin.IsApproved:
+        
+        # FIX: Check if master_admin is None. If it is None, create it.
+        if not master_admin:
+            print("⚠️ Master Admin not found. Creating default admin account...")
+            hashed_pw = bcrypt.generate_password_hash('OathAdmin123!').decode('utf-8')
+            new_master = Admin(
+                Email='oathofcare@gmail.com',
+                PasswordHash=hashed_pw,
+                IsApproved=True,
+                IsFirstLogin=False
+            )
+            db.session.add(new_master)
+            db.session.commit()
+            print("✅ Master Admin created successfully: oathofcare@gmail.com / OathAdmin123!")
+            
+        elif not master_admin.IsApproved:
             master_admin.IsApproved = True
             db.session.commit()
             print("✅ Master Admin 'oathofcare@gmail.com' has been auto-approved.")
-    except Exception:
+            
+    except Exception as e:
+        print("❌ Failed to setup Master Admin:", e)
         db.session.rollback()
 
 if __name__ == '__main__':
