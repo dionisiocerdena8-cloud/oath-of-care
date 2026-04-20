@@ -419,32 +419,44 @@
                     <div class="grid grid-cols-2 gap-6">
                         <div>
                             <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">Store Photo</p>
-                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
-                                <img id="revStoreImg" src="" alt="Store Photo" class="w-full h-full object-cover bg-white hidden absolute inset-0">
+                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative group cursor-pointer" onclick="openImageViewer(document.getElementById('revStoreImg').src)">
+                                <img id="revStoreImg" src="" alt="Store Photo" class="w-full h-full object-contain p-1 bg-white hidden absolute inset-0 group-hover:scale-105 transition-transform duration-300">
                                 <span id="revStoreText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                                <div class="absolute inset-0 bg-starkBlack/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                                    <i class="fa-solid fa-expand text-white text-2xl drop-shadow-md"></i>
+                                </div>
                             </div>
                         </div>
                         <div>
                             <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">FDA License to Operate</p>
-                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
-                                <img id="revFdaImg" src="" alt="FDA License" class="w-full h-full object-cover bg-white hidden absolute inset-0">
+                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative group cursor-pointer" onclick="openImageViewer(document.getElementById('revFdaImg').src)">
+                                <img id="revFdaImg" src="" alt="FDA License" class="w-full h-full object-contain p-1 bg-white hidden absolute inset-0 group-hover:scale-105 transition-transform duration-300">
                                 <span id="revFdaText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                                <div class="absolute inset-0 bg-starkBlack/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                                    <i class="fa-solid fa-expand text-white text-2xl drop-shadow-md"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-6">
                         <div>
                             <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">Business Permit</p>
-                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
-                                <img id="revPermitImg" src="" alt="Business Permit" class="w-full h-full object-cover bg-white hidden absolute inset-0">
+                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative group cursor-pointer" onclick="openImageViewer(document.getElementById('revPermitImg').src)">
+                                <img id="revPermitImg" src="" alt="Business Permit" class="w-full h-full object-contain p-1 bg-white hidden absolute inset-0 group-hover:scale-105 transition-transform duration-300">
                                 <span id="revPermitText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                                <div class="absolute inset-0 bg-starkBlack/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                                    <i class="fa-solid fa-expand text-white text-2xl drop-shadow-md"></i>
+                                </div>
                             </div>
                         </div>
                         <div>
                             <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">PRC Pharmacist ID</p>
-                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
-                                <img id="revPrcImg" src="" alt="PRC ID" class="w-full h-full object-cover bg-white hidden absolute inset-0">
+                            <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative group cursor-pointer" onclick="openImageViewer(document.getElementById('revPrcImg').src)">
+                                <img id="revPrcImg" src="" alt="PRC ID" class="w-full h-full object-contain p-1 bg-white hidden absolute inset-0 group-hover:scale-105 transition-transform duration-300">
                                 <span id="revPrcText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                                <div class="absolute inset-0 bg-starkBlack/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                                    <i class="fa-solid fa-expand text-white text-2xl drop-shadow-md"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -457,6 +469,14 @@
                 <button id="btnRevReject" class="flex-1 bg-white text-error border-2 border-error/30 py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[11px] hover:bg-error hover:text-white transition-all shadow-sm">Reject / Discard</button>
             </div>
         </div>
+    </div>
+
+    <!-- Image Viewer Modal -->
+    <div id="imageViewerModal" class="fixed inset-0 bg-starkBlack/95 backdrop-blur-md hidden flex items-center justify-center z-[200] p-4 transition-opacity duration-300 opacity-0" onclick="closeImageViewer()">
+        <button class="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-error hover:text-white transition-all shadow-md z-30 border border-white/20">
+            <i class="fa-solid fa-times text-xl"></i>
+        </button>
+        <img id="fullSizeImage" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl transform scale-95 transition-transform duration-300">
     </div>
 
     <div id="toast-container"></div>
@@ -742,7 +762,7 @@
                         let icon = p.type === 'admin' ? '<i class="fa-solid fa-user-shield text-brand-700"></i>' : '<i class="fa-solid fa-store text-brand-600"></i>';
                         let bgTag = p.type === 'admin' ? 'bg-brand-100 text-brand-800' : 'bg-brand-50 text-brand-600';
                         reqContainer.innerHTML += `
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center transition-all hover:shadow-luxury hover:-translate-y-1">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center transition-all hover:shadow-luxury hover:-translate-y-1" id="req-card-${p.type}-${p.id}">
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 rounded-full ${bgTag} flex items-center justify-center text-xl">
                                         ${icon}
@@ -772,6 +792,50 @@
                 });
                 if(res.ok) { showToast('Status updated successfully'); fetchAdminData(); }
             } catch(e) { showToast('Action failed', 'error'); }
+        }
+
+        function setReviewImage(imgId, textId, dataUrl) {
+            const img = document.getElementById(imgId);
+            const txt = document.getElementById(textId);
+            if (dataUrl && dataUrl.length > 20 && dataUrl !== 'null') {
+                img.src = dataUrl;
+                img.classList.remove('hidden');
+                txt.classList.add('hidden');
+            } else {
+                img.src = '';
+                img.classList.add('hidden');
+                txt.innerText = "No Document";
+                txt.classList.remove('hidden');
+            }
+        }
+
+        // Image Viewer Logic
+        function openImageViewer(src) {
+            if(!src || src === window.location.href || src.endsWith('null') || src === '') {
+                showToast("No valid document image available to view.", "error");
+                return;
+            }
+            const modal = document.getElementById('imageViewerModal');
+            const img = document.getElementById('fullSizeImage');
+            img.src = src;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                img.classList.remove('scale-95');
+                img.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeImageViewer() {
+            const modal = document.getElementById('imageViewerModal');
+            const img = document.getElementById('fullSizeImage');
+            modal.classList.add('opacity-0');
+            img.classList.remove('scale-100');
+            img.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                img.src = '';
+            }, 300);
         }
 
         function openAdminReview(id, type) {
@@ -813,35 +877,20 @@
                 
                 document.getElementById('revDocsSide').classList.remove('hidden');
                 
-                // Store Photo
-                const storeImg = document.getElementById('revStoreImg');
-                const storeText = document.getElementById('revStoreText');
-                if(appData.storePhoto) { storeImg.src = appData.storePhoto; storeImg.classList.remove('hidden'); storeText.classList.add('hidden'); } 
-                else { storeImg.classList.add('hidden'); storeText.classList.remove('hidden'); }
-
-                // FDA License
-                const fdaImg = document.getElementById('revFdaImg');
-                const fdaText = document.getElementById('revFdaText');
-                if(appData.fdaLicense) { fdaImg.src = appData.fdaLicense; fdaImg.classList.remove('hidden'); fdaText.classList.add('hidden'); } 
-                else { fdaImg.classList.add('hidden'); fdaText.classList.remove('hidden'); }
-
-                // Business Permit
-                const permitImg = document.getElementById('revPermitImg');
-                const permitText = document.getElementById('revPermitText');
-                if(appData.permitPhoto) { permitImg.src = appData.permitPhoto; permitImg.classList.remove('hidden'); permitText.classList.add('hidden'); } 
-                else { permitImg.classList.add('hidden'); permitText.classList.remove('hidden'); }
+                setReviewImage('revStoreImg', 'revStoreText', appData.storePhoto);
+                setReviewImage('revFdaImg', 'revFdaText', appData.fdaLicense);
+                setReviewImage('revPermitImg', 'revPermitText', appData.permitPhoto);
                 
-                // PRC ID 
-                const prcImg = document.getElementById('revPrcImg');
-                const prcText = document.getElementById('revPrcText');
-                if(appData.prcId && appData.prcId.startsWith('data:image')) { 
-                    prcImg.src = appData.prcId; prcImg.classList.remove('hidden'); prcText.classList.add('hidden'); 
-                } else if(appData.prcId && appData.prcId !== 'Hidden for security') {
-                    // Try treating it as base64 string directly
-                    prcImg.src = appData.prcId; prcImg.classList.remove('hidden'); prcText.classList.add('hidden');
-                } else { 
-                    prcImg.classList.add('hidden'); prcText.classList.remove('hidden'); 
+                // Safe PRC decoding
+                let cleanPrc = appData.prcId;
+                if(cleanPrc && cleanPrc.startsWith('ENCODED_PRC_')) {
+                    cleanPrc = cleanPrc.replace('ENCODED_PRC_', '');
+                    if(!cleanPrc.startsWith('data:image') && !cleanPrc.startsWith('http')) {
+                        cleanPrc = 'data:image/png;base64,' + cleanPrc;
+                    }
                 }
+                if (cleanPrc === 'Hidden for security') cleanPrc = null;
+                setReviewImage('revPrcImg', 'revPrcText', cleanPrc);
             }
 
             const modal = document.getElementById('adminReviewModal');
@@ -872,7 +921,19 @@
                 });
                 if(response.ok) { 
                     showToast(`Application ${action}d successfully.`); 
-                    closeAdminReview(); fetchAdminData(); 
+                    
+                    // Optimistic removal from DOM and State
+                    globalPendingApplications = globalPendingApplications.filter(p => !(p.id === activeReviewId && p.type === activeReviewType));
+                    const cardToRemove = document.getElementById(`req-card-${activeReviewType}-${activeReviewId}`);
+                    if(cardToRemove) cardToRemove.remove();
+                    
+                    if(globalPendingApplications.length === 0) {
+                        const reqContainer = document.getElementById('adminRequestsContainer');
+                        if(reqContainer) reqContainer.innerHTML = '<div class="text-center py-16 bg-white rounded-[1.5rem] border border-gray-100 shadow-sm"><i class="fa-solid fa-clipboard-check text-4xl text-brand-200 mb-4"></i><p class="text-gray-400 font-sans-head font-medium text-xs">No pending applications.</p></div>';
+                    }
+                    
+                    closeAdminReview(); 
+                    setTimeout(() => fetchAdminData(), 500); // refresh queue passively
                 } else { showToast('Failed to process decision.', 'error'); }
             } catch(error) { showToast('Network Error', 'error'); } finally { unlock(); }
         }
