@@ -902,6 +902,17 @@ with app.app_context():
         db.session.commit()
     except Exception: db.session.rollback()
 
+    # === MASTER ADMIN OVERRIDE ===
+    # Prevents the original creator from being locked out by the new approval system
+    try:
+        master_admin = Admin.query.filter_by(Email='oathofcare@gmail.com').first()
+        if master_admin and not master_admin.IsApproved:
+            master_admin.IsApproved = True
+            db.session.commit()
+            print("✅ Master Admin 'oathofcare@gmail.com' has been auto-approved.")
+    except Exception:
+        db.session.rollback()
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port, debug=False)
