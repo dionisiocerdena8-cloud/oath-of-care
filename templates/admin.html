@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oath of Care | Admin Portal</title>
+    <title>Oath of Care | Premium Admin Portal</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Chart.js for Admin Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -21,12 +17,22 @@
             theme: {
                 extend: {
                     colors: {
-                        deepPurple: '#4A148C',
-                        vibrantOrange: '#FF9800',
+                        brand: {
+                            50: '#f7fcf5',
+                            100: '#e5f5e0',
+                            200: '#c7e9c0',
+                            300: '#a1d99b',
+                            400: '#74c476',
+                            500: '#41ab5d',
+                            600: '#238b45',
+                            700: '#006d2c',
+                            800: '#00441b',
+                            900: '#002a11'
+                        },
+                        mocha: '#b08d6a',
+                        charcoal: '#1A1A1A',
                         starkBlack: '#09090b',
-                        offWhite: '#F4F4F5',
                         surface: '#FFFFFF',
-                        smoke: '#52525b',
                         error: '#DC2626'
                     },
                     fontFamily: {
@@ -35,15 +41,11 @@
                         inter: ['"Inter"', 'sans-serif'],
                     },
                     boxShadow: {
-                        'premium': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
-                        'pill': '0 10px 30px -5px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(255, 255, 255, 0.6)',
-                        '3d-btn': '0 8px 25px -5px rgba(0, 0, 0, 0.3), inset 0 2px 1px rgba(255, 255, 255, 0.2)',
-                        '3d-btn-hover': '0 15px 35px -5px rgba(0, 0, 0, 0.4), inset 0 2px 1px rgba(255, 255, 255, 0.2)',
-                        '3d-btn-active': '0 4px 10px -2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.4)',
-                        '3d-input': 'inset 0 2px 5px rgba(0, 0, 0, 0.06), 0 2px 0 rgba(255, 255, 255, 1)',
-                        '3d-input-focus': '0 10px 25px -5px rgba(74, 20, 140, 0.25), inset 0 2px 5px rgba(0, 0, 0, 0.02)',
-                        '3d-modal': '0 30px 60px -15px rgba(0, 0, 0, 0.4), 0 0 40px rgba(74, 20, 140, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.9)',
-                        '3d-card': '0 10px 30px -10px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.8)'
+                        'luxury': '0 20px 40px -15px rgba(0, 68, 27, 0.15)',
+                        'luxury-hover': '0 25px 50px -12px rgba(0, 68, 27, 0.3)',
+                        'input': '0 8px 25px -5px rgba(0,0,0,0.05)',
+                        'input-focus': '0 10px 30px -5px rgba(0, 68, 27, 0.15)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)'
                     }
                 }
             }
@@ -52,121 +54,110 @@
 
     <style>
         body {
-            background-color: #F8F9FA;
-            color: #09090b;
+            background-color: #f7fcf5;
+            color: #1A1A1A;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
-        }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
+        .font-sans-head { font-family: 'Poppins', sans-serif; }
 
-        /* Input overrides for Chrome Autocomplete */
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover, 
-        input:-webkit-autofill:focus, 
-        input:-webkit-autofill:active{
-            -webkit-box-shadow: 0 0 0 30px #F4F4F5 inset !important;
-            -webkit-text-fill-color: #09090b !important;
+        input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+            -webkit-text-fill-color: #1A1A1A !important;
             transition: background-color 5000s ease-in-out 0s;
         }
 
-        /* 3D Floating Background Objects */
-        @keyframes floatObj1 {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-40px) rotate(20deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-        @keyframes floatObj2 {
-            0% { transform: translateY(0px) rotate(0deg) scale(1); }
-            50% { transform: translateY(30px) rotate(-15deg) scale(1.1); }
-            100% { transform: translateY(0px) rotate(0deg) scale(1); }
-        }
-        .bg-3d-obj-1 {
-            position: absolute;
-            width: 160px;
-            height: 160px;
-            background: radial-gradient(circle at 30% 30%, #FFCC80 0%, #FF9800 40%, #E65100 80%, #BF360C 100%);
-            border-radius: 50%;
-            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.8), 15px 25px 40px rgba(0,0,0,0.25);
-            animation: floatObj1 10s ease-in-out infinite;
-            z-index: -1;
-            opacity: 0.9;
-        }
-        .bg-3d-obj-2 {
-            position: absolute;
-            width: 180px;
-            height: 80px;
-            background: linear-gradient(135deg, #7E57C2, #4A148C, #311B92);
-            border-radius: 50px;
-            box-shadow: inset -15px -15px 30px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.4), 15px 25px 35px rgba(0,0,0,0.3);
-            animation: floatObj2 12s ease-in-out infinite;
-            z-index: -1;
-            opacity: 0.8;
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%23006d2c' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+            background-repeat: no-repeat;
+            background-position-x: 95%;
+            background-position-y: 50%;
+            background-size: 14px;
         }
 
-        /* View Switching System */
-        .view-section {
-            display: none;
-            opacity: 0;
-        }
-        .view-section.active {
-            display: flex; 
-            animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.98) translateY(20px); filter: blur(5px); }
-            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-        }
-
-        /* Toast Notifications */
         #toast-container {
             position: fixed; bottom: 30px; right: 30px; z-index: 9999;
             display: flex; flex-direction: column; gap: 15px;
         }
         .toast {
-            background: #09090b; color: #F8F9FA; padding: 18px 28px;
-            border-left: 5px solid #FF9800; border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1);
-            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            background: #1A1A1A; color: #ffffff; padding: 18px 24px;
+            border-left: 4px solid #41ab5d; border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif;
-            font-weight: 600; font-size: 0.95rem;
+            font-size: 0.95rem; font-weight: 500;
         }
         .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: #DC2626; }
         
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #F8F9FA; }
-        ::-webkit-scrollbar-thumb { background: #4A148C; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: #f7fcf5; }
+        ::-webkit-scrollbar-thumb { background: #41ab5d; border-radius: 10px; }
+
+        .view-section { display: none; opacity: 0; }
+        .view-section.active { display: flex; animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .alert-row { animation: pulseBg 2s infinite; }
+        @keyframes pulseBg { 0% { background-color: rgba(220, 38, 38, 0.05); } 50% { background-color: rgba(220, 38, 38, 0.15); } 100% { background-color: rgba(220, 38, 38, 0.05); } }
     </style>
 </head>
-<body class="antialiased flex flex-col min-h-screen">
+<body class="antialiased flex flex-col min-h-screen relative">
 
-    <nav class="fixed w-full z-50 transition-all duration-300 bg-gradient-to-r from-surface/90 via-purple-50/80 to-orange-50/90 backdrop-blur-xl border-b border-starkBlack/5 h-24 flex items-center shadow-sm" id="navbar">
+    <!-- Luxury Background -->
+    <div class="fixed inset-0 z-[-5] w-full h-full overflow-hidden bg-brand-50 pointer-events-none">
+        <div class="absolute top-[10%] right-[30%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-yellow-50/60 rounded-full blur-[100px] transform translate-x-1/2"></div>
+        <div class="absolute top-[15%] right-[25%] w-[20vw] h-[20vw] max-w-[250px] max-h-[250px] bg-white rounded-full blur-3xl transform translate-x-1/2 opacity-90"></div>
+        <svg class="absolute bottom-0 w-full h-[60vh] min-h-[400px]" preserveAspectRatio="none" viewBox="0 0 1440 600" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#e5f5e0" d="M0,250 C300,150 600,300 900,200 C1200,100 1350,250 1440,280 L1440,600 L0,600 Z"></path>
+            <path fill="#c7e9c0" d="M0,350 C250,450 450,250 750,300 C1050,350 1250,200 1440,250 L1440,600 L0,600 Z"></path>
+            <path fill="#a1d99b" d="M0,450 C350,380 550,500 850,420 C1150,340 1300,480 1440,400 L1440,600 L0,600 Z"></path>
+            <path fill="#238b45" d="M0,520 C400,450 700,600 1000,480 C1200,400 1350,550 1440,500 L1440,600 L0,600 Z"></path>
+            <path fill="#00441b" d="M0,580 C500,550 800,600 1200,570 C1350,560 1400,590 1440,580 L1440,600 L0,600 Z"></path>
+        </svg>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-xl border-b border-brand-100 h-24 flex items-center shadow-sm" id="navbar">
         <div class="w-full max-w-[1600px] mx-auto px-6 lg:px-12 flex justify-between items-center">
             
-            <!-- BRAND LOGO -->
             <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
-                <div class="relative w-12 h-12 mr-4 transform group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
-                    <i class="fa-solid fa-location-dot text-[40px] text-deepPurple relative z-0" style="text-shadow: 2px 4px 6px rgba(74,20,140,0.3);"></i>
+                <div class="relative w-12 h-12 mr-2 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+                    <i class="fa-solid fa-location-dot text-[38px] text-brand-800 relative z-0" style="text-shadow: 2px 4px 6px rgba(0,68,27,0.2);"></i>
                     <div class="absolute bottom-0 -right-1 z-10 flex items-center justify-center drop-shadow-md">
-                        <div class="absolute w-2.5 h-2.5 bg-white rounded-full"></div>
-                        <i class="fa-solid fa-capsules text-vibrantOrange text-xl relative z-10"></i>
+                        <div class="absolute w-3 h-3 bg-white rounded-full"></div>
+                        <i class="fa-solid fa-capsules text-mocha text-lg relative z-10"></i>
                     </div>
                 </div>
-                <div class="flex items-baseline gap-1.5 ml-1 transition-transform duration-500 group-hover:translate-x-1">
-                    <span class="font-poppins font-black text-3xl text-starkBlack tracking-tight drop-shadow-sm">Oath</span>
-                    <span class="font-serif italic text-3xl text-deepPurple drop-shadow-sm">of Care</span>
+                <div class="flex items-baseline gap-1.5 ml-2 transition-transform duration-500 group-hover:translate-x-1">
+                    <span class="font-sans-head font-bold text-2xl text-charcoal tracking-wide">Oath</span>
+                    <span class="font-serif italic text-2xl text-brand-600">of Care</span>
+                    <span class="font-sans-head font-medium text-[10px] text-brand-600 uppercase tracking-widest ml-3 border-l border-brand-200 pl-3">Admin</span>
                 </div>
             </div>
             
             <div class="flex items-center space-x-6">
-                <!-- Logged In State (Hidden by default) -->
+                <!-- Logged Out -->
+                <div id="navAuthLoggedOut" class="flex items-center space-x-6">
+                    <!-- Blank for logged out admins -->
+                </div>
+                <!-- Logged In -->
                 <div id="navAuthLoggedIn" class="hidden flex items-center space-x-6">
-                    <span id="navUserName" class="font-poppins font-bold text-deepPurple text-sm hidden md:block tracking-widest uppercase bg-deepPurple/10 px-4 py-2 rounded-full border border-deepPurple/20">System Administrator</span>
-                    <button onclick="handleLogoutGlobal()" class="bg-starkBlack text-surface px-8 py-3.5 rounded-full font-poppins font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active">
-                        Sign Out
+                    <div class="flex items-center gap-3 hidden md:flex border-r border-brand-200 pr-6">
+                        <div class="w-9 h-9 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 shadow-inner-soft">
+                            <i class="fa-solid fa-shield-halved text-xs"></i>
+                        </div>
+                        <span class="font-sans-head font-bold text-charcoal text-sm uppercase tracking-widest">Sys Admin</span>
+                    </div>
+                    <button onclick="handleLogoutGlobal()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-brand-700 hover:bg-brand-50 transition-colors">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </button>
                 </div>
             </div>
@@ -177,159 +168,154 @@
 
         <!-- ================= ADMIN LOGIN VIEW ================= -->
         <section id="view-login" class="view-section active flex-grow justify-center items-center py-10 relative z-10 min-h-[85vh]">
-            
-            <div class="absolute inset-0 z-[-2] bg-offWhite"></div>
-            <div class="absolute top-[-10%] left-[-15%] w-[70vw] max-w-[800px] h-[70vw] max-h-[800px] bg-deepPurple rounded-full blur-[150px] z-[-2] opacity-40 pointer-events-none"></div>
-            <div class="bg-3d-obj-1 top-[15%] left-[20%] hidden md:block"></div>
-            <div class="bg-3d-obj-2 bottom-[25%] right-[20%] hidden lg:block"></div>
-
-            <div class="bg-surface p-8 md:p-12 rounded-[2rem] shadow-3d-modal w-full max-w-[450px] relative border border-white/20 transition-transform duration-300">
+            <div class="bg-white p-10 sm:p-12 rounded-[2rem] shadow-luxury w-full max-w-[440px] relative transition-transform duration-300 border border-gray-100">
                 
-                <!-- Centered Admin Logo & Title -->
-                <div class="mb-10 text-center flex flex-col items-center">
-                    <div class="w-20 h-20 bg-deepPurple/10 rounded-[1.5rem] flex items-center justify-center mb-4 border border-deepPurple/20 shadow-inner">
-                        <i class="fa-solid fa-shield-halved text-deepPurple text-4xl drop-shadow-md"></i>
+                <div class="text-center flex flex-col items-center mb-8">
+                    <div class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center mb-6 border border-brand-100">
+                        <i class="fa-solid fa-shield-halved text-brand-700 text-2xl"></i>
                     </div>
-                    <h3 class="text-4xl font-poppins font-black text-starkBlack mb-2" style="text-shadow: 2px 4px 6px rgba(0,0,0,0.1);">Admin</h3>
-                    <p class="text-smoke font-inter text-sm font-medium">Sign in to manage the system.</p>
+                    <h3 class="text-3xl font-serif text-brand-900 mb-2">Admin Sign In</h3>
+                    <p class="text-gray-500 font-inter text-sm">Access your system and reports.</p>
                 </div>
 
-                <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-6">
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Email Address</label>
-                        <input type="email" id="loginEmail" autocomplete="email" required placeholder="admin@oathofcare.com" 
-                            class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold text-sm outline-none cursor-text shadow-3d-input">
+                <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-5">
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Email Address</label>
+                        <input type="email" id="loginEmail" autocomplete="email" required placeholder="admin@example.com" 
+                            class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
                     </div>
                     
-                    <div class="transition-all duration-300 focus-within:scale-[1.03] focus-within:-translate-y-1 relative z-10">
-                        <label class="block font-poppins font-black text-starkBlack text-[10px] uppercase tracking-[0.15em] mb-2 pl-1 transition-colors focus-within:text-deepPurple">Password</label>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-2 pl-1">Password</label>
                         <div class="relative">
                             <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="••••••••" 
-                                class="w-full px-5 py-4 rounded-2xl bg-[#F4F4F5] border-2 border-transparent focus:bg-white focus:border-deepPurple focus:shadow-3d-input-focus transition-all text-starkBlack font-inter font-bold tracking-widest pr-12 text-sm outline-none cursor-text shadow-3d-input">
-                            <button type="button" onclick="togglePassword('loginPassword', 'eyeLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-smoke hover:text-deepPurple hover:scale-110 transition-all focus:outline-none">
-                                <i class="fa-solid fa-eye text-lg" id="eyeLogin"></i>
+                                class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter font-bold tracking-widest pr-12 text-sm outline-none">
+                            <button type="button" onclick="togglePassword('loginPassword', 'eyeLogin')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-brand-700 transition-colors focus:outline-none">
+                                <i class="fa-solid fa-eye-slash" id="eyeLogin"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <div class="pt-6">
-                        <button type="submit" id="btnLoginSubmit" class="w-full bg-starkBlack hover:bg-deepPurple text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:shadow-3d-btn-hover hover:-translate-y-1 active:translate-y-0 active:shadow-3d-btn-active transition-all duration-300">
-                            Sign In
+                    <div class="pt-3">
+                        <button type="submit" id="btnLoginSubmit" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-4 rounded-xl font-sans-head font-bold uppercase tracking-[0.15em] text-[11px] shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+                            SIGN IN
                         </button>
                     </div>
                 </form>
+
+                <div class="mt-8 text-center text-[13px] font-inter text-gray-500">
+                    Need elevated access? <button type="button" onclick="openAuthModal('signup1')" class="font-sans-head font-bold text-brand-800 hover:text-brand-600 transition-colors border-b-2 border-brand-800 pb-0.5 ml-1 uppercase tracking-widest text-[11px]">Register Admin</button>
+                </div>
             </div>
         </section>
 
         <!-- ================= ADMIN DASHBOARD VIEW ================= -->
-        <section id="view-admin" class="view-section flex-grow relative z-10 bg-offWhite min-h-[90vh]">
+        <section id="view-admin" class="view-section flex-grow relative z-10 min-h-[90vh]">
             <div class="flex flex-col md:flex-row h-full max-w-[1600px] mx-auto w-full px-6 lg:px-12 py-10 gap-8 items-start">
                 
                 <!-- Mobile Navigation Tabs -->
-                <div class="md:hidden w-full bg-surface rounded-[2rem] shadow-3d-card flex p-2 gap-2 mb-4 border border-smoke/5 overflow-x-auto no-scrollbar">
-                    <button onclick="switchAdminTab('requests')" id="mTab-a-requests" class="whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-[10px] uppercase tracking-widest transition-all shadow-3d-btn">
-                        Applications
-                    </button>
-                    <button onclick="switchAdminTab('analytics')" id="mTab-a-analytics" class="whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] text-smoke font-poppins font-black text-[10px] uppercase tracking-widest transition-all hover:bg-offWhite">
-                        Analytics
-                    </button>
-                    <button onclick="switchAdminTab('logs')" id="mTab-a-logs" class="whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] text-smoke font-poppins font-black text-[10px] uppercase tracking-widest transition-all hover:bg-offWhite">
-                        Logs
-                    </button>
+                <div class="md:hidden w-full bg-white rounded-2xl shadow-sm flex p-2 gap-2 mb-4 border border-gray-200 overflow-x-auto no-scrollbar">
+                    <button onclick="switchAdminTab('requests')" id="mTab-a-requests" class="whitespace-nowrap flex-1 py-3 px-4 rounded-xl bg-brand-800 text-white font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all">Applications</button>
+                    <button onclick="switchAdminTab('analytics')" id="mTab-a-analytics" class="whitespace-nowrap flex-1 py-3 px-4 rounded-xl text-gray-500 font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all hover:bg-gray-50">Accuracy and Data</button>
                 </div>
 
-                <!-- Sticky Desktop Sidebar -->
-                <aside class="w-80 bg-surface rounded-[2.5rem] flex-col hidden md:flex overflow-hidden shadow-3d-card sticky top-32 border border-smoke/5 shrink-0">
-                    <div class="p-10 border-b border-smoke/10 text-center flex flex-col items-center bg-offWhite/50">
-                        <div class="w-24 h-24 bg-deepPurple rounded-[1.5rem] flex items-center justify-center text-surface text-4xl mb-5 shadow-3d-btn relative">
-                            <i class="fa-solid fa-shield-halved drop-shadow-md"></i>
-                            <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-vibrantOrange border-[3px] border-surface rounded-full shadow-md flex items-center justify-center">
-                                <i class="fa-solid fa-star text-surface text-[10px]"></i>
-                            </div>
+                <!-- Desktop Sidebar -->
+                <aside class="w-80 bg-white rounded-3xl flex-col hidden md:flex overflow-hidden shadow-luxury border border-brand-100 sticky top-32 shrink-0">
+                    <div class="p-8 border-b border-brand-50 text-center flex flex-col items-center bg-brand-50/50">
+                        <div class="w-20 h-20 bg-brand-800 rounded-full flex items-center justify-center text-white text-3xl mb-4 shadow-md relative border-4 border-white">
+                            <i class="fa-solid fa-server"></i>
                         </div>
-                        <h3 class="font-poppins font-black text-xl text-starkBlack leading-tight w-full px-4">System Admin</h3>
-                        <p class="text-[10px] font-poppins font-bold text-smoke uppercase tracking-widest mt-2">Master Control</p>
+                        <h3 class="font-serif text-xl text-brand-900 leading-tight w-full px-2">Master Control</h3>
                     </div>
-                    <nav class="space-y-4 flex-grow p-8">
-                        <button onclick="switchAdminTab('requests')" id="aTab-requests" class="w-full text-left px-6 py-5 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4 shadow-3d-btn hover:-translate-y-1">
-                            <div class="text-vibrantOrange"><i class="fa-solid fa-file-signature text-xl"></i></div>
-                            Applications
+                    <nav class="space-y-2 flex-grow p-6">
+                        <button onclick="switchAdminTab('requests')" id="aTab-requests" class="w-full text-left px-5 py-4 rounded-xl bg-brand-50 text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4 shadow-sm">
+                            <i class="fa-solid fa-file-signature text-lg text-brand-600 w-5 text-center"></i> Applications
                         </button>
-                        <button onclick="switchAdminTab('analytics')" id="aTab-analytics" class="w-full text-left px-6 py-5 rounded-[1.5rem] text-smoke hover:bg-offWhite hover:text-starkBlack font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4">
-                            <div class="text-smoke"><i class="fa-solid fa-chart-pie text-xl"></i></div>
-                            Analytics
-                        </button>
-                        <button onclick="switchAdminTab('logs')" id="aTab-logs" class="w-full text-left px-6 py-5 rounded-[1.5rem] text-smoke hover:bg-offWhite hover:text-starkBlack font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4">
-                            <div class="text-smoke"><i class="fa-solid fa-clock-rotate-left text-xl"></i></div>
-                            Audit Log
+                        <button onclick="switchAdminTab('analytics')" id="aTab-analytics" class="w-full text-left px-5 py-4 rounded-xl text-gray-500 hover:bg-brand-50 hover:text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4">
+                            <i class="fa-solid fa-chart-line text-lg w-5 text-center"></i> System and Accuracy
                         </button>
                     </nav>
                 </aside>
 
                 <!-- Main Content Area -->
-                <main class="flex-grow w-full bg-surface rounded-[2.5rem] shadow-3d-card border border-smoke/5 overflow-hidden">
+                <main class="flex-grow w-full bg-white rounded-3xl shadow-luxury border border-brand-100 overflow-hidden min-h-[700px]">
                     <div class="p-8 sm:p-12">
                         
                         <!-- Applications Tab -->
                         <div id="aContent-requests" class="block">
-                            <div class="mb-10 border-b border-smoke/10 pb-6">
-                                <h2 class="text-3xl font-poppins font-black text-starkBlack">Pending Applications</h2>
-                                <p class="text-smoke text-sm font-inter font-medium mt-1">Review and verify new pharmacy partnership requests.</p>
+                            <div class="mb-10 border-b border-gray-100 pb-6">
+                                <h2 class="text-3xl font-serif text-brand-800">Pending Applications</h2>
+                                <p class="text-gray-500 text-sm font-inter mt-1">Review new pharmacy and admin requests.</p>
                             </div>
                             <div id="adminRequestsContainer" class="space-y-6">
                                 <!-- Javascript Populated -->
                             </div>
                         </div>
 
-                        <!-- Analytics Tab -->
+                        <!-- System Overview & Accuracy Tab -->
                         <div id="aContent-analytics" class="hidden">
-                            <div class="mb-10 border-b border-smoke/10 pb-6">
-                                <h2 class="text-3xl font-poppins font-black text-starkBlack">System Intelligence</h2>
-                                <p class="text-smoke text-sm font-inter font-medium mt-1">Real-time statistics from the database.</p>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                <div class="bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner text-center">
-                                    <p class="text-xs text-smoke font-poppins font-bold uppercase tracking-widest">Total Pharmacies</p>
-                                    <p class="text-5xl font-poppins font-black text-deepPurple mt-3 drop-shadow-sm" id="statPharm">0</p>
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-gray-100 pb-6 gap-6">
+                                <div>
+                                    <h2 class="text-3xl font-serif text-brand-800">System and Accuracy</h2>
+                                    <p class="text-gray-500 text-sm font-inter mt-1">Monitor network health, active warnings, and search volume.</p>
                                 </div>
-                                <div class="bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner text-center">
-                                    <p class="text-xs text-smoke font-poppins font-bold uppercase tracking-widest">Registered Clients</p>
-                                    <!-- INAYOS NA DITO: totalClients na ang inaasahan mula sa backend -->
-                                    <p class="text-5xl font-poppins font-black text-starkBlack mt-3 drop-shadow-sm" id="statPatient">0</p>
-                                </div>
-                                <div class="bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner text-center">
-                                    <p class="text-xs text-smoke font-poppins font-bold uppercase tracking-widest">Search Queries</p>
-                                    <p class="text-5xl font-poppins font-black text-vibrantOrange mt-3 drop-shadow-sm" id="statSearch">0</p>
+                                <div class="flex items-center gap-3">
+                                    <label class="text-[10px] font-sans-head font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Filter Date:</label>
+                                    <div class="relative min-w-[140px]">
+                                        <select id="adminDateFilter" class="w-full appearance-none bg-brand-50 border border-brand-200 text-brand-800 py-2.5 pl-4 pr-8 rounded-lg font-sans-head font-bold text-[10px] uppercase tracking-widest outline-none focus:border-brand-500 cursor-pointer shadow-sm" onchange="fetchAdminData()">
+                                            <option value="today">Today</option>
+                                            <option value="7days">Last 7 Days</option>
+                                            <option value="30days">Last 30 Days</option>
+                                            <option value="all" selected>All Time</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="bg-white p-8 rounded-[2rem] shadow-3d-card border border-smoke/5 h-[400px] flex justify-center items-center">
-                                <canvas id="analyticsChart"></canvas>
+                            
+                            <!-- 3 Stat Cards -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                                <div class="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm text-center">
+                                    <p class="text-[10px] font-sans-head font-bold text-gray-400 uppercase tracking-widest mb-2">Registered Pharmacies</p>
+                                    <h3 class="text-5xl font-serif text-brand-800" id="statPharm">0</h3>
+                                </div>
+                                <div class="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm text-center">
+                                    <p class="text-[10px] font-sans-head font-bold text-gray-400 uppercase tracking-widest mb-2">Total Users (Clients)</p>
+                                    <h3 class="text-5xl font-serif text-charcoal" id="statPatient">0</h3>
+                                </div>
+                                <div class="bg-brand-50 border border-brand-100 p-8 rounded-2xl shadow-sm text-center">
+                                    <p class="text-[10px] font-sans-head font-bold text-brand-600 uppercase tracking-widest mb-2">Total Search Queries</p>
+                                    <h3 class="text-5xl font-serif text-brand-900" id="statSearch">0</h3>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Logs Tab -->
-                        <div id="aContent-logs" class="hidden">
-                            <div class="mb-10 border-b border-smoke/10 pb-6">
-                                <h2 class="text-3xl font-poppins font-black text-starkBlack">Activity Log</h2>
-                                <p class="text-smoke text-sm font-inter font-medium mt-1">System-wide search and interaction history.</p>
+                            <!-- Accuracy Monitoring Table -->
+                            <div class="mb-6">
+                                <h3 class="text-xl font-serif text-brand-800 mb-2">Accuracy Monitoring</h3>
+                                <p class="text-xs text-gray-500 font-inter mb-4">Pharmacies with high 'Out of Stock' reports will automatically gain strikes. Deactivate flagrant offenders.</p>
                             </div>
-                            <div class="bg-offWhite rounded-[2rem] border border-smoke/5 overflow-hidden shadow-inner">
+
+                            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                                 <div class="overflow-x-auto">
-                                    <table class="w-full text-left border-collapse min-w-[800px]">
+                                    <table class="w-full text-left min-w-[1000px]">
                                         <thead>
-                                            <tr class="bg-surface text-smoke font-poppins font-black text-[10px] uppercase tracking-widest border-b border-smoke/10 shadow-sm">
-                                                <th class="p-6 md:p-8">Timestamp</th>
-                                                <th class="p-6 md:p-8">User Name</th>
-                                                <th class="p-6 md:p-8">Search Result</th>
+                                            <tr class="bg-brand-50 text-brand-800 font-sans-head font-bold text-[10px] uppercase tracking-widest border-b border-gray-200">
+                                                <th class="p-5 font-bold">Pharmacy and Branch</th>
+                                                <th class="p-5 font-bold text-center">Successful (Yes)</th>
+                                                <th class="p-5 font-bold text-center">No Stock (No)</th>
+                                                <th class="p-5 font-bold text-center">Active Strikes</th>
+                                                <th class="p-5 font-bold text-center">Lifetime 'No's</th>
+                                                <th class="p-5 font-bold text-center">Status</th>
+                                                <th class="p-5 font-bold text-right">Admin Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="auditLogsTable">
-                                            <!-- Javascript Populated -->
+                                        <tbody id="accuracyTable" class="divide-y divide-gray-100">
+                                            <!-- Dynamic Accuracy Rows -->
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </main>
             </div>
@@ -337,80 +323,147 @@
 
     </main>
 
-    <!-- ================= ADMIN REVIEW MODAL ================= -->
-    <div id="adminReviewModal" class="fixed inset-0 bg-starkBlack/80 backdrop-blur-md hidden flex items-center justify-center z-[110] p-4 transition-opacity duration-500 overflow-y-auto">
-        <div class="bg-surface p-8 md:p-12 rounded-[2.5rem] shadow-3d-modal w-full max-w-5xl relative border border-white/20 transition-transform duration-300 scale-95" id="adminReviewModalContent">
-            <button onclick="closeAdminReview()" class="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-smoke hover:bg-gray-100 hover:text-starkBlack transition-all hover:rotate-90 z-20">
-                <i class="fa-solid fa-times text-xl"></i>
+    <!-- ================= LUXURY AUTH MODAL (ADMIN SIGNUP) ================= -->
+    <div id="authModal" class="fixed inset-0 bg-charcoal/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 transition-opacity duration-400 overflow-y-auto">
+        <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-[440px] relative my-8 transition-all duration-400 scale-95 border-t-4 border-brand-800" id="authModalContent">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-50 hover:text-brand-800 transition-colors z-20">
+                <i class="fa-solid fa-times"></i>
             </button>
-            <h3 class="text-4xl font-poppins font-black text-starkBlack mb-8">Review Application</h3>
+
+            <!-- Admin Signup -->
+            <div id="signup1FormWrapper" class="block">
+                <div class="mb-8 text-center">
+                    <div class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center mb-5 border border-brand-100 shadow-inner-soft mx-auto">
+                        <i class="fa-solid fa-user-shield text-brand-700 text-2xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-serif text-charcoal mb-2">Admin Registration</h3>
+                    <p class="text-gray-500 font-inter text-xs">Request elevated system access.</p>
+                </div>
+                <form id="signup1Form" onsubmit="handleAdminSignup(event)" class="space-y-5">
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Corporate Email</label>
+                        <input type="email" id="regEmail" autocomplete="email" required placeholder="admin@oathofcare.com" 
+                            class="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-sans-head font-bold text-charcoal text-[10px] uppercase tracking-widest mb-1.5 pl-1">Security Password <span class="text-gray-400 font-normal normal-case tracking-normal ml-1">(8+ chars, upper, lower, special)</span></label>
+                        <div class="relative">
+                            <input type="password" id="regPassword" autocomplete="new-password" required placeholder="••••••••" 
+                                class="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl focus:border-brand-700 focus:shadow-input-focus transition-all text-charcoal font-inter text-sm pr-12 outline-none tracking-widest">
+                            <button type="button" onclick="togglePassword('regPassword', 'eyeReg')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-brand-600 transition-colors focus:outline-none">
+                                <i class="fa-solid fa-eye-slash" id="eyeReg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="pt-4">
+                        <button type="submit" id="btnSignup1Submit" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-4 rounded-xl font-sans-head font-bold uppercase tracking-[0.15em] text-[11px] shadow-luxury transition-all hover:shadow-luxury-hover hover:-translate-y-0.5">
+                            SUBMIT REQUEST
+                        </button>
+                    </div>
+                </form>
+                <div class="mt-6 text-center text-sm font-inter text-gray-500">
+                    Already an admin? <button type="button" onclick="closeAuthModal(); document.getElementById('view-login').scrollIntoView();" class="font-sans-head font-bold text-brand-700 hover:text-brand-500 transition-colors border-b-2 border-brand-700 pb-0.5 ml-1">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ADMIN REVIEW MODAL (EXTENDED INFO) ================= -->
+    <div id="adminReviewModal" class="fixed inset-0 bg-charcoal/90 backdrop-blur-md hidden flex items-center justify-center z-[110] p-4 transition-opacity duration-400 overflow-y-auto">
+        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl w-full max-w-6xl relative border-t-4 border-brand-800 transition-transform duration-400 scale-95" id="adminReviewModalContent">
+            <button onclick="closeAdminReview()" class="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:bg-error hover:text-white transition-all hover:rotate-90 z-20 border border-gray-200">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            <h3 class="text-3xl font-serif text-brand-800 mb-8" id="modalReviewTitle">Review Application</h3>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 mb-10">
-                <!-- Verified Information Display -->
-                <div class="space-y-6 bg-offWhite p-8 rounded-[2rem] border border-smoke/5 shadow-inner">
-                    <div>
-                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Pharmacy Name</p>
-                        <p class="font-bold text-xl text-starkBlack" id="revName">-</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Data Info Side -->
+                <div class="space-y-6">
+                    <div class="bg-brand-50/50 p-6 rounded-2xl border border-brand-100">
+                        <h4 class="font-sans-head font-bold text-brand-900 text-[10px] uppercase tracking-widest mb-4 border-b border-brand-100 pb-2">Business and Location Info</h4>
+                        <div class="space-y-4">
+                            <div id="revNameContainer">
+                                <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest">Pharmacy Name</p>
+                                <p class="font-serif text-xl text-charcoal" id="revName">-</p>
+                            </div>
+                            <div id="revEmailContainer">
+                                <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest">Contact Email</p>
+                                <p class="font-inter font-medium text-sm text-charcoal" id="revEmail">-</p>
+                            </div>
+                            <div id="revContactContainer">
+                                <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest">Contact Number</p>
+                                <p class="font-inter font-medium text-sm text-charcoal" id="revContact">-</p>
+                            </div>
+                            <div id="revAddressContainer">
+                                <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest">Location (Branch)</p>
+                                <p class="font-inter font-medium text-sm text-charcoal" id="revBranch">-</p>
+                                <p class="font-inter font-light text-xs text-gray-500 mt-1" id="revAddress">-</p>
+                            </div>
+                            <div id="revMapContainer">
+                                <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest">Map Coordinates</p>
+                                <a href="#" id="revMap" target="_blank" class="font-inter font-medium text-xs text-brand-600 hover:underline break-all">-</a>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Email Address</p>
-                        <p class="font-bold text-base text-starkBlack" id="revEmail">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Contact Number</p>
-                        <p class="font-bold text-base text-starkBlack" id="revContact">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Branch / Barangay</p>
-                        <p class="font-bold text-base text-starkBlack" id="revBranch">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Full Address</p>
-                        <p class="font-bold text-base text-starkBlack" id="revAddress">-</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-1">Google Maps Link</p>
-                        <a href="#" id="revMap" target="_blank" class="font-bold text-sm text-deepPurple hover:underline break-all">-</a>
+
+                    <div class="bg-brand-50/50 p-6 rounded-2xl border border-brand-100" id="revTimeBox">
+                        <h4 class="font-sans-head font-bold text-brand-900 text-[10px] uppercase tracking-widest mb-4 border-b border-brand-100 pb-2">Operating Hours</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest">Active Days</p>
+                                <p class="font-inter font-medium text-sm text-brand-800 mt-1" id="revDays">-</p>
+                            </div>
+                            <div>
+                                <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest">Daily Schedule</p>
+                                <p class="font-inter font-medium text-sm text-brand-800 mt-1" id="revHours">-</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Secure Base64 Rendered Images from Database -->
-                <div class="space-y-8">
+                <!-- Images & Documents Side -->
+                <div class="space-y-6" id="revDocsSide">
                     <div>
-                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-3">Store Photo</p>
-                        <div class="w-full h-48 bg-gray-100 border border-smoke/10 rounded-[1.5rem] flex flex-col items-center justify-center text-smoke shadow-inner overflow-hidden relative">
-                            <img id="revStorePhotoImg" src="" alt="Store Photo" class="w-full h-full object-cover hidden absolute inset-0">
-                            <span id="revStorePhotoText" class="text-xs font-poppins font-bold uppercase tracking-widest hidden relative z-10">No Image Uploaded</span>
+                        <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">FDA License to Operate</p>
+                        <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
+                            <img id="revFdaImg" src="" alt="FDA License" class="w-full h-full object-contain bg-white hidden absolute inset-0">
+                            <span id="revFdaText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
                         </div>
                     </div>
                     <div>
-                        <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mb-3">Business Permit</p>
-                        <div class="w-full h-56 bg-gray-100 border border-smoke/10 rounded-[1.5rem] flex flex-col items-center justify-center text-smoke shadow-inner overflow-hidden relative">
-                            <img id="revPermitPhotoImg" src="" alt="Business Permit" class="w-full h-full object-cover hidden absolute inset-0">
-                            <span id="revPermitPhotoText" class="text-xs font-poppins font-bold uppercase tracking-widest hidden relative z-10">No Permit Uploaded</span>
+                        <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">Business Permit</p>
+                        <div class="w-full h-32 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 overflow-hidden relative">
+                            <img id="revPermitImg" src="" alt="Business Permit" class="w-full h-full object-contain bg-white hidden absolute inset-0">
+                            <span id="revPermitText" class="text-[10px] font-sans-head font-bold uppercase tracking-widest hidden relative z-10">No Document</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mb-2 pl-1">PRC Pharmacist ID</p>
+                        <div class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col justify-center text-charcoal">
+                            <p class="font-mono text-xs text-brand-800 break-all" id="revPrcText">Encrypted Base64 Data</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Secure Action Dispatchers -->
-            <div class="flex flex-col sm:flex-row gap-4 border-t border-smoke/10 pt-8">
-                <button id="btnRevApprove" class="flex-1 bg-deepPurple hover:bg-starkBlack text-surface py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm shadow-3d-btn hover:-translate-y-1 transition-all duration-300">Approve Application</button>
-                <button id="btnRevReject" class="flex-1 bg-white text-error border-2 border-error/30 py-5 rounded-2xl font-poppins font-black uppercase tracking-widest text-sm hover:bg-error hover:text-white transition-all duration-300 shadow-sm">Reject Application</button>
+            <div class="flex flex-col sm:flex-row gap-4 border-t border-brand-100 pt-8 mt-4">
+                <button id="btnRevApprove" class="flex-1 bg-brand-800 hover:bg-brand-900 text-white py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[11px] shadow-luxury transition-all hover:-translate-y-0.5">Approve Verification</button>
+                <button id="btnRevReject" class="flex-1 bg-white text-error border-2 border-error/30 py-4 rounded-xl font-sans-head font-bold uppercase tracking-widest text-[11px] hover:bg-error hover:text-white transition-all shadow-sm">Reject / Discard</button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
     <div id="toast-container"></div>
 
     <!-- Logic and Scripts -->
     <script>
-        const API_URL = 'https://python-backend-mzcr.onrender.com';
+        const API_URL = 'https://oath-of-care-production.up.railway.app';
         
         let authState = JSON.parse(localStorage.getItem('ooc_admin_user')) || { id: null, role: null, name: null };
-        let analyticsChartInstance = null;
         let globalPendingApplications = [];
+        let activeReviewId = null;
+        let activeReviewType = null;
 
         window.onload = () => {
             updateNavBasedOnAuth();
@@ -434,10 +487,10 @@
             if (type === 'error') {
                 toast.style.borderLeftColor = '#DC2626'; // error
             } else {
-                toast.style.borderLeftColor = '#FF9800'; // vibrantOrange
+                toast.style.borderLeftColor = '#41ab5d'; // brand-500
             }
             
-            toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation text-error' : 'fa-circle-check text-vibrantOrange'} text-xl"></i> <span>${message}</span>`;
+            toast.innerHTML = `<span>${message}</span>`;
             
             container.appendChild(toast);
             void toast.offsetWidth;
@@ -449,17 +502,17 @@
             }, 3000);
         }
 
-        function lockButton(btnId) {
+        function lockButton(btnId, txt = 'Processing...') {
             const btn = document.getElementById(btnId);
             if(!btn) return () => {};
             const originalHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="ml-2">Processing...</span>';
-            btn.classList.add('opacity-80', 'cursor-not-allowed', 'scale-95');
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="ml-2 font-sans-head text-xs tracking-widest uppercase">${txt}</span>`;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
             return () => {
                 btn.disabled = false;
                 btn.innerHTML = originalHTML;
-                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'scale-95');
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
             };
         }
 
@@ -492,25 +545,40 @@
             const eyeIcon = document.getElementById(iconId);
             if (!passInput || !eyeIcon) return;
             if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
+                passInput.type = 'text'; eyeIcon.classList.remove('fa-eye-slash'); eyeIcon.classList.add('fa-eye');
             } else {
-                passInput.type = 'password';
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
+                passInput.type = 'password'; eyeIcon.classList.remove('fa-eye'); eyeIcon.classList.add('fa-eye-slash');
             }
         }
 
-        // --- ADMIN LOGIN ---
+        function openAuthModal(view) {
+            const modal = document.getElementById('authModal');
+            const content = document.getElementById('authModalContent');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+            
+            document.getElementById('signup1FormWrapper').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('authModal');
+            const content = document.getElementById('authModalContent');
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden'); document.body.style.overflow = 'auto';
+                document.getElementById('signup1Form').reset();
+            }, 300); 
+        }
+
+        // ADMIN LOGIN
         async function handleLoginSubmit(e) {
             e.preventDefault();
-            const unlock = lockButton('btnLoginSubmit');
+            const unlock = lockButton('btnLoginSubmit', 'Authenticating...');
             const emailInput = document.getElementById('loginEmail');
             const passInput = document.getElementById('loginPassword');
             
             try {
-                // Hardcode role to admin so standard users can't login here
                 const response = await fetch(`${API_URL}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -521,7 +589,7 @@
 
                 if (response.ok) {
                     showToast(result.message);
-                    authState = { id: result.id, role: 'admin', name: 'Administrator' };
+                    authState = { id: result.id, role: 'admin', name: 'System Admin' };
                     localStorage.setItem('ooc_admin_user', JSON.stringify(authState));
                     updateNavBasedOnAuth();
                     e.target.reset(); 
@@ -539,183 +607,270 @@
             } finally { unlock(); }
         }
 
+        // ADMIN SIGNUP
+        async function handleAdminSignup(e) {
+            e.preventDefault();
+            const pw = document.getElementById('regPassword').value;
+            const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+            if (!pwRegex.test(pw)) return showToast('Password must be 8+ chars with uppercase, lowercase, & special char.', 'error');
+
+            const email = document.getElementById('regEmail').value;
+            const unlock = lockButton('btnSignup1Submit', 'Submitting...');
+            try {
+                const response = await fetch(`${API_URL}/api/admin/register`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: pw })
+                });
+                const result = await response.json();
+                if(response.ok) { showToast(result.message); closeAuthModal(); } 
+                else { showToast(result.error || 'Registration failed', 'error'); }
+            } catch (error) { showToast('Server connection failed.', 'error'); } finally { unlock(); }
+        }
+
         // --- DASHBOARD LOGIC ---
         function switchAdminTab(tab) {
-            ['requests', 'analytics', 'logs'].forEach(t => {
+            ['requests', 'analytics'].forEach(t => {
                 document.getElementById(`aContent-${t}`).classList.add('hidden');
                 
                 const dTab = document.getElementById(`aTab-${t}`);
-                dTab.className = "w-full text-left px-6 py-5 rounded-[1.5rem] text-smoke hover:bg-offWhite hover:text-starkBlack font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4";
-                const dIcon = dTab.querySelector('div');
-                dIcon.className = "text-smoke";
+                if(dTab) {
+                    dTab.className = "w-full text-left px-5 py-4 rounded-xl text-gray-500 hover:bg-brand-50 hover:text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4";
+                    const dIcon = dTab.querySelector('i');
+                    if(dIcon) dIcon.className = dIcon.className.replace('text-brand-600', 'text-gray-400');
+                }
 
                 const mTab = document.getElementById(`mTab-a-${t}`);
-                if (mTab) mTab.className = "whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] text-smoke font-poppins font-black text-[10px] uppercase tracking-widest transition-all hover:bg-offWhite";
+                if (mTab) mTab.className = "whitespace-nowrap flex-1 py-3 px-4 rounded-xl text-gray-500 font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all hover:bg-gray-50";
             });
             
             document.getElementById(`aContent-${tab}`).classList.remove('hidden');
             
             const activeDTab = document.getElementById(`aTab-${tab}`);
-            activeDTab.className = "w-full text-left px-6 py-5 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-xs uppercase tracking-widest transition-all flex items-center gap-4 shadow-3d-btn hover:-translate-y-1";
-            const activeDIcon = activeDTab.querySelector('div');
-            activeDIcon.className = "text-vibrantOrange";
+            if(activeDTab) {
+                activeDTab.className = "w-full text-left px-5 py-4 rounded-xl bg-brand-50 text-brand-800 font-sans-head font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-4 shadow-sm";
+                const activeDIcon = activeDTab.querySelector('i');
+                if(activeDIcon) activeDIcon.className = activeDIcon.className.replace('text-gray-400', 'text-brand-600');
+            }
 
             const mTabActive = document.getElementById(`mTab-a-${tab}`);
-            if (mTabActive) mTabActive.className = "whitespace-nowrap flex-1 py-4 px-4 rounded-[1.5rem] bg-starkBlack text-surface font-poppins font-black text-[10px] uppercase tracking-widest transition-all shadow-3d-btn";
+            if (mTabActive) mTabActive.className = "whitespace-nowrap flex-1 py-3 px-4 rounded-xl bg-brand-800 text-white font-sans-head font-bold text-[9px] uppercase tracking-widest transition-all shadow-sm";
         }
 
         async function fetchAdminData() {
+            const filterEl = document.getElementById('adminDateFilter');
+            const filterDate = filterEl ? filterEl.value : 'all';
+            
+            let stats = {};
+            let pending = [];
+
+            // Robust fetch for stats
             try {
-                const [statsRes, logsRes, pendingRes] = await Promise.all([
-                    fetch(`${API_URL}/api/admin/stats`),
-                    fetch(`${API_URL}/api/admin/logs`),
-                    fetch(`${API_URL}/api/admin/pending`)
-                ]);
-                
-                const stats = await statsRes.json();
-                const logs = await logsRes.json();
-                const pending = await pendingRes.json();
+                const statsRes = await fetch(`${API_URL}/api/admin/stats?filter=${filterDate}`);
+                if (statsRes.ok) {
+                    stats = await statsRes.json();
+                } else {
+                    console.warn("Backend API for stats returned an error:", statsRes.status);
+                }
+            } catch(e) {
+                console.error("Network error fetching stats:", e);
+            }
 
-                document.getElementById('statPharm').innerText = stats.totalPharmacies || 0;
-                // INAYOS: Ito na ay binabasa bilang stats.totalClients (Base sa app.py setup)
-                document.getElementById('statPatient').innerText = stats.totalClients || 0;
-                document.getElementById('statSearch').innerText = stats.totalSearches || 0;
+            // Robust fetch for pending
+            try {
+                const pendingRes = await fetch(`${API_URL}/api/admin/pending`);
+                if (pendingRes.ok) {
+                    pending = await pendingRes.json();
+                } else {
+                    console.warn("Backend API for pending returned an error:", pendingRes.status);
+                }
+            } catch(e) {
+                console.error("Network error fetching pending requests:", e);
+            }
 
-                const ctx = document.getElementById('analyticsChart').getContext('2d');
-                if(analyticsChartInstance) analyticsChartInstance.destroy();
-                analyticsChartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Successful Matches', 'No Results Found'],
-                        datasets: [{ data: stats.chartData || [0,0], backgroundColor: ['#4A148C', '#DC2626'], borderWidth: 0 }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: "'Poppins', sans-serif", weight: 'bold' } } } } }
-                });
+            // Update UI safely
+            const totalPharm = stats?.overview?.totalPharmacies ?? stats?.totalPharmacies ?? 0;
+            const totalClients = stats?.overview?.totalClients ?? stats?.totalPatients ?? 0;
+            const totalSearches = stats?.overview?.totalSearches ?? stats?.totalSearches ?? 0;
 
-                const reqContainer = document.getElementById('adminRequestsContainer');
+            const elPharm = document.getElementById('statPharm');
+            if (elPharm) elPharm.innerText = totalPharm;
+
+            const elPatient = document.getElementById('statPatient');
+            if (elPatient) elPatient.innerText = totalClients;
+
+            const elSearch = document.getElementById('statSearch');
+            if (elSearch) elSearch.innerText = totalSearches;
+
+            // Accuracy Table
+            const tbody = document.getElementById('accuracyTable');
+            if (tbody) {
+                tbody.innerHTML = '';
+                if(stats?.accuracyData && stats.accuracyData.length > 0) {
+                    stats.accuracyData.forEach(acc => {
+                        let statusColor = acc.isDeactivated ? 'text-error bg-error/10 border-error/20' : 'text-brand-600 bg-brand-50 border-brand-200';
+                        let statusText = acc.isDeactivated ? 'DEACTIVATED' : 'ACTIVE';
+                        let actionText = acc.isDeactivated ? 'REACTIVATE' : 'DEACTIVATE';
+                        
+                        tbody.innerHTML += `
+                            <tr class="border-b border-gray-100 hover:bg-brand-50/30 transition-colors ${acc.isDeactivated ? 'alert-row' : ''}">
+                                <td class="p-5">
+                                    <p class="font-serif font-bold text-brand-900 text-sm">${acc.name || 'Unknown'}</p>
+                                    <p class="text-[9px] font-sans-head text-gray-400 uppercase tracking-widest">${acc.branch || 'Unknown'}</p>
+                                </td>
+                                <td class="p-5 text-center font-inter text-brand-600 font-bold">${acc.yesCount || 0}</td>
+                                <td class="p-5 text-center font-inter text-error font-bold">${acc.noCount || 0}</td>
+                                <td class="p-5 text-center font-inter text-charcoal font-bold">${acc.strikes || 0}</td>
+                                <td class="p-5 text-center font-inter text-gray-400">${acc.lifetimeStrikes || 0}</td>
+                                <td class="p-5 text-center"><span class="px-3 py-1.5 rounded-md text-[9px] font-sans-head font-bold uppercase tracking-widest border ${statusColor}">${statusText}</span></td>
+                                <td class="p-5 text-right">
+                                    <button onclick="togglePharmacyStatus(${acc.id})" class="text-[9px] font-sans-head font-bold uppercase tracking-widest px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition-all">${actionText}</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="p-10 text-center text-gray-400 font-sans-head font-medium text-xs">No active pharmacy data for this period.</td></tr>';
+                }
+            }
+
+            // Applications Queue
+            const reqContainer = document.getElementById('adminRequestsContainer');
+            if (reqContainer) {
                 reqContainer.innerHTML = '';
-                globalPendingApplications = pending;
                 
-                if(pending.length > 0) {
-                    pending.forEach(p => {
+                let allPending = [];
+                if (Array.isArray(pending)) {
+                    allPending = pending.map(p => ({...p, type: 'pharmacy'}));
+                } else if (pending) {
+                    if(pending.pharmacies) allPending = allPending.concat(pending.pharmacies);
+                    if(pending.admins) allPending = allPending.concat(pending.admins);
+                }
+                
+                globalPendingApplications = allPending;
+                
+                if(allPending.length > 0) {
+                    allPending.forEach(p => {
+                        let icon = p.type === 'admin' ? '<i class="fa-solid fa-user-shield text-brand-700"></i>' : '<i class="fa-solid fa-store text-brand-600"></i>';
+                        let bgTag = p.type === 'admin' ? 'bg-brand-100 text-brand-800' : 'bg-brand-50 text-brand-600';
                         reqContainer.innerHTML += `
-                            <div class="bg-surface p-8 rounded-[2rem] shadow-3d-card border border-smoke/5 flex flex-col md:flex-row justify-between items-start md:items-center transition-transform hover:-translate-y-1 cursor-default">
-                                <div>
-                                    <h4 class="text-2xl font-poppins font-black text-starkBlack">${p.name}</h4>
-                                    <p class="text-[10px] text-smoke font-poppins font-bold uppercase tracking-widest mt-2"><i class="fa-solid fa-location-dot text-deepPurple mr-1"></i> ${p.branch}</p>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center transition-all hover:shadow-luxury hover:-translate-y-1">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full ${bgTag} flex items-center justify-center text-xl">
+                                        ${icon}
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xl font-serif text-brand-800">${p.name || 'Unknown'}</h4>
+                                        <p class="text-[10px] text-gray-500 font-sans-head font-bold uppercase tracking-widest mt-1">${p.email || 'No Email'}</p>
+                                    </div>
                                 </div>
-                                <div class="mt-6 md:mt-0 w-full md:w-auto">
-                                    <button onclick="openAdminReview(${p.id})" class="w-full bg-deepPurple text-surface px-8 py-4 rounded-2xl font-poppins font-black text-xs uppercase tracking-widest shadow-3d-btn hover:bg-starkBlack transition-colors">Review Application</button>
+                                <div class="mt-5 md:mt-0 w-full md:w-auto">
+                                    <button onclick="openAdminReview(${p.id}, '${p.type}')" class="w-full bg-brand-800 hover:bg-brand-900 text-white px-6 py-3 rounded-xl font-sans-head font-bold text-[10px] uppercase tracking-widest shadow-md transition-colors">Review Request</button>
                                 </div>
                             </div>
                         `;
                     });
                 } else {
-                    reqContainer.innerHTML = '<div class="text-center py-16 bg-offWhite rounded-[2rem] border border-smoke/5"><i class="fa-solid fa-clipboard-check text-4xl text-smoke/30 mb-4"></i><p class="text-smoke font-poppins font-bold">No pending applications at the moment.</p></div>';
+                    reqContainer.innerHTML = '<div class="text-center py-16 bg-white rounded-[1.5rem] border border-gray-100 shadow-sm"><i class="fa-solid fa-clipboard-check text-4xl text-brand-200 mb-4"></i><p class="text-gray-400 font-sans-head font-medium text-xs">No pending applications.</p></div>';
                 }
+            }
+        }
 
-                const tbody = document.getElementById('auditLogsTable');
-                tbody.innerHTML = '';
-                
-                if (logs.length > 0) {
-                    logs.forEach(log => {
-                        tbody.innerHTML += `
-                            <tr class="border-b border-smoke/5 hover:bg-offWhite transition-colors">
-                                <td class="p-6 md:p-8 font-inter font-medium text-xs text-smoke">${log.time}</td>
-                                <td class="p-6 md:p-8 font-poppins font-bold text-sm text-starkBlack">${log.user}</td>
-                                <td class="p-6 md:p-8"><span class="px-4 py-2 rounded-xl text-[10px] uppercase font-poppins font-black tracking-widest ${log.result === 'Success' ? 'bg-vibrantOrange/10 text-vibrantOrange border border-vibrantOrange/20' : 'bg-error/10 text-error border border-error/20'}">${log.result}</span></td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="3" class="p-10 text-center text-smoke font-poppins font-bold">No recent system activity.</td></tr>';
-                }
-                
-            } catch(e) { console.error("Error loading admin data"); }
+        async function togglePharmacyStatus(id) {
+            if(!confirm("Are you sure you want to change this pharmacy's access status?")) return;
+            try {
+                const res = await fetch(`${API_URL}/api/admin/toggle-pharmacy`, {
+                    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({pharmacyId: id})
+                });
+                if(res.ok) { showToast('Status updated successfully'); fetchAdminData(); }
+            } catch(e) { showToast('Action failed', 'error'); }
         }
 
         // Logic to populate and trigger the Admin Review Modal
-        let activeReviewId = null;
-        function openAdminReview(id) {
-            const appData = globalPendingApplications.find(p => p.id === id);
+        function openAdminReview(id, type) {
+            const safeType = type || 'pharmacy';
+            const appData = globalPendingApplications.find(p => p.id === id && (p.type === safeType || !p.type));
             if(!appData) return;
             
             activeReviewId = id;
-            document.getElementById('revName').innerText = appData.name;
-            document.getElementById('revEmail').innerText = appData.email;
-            document.getElementById('revContact').innerText = appData.contact;
-            document.getElementById('revBranch').innerText = appData.branch;
-            document.getElementById('revAddress').innerText = appData.address;
-            document.getElementById('revMap').href = appData.mapLink;
-            document.getElementById('revMap').innerText = appData.mapLink;
+            activeReviewType = safeType;
             
-            const storeImg = document.getElementById('revStorePhotoImg');
-            const storeText = document.getElementById('revStorePhotoText');
-            if(appData.storePhoto) {
-                storeImg.src = appData.storePhoto;
-                storeImg.classList.remove('hidden');
-                storeText.classList.add('hidden');
+            if(safeType === 'admin') {
+                document.getElementById('modalReviewTitle').innerText = "Review Admin Access Request";
+                document.getElementById('revName').innerText = "System Administrator";
+                document.getElementById('revEmail').innerText = appData.email;
+                document.getElementById('revContactContainer').classList.add('hidden');
+                document.getElementById('revAddressContainer').classList.add('hidden');
+                document.getElementById('revMapContainer').classList.add('hidden');
+                document.getElementById('revDocsSide').classList.add('hidden');
+                document.getElementById('revTimeBox').classList.add('hidden');
             } else {
-                storeImg.classList.add('hidden');
-                storeText.classList.remove('hidden');
-            }
+                document.getElementById('modalReviewTitle').innerText = "Review Pharmacy Partnership";
+                document.getElementById('revName').innerText = appData.name;
+                document.getElementById('revEmail').innerText = appData.email;
+                
+                document.getElementById('revContactContainer').classList.remove('hidden');
+                document.getElementById('revContact').innerText = appData.contact;
+                
+                document.getElementById('revAddressContainer').classList.remove('hidden');
+                document.getElementById('revBranch').innerText = appData.branch;
+                document.getElementById('revAddress').innerText = appData.address;
+                
+                document.getElementById('revMapContainer').classList.remove('hidden');
+                document.getElementById('revMap').href = appData.mapLink || '#';
+                document.getElementById('revMap').innerText = "View on Maps";
 
-            const permitImg = document.getElementById('revPermitPhotoImg');
-            const permitText = document.getElementById('revPermitPhotoText');
-            if(appData.permitPhoto) {
-                permitImg.src = appData.permitPhoto;
-                permitImg.classList.remove('hidden');
-                permitText.classList.add('hidden');
-            } else {
-                permitImg.classList.add('hidden');
-                permitText.classList.remove('hidden');
+                document.getElementById('revTimeBox').classList.remove('hidden');
+                document.getElementById('revDays').innerText = appData.operatingDays || "Not specified";
+                document.getElementById('revHours').innerText = (appData.openTime && appData.closeTime) ? `${appData.openTime} - ${appData.closeTime}` : "Not specified";
+                
+                document.getElementById('revDocsSide').classList.remove('hidden');
+                // Handle FDA License
+                const fdaImg = document.getElementById('revFdaImg');
+                const fdaText = document.getElementById('revFdaText');
+                if(appData.fdaLicense) { fdaImg.src = appData.fdaLicense; fdaImg.classList.remove('hidden'); fdaText.classList.add('hidden'); } 
+                else { fdaImg.classList.add('hidden'); fdaText.classList.remove('hidden'); }
+
+                // Handle Business Permit
+                const permitImg = document.getElementById('revPermitImg');
+                const permitText = document.getElementById('revPermitText');
+                if(appData.permitPhoto) { permitImg.src = appData.permitPhoto; permitImg.classList.remove('hidden'); permitText.classList.add('hidden'); } 
+                else { permitImg.classList.add('hidden'); permitText.classList.remove('hidden'); }
+                
+                // Handle PRC ID Code
+                document.getElementById('revPrcText').innerText = appData.prcId || "No Data";
             }
 
             const modal = document.getElementById('adminReviewModal');
             const content = document.getElementById('adminReviewModalContent');
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-            
-            setTimeout(() => {
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
         }
 
         function closeAdminReview() {
             const modal = document.getElementById('adminReviewModal');
             const content = document.getElementById('adminReviewModalContent');
-            
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
             setTimeout(() => {
-                modal.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-                activeReviewId = null;
+                modal.classList.add('hidden'); document.body.style.overflow = 'auto';
+                activeReviewId = null; activeReviewType = null;
             }, 300);
         }
 
         async function handleApplicationDecision(action) {
             if(!activeReviewId) return;
-            
             const btnId = action === 'approve' ? 'btnRevApprove' : 'btnRevReject';
-            const unlock = lockButton(btnId);
+            const unlock = lockButton(btnId, action === 'approve' ? 'Approving...' : 'Rejecting...');
             
             try {
                 const response = await fetch(`${API_URL}/api/admin/resolve`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ pharmacyId: activeReviewId, action: action })
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id: activeReviewId, type: activeReviewType, action: action })
                 });
                 if(response.ok) { 
-                    showToast(`Application successfully ${action}d`); 
-                    closeAdminReview();
-                    fetchAdminData(); // Refresh UI
-                } else {
-                    showToast('Failed to process decision.', 'error');
-                }
-            } catch(error) { 
-                showToast('Network Error', 'error'); 
-            } finally { unlock(); }
+                    showToast(`Application ${action}d successfully.`); 
+                    closeAdminReview(); fetchAdminData(); 
+                } else { showToast('Failed to process decision.', 'error'); }
+            } catch(error) { showToast('Network Error', 'error'); } finally { unlock(); }
         }
 
         document.getElementById('btnRevApprove').addEventListener('click', () => handleApplicationDecision('approve'));
