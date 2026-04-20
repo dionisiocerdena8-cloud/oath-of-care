@@ -87,7 +87,7 @@ class Admin(db.Model):
     Email = db.Column(db.String(120), unique=True, nullable=False)
     PasswordHash = db.Column(db.String(255), nullable=False)
     IsFirstLogin = db.Column(db.Boolean, default=True)
-    IsApproved = db.Column(db.Boolean, default=False) 
+    IsApproved = db.Column(db.Boolean, default=False) # NEW: Added for Admin Approval System
 
 class ClientAccount(db.Model):
     __tablename__ = 'patient_account'
@@ -118,11 +118,11 @@ class Pharmacy(db.Model):
     ContactNumber = db.Column(db.String(20), nullable=False)
     FullAddress = db.Column(db.Text, nullable=False)
     GoogleMapLink = db.Column(db.Text, nullable=True)
-    LogoPhotoPath = db.Column(db.Text, nullable=True) 
-    FDALicense = db.Column(db.Text, nullable=True) 
+    LogoPhotoPath = db.Column(db.Text, nullable=True) # Kept for backward compatibility
+    FDALicense = db.Column(db.Text, nullable=True) # NEW: Updated field
     PermitPhotoPath = db.Column(db.Text, nullable=True)
-    PRC_ID = db.Column(db.Text, nullable=True) 
-    OperatingDays = db.Column(db.String(100), nullable=True) 
+    PRC_ID = db.Column(db.Text, nullable=True) # NEW: Updated field
+    OperatingDays = db.Column(db.String(100), nullable=True) # NEW: Updated field
     IsActive = db.Column(db.Boolean, default=False)
     OpenTime = db.Column(db.String(50), nullable=True)
     CloseTime = db.Column(db.String(50), nullable=True)
@@ -148,14 +148,11 @@ class Medicine(db.Model):
     __tablename__ = 'medicine'
     MedicineID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     MedicineName = db.Column(db.String(150), nullable=False)
-    GenericName = db.Column(db.String(150), nullable=True)
-    BrandName = db.Column(db.String(150), nullable=True)
-    Dosage = db.Column(db.String(50), nullable=True)
-    Description = db.Column(db.Text, nullable=True) 
+    Description = db.Column(db.Text, nullable=True)
     Price = db.Column(db.Numeric(10, 2), nullable=False)
     IsPrescriptionRequired = db.Column(db.Boolean, default=False)
     InStock = db.Column(db.Boolean, default=True)
-    StrikeCount = db.Column(db.Integer, default=0) 
+    StrikeCount = db.Column(db.Integer, default=0)
     PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
 
 class SearchLog(db.Model):
@@ -179,7 +176,7 @@ class PharmacyVisibilityLog(db.Model):
     __tablename__ = 'pharmacy_visibility_log'
     LogID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     PharmacyID = db.Column(db.Integer, db.ForeignKey('pharmacy.PharmacyID'), nullable=False)
-    Action = db.Column(db.String(50)) 
+    Action = db.Column(db.String(50))
     MedicineName = db.Column(db.String(150), nullable=True)
     CreatedAt = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -279,11 +276,10 @@ def register_pharmacy():
             ContactNumber=data.get('contactNumber'),
             FullAddress=data.get('address'),
             GoogleMapLink=data.get('mapLink'),
-            LogoPhotoPath=data.get('storePhoto'), 
-            FDALicense=data.get('fdaLicense'),        
+            FDALicense=data.get('fdaLicense'),        # UPDATED Mapping
             PermitPhotoPath=data.get('permitPhoto'), 
-            PRC_ID=data.get('prcIdEncoded'),          
-            OperatingDays=data.get('operatingDays'),  
+            PRC_ID=data.get('prcIdEncoded'),          # UPDATED Mapping
+            OperatingDays=data.get('operatingDays'),  # UPDATED Mapping
             OpenTime=data.get('openTime'),
             CloseTime=data.get('closeTime'),
             BarangayID=barangay.BarangayID,
@@ -299,24 +295,6 @@ def register_pharmacy():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'A database error occurred.'}), 500
-
-@app.route('/api/admin/register', methods=['POST'])
-def register_admin():
-    data = request.json
-    email = data.get('email')
-    
-    if Admin.query.filter_by(Email=email).first():
-        return jsonify({'error': 'Admin email already exists'}), 400
-        
-    hashed_password = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
-    try:
-        new_admin = Admin(Email=email, PasswordHash=hashed_password, IsApproved=False)
-        db.session.add(new_admin)
-        db.session.commit()
-        return jsonify({'message': 'Admin registration submitted! Awaiting Super Admin approval.'}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': 'Registration failed.'}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -343,7 +321,7 @@ def login():
     elif role == 'admin':
         admin = Admin.query.filter_by(Email=email).first()
         if admin and bcrypt.check_password_hash(admin.PasswordHash, password):
-            if not getattr(admin, 'IsApproved', True): 
+            if not getattr(admin, 'IsApproved', True): # Guard check
                 return jsonify({'error': 'Your admin account is pending approval.'}), 403
             return jsonify({'message': 'Admin login successful', 'id': admin.AdminID, 'role': 'admin'}), 200
 
@@ -399,16 +377,7 @@ def update_pharmacy():
 def get_medicines(pharm_id):
     try:
         medicines = Medicine.query.filter_by(PharmacyID=pharm_id).all()
-        results = [{
-            'id': med.MedicineID, 
-            'name': med.MedicineName, 
-            'genericName': med.GenericName,
-            'brandName': med.BrandName,
-            'dosage': med.Dosage,
-            'category': med.Description, 
-            'price': str(med.Price), 
-            'status': 'In Stock' if med.InStock else 'Out of Stock'
-        } for med in medicines]
+        results = [{'id': med.MedicineID, 'name': med.MedicineName, 'category': med.Description, 'price': str(med.Price), 'status': 'In Stock' if med.InStock else 'Out of Stock'} for med in medicines]
         return jsonify(results), 200
     except Exception as e:
         return jsonify({'error': 'Failed to load inventory'}), 500
@@ -418,19 +387,8 @@ def add_medicine():
     data = request.json
     pharm_id = data.get('pharmacyId')
     try:
-        gen_name = data.get('genericName', '')
-        brand_name = data.get('brandName', '')
-        dosage = data.get('dosage', '')
-        
-        # Determine the fallback main name logic
-        item_name = brand_name if brand_name else gen_name
-        final_name = data.get('name', item_name)
-
         new_med = Medicine(
-            MedicineName=final_name,
-            GenericName=gen_name,
-            BrandName=brand_name,
-            Dosage=dosage,
+            MedicineName=data.get('name'),
             Price=data.get('price'),
             Description=data.get('category'),
             InStock=True if data.get('status') == 'In Stock' else False,
@@ -442,53 +400,14 @@ def add_medicine():
         if status:
             if status.IsDeactivated:
                 status.IsDeactivated = False
-                status.StrikeCount = 0 
-            status.LastStockUpdate = datetime.utcnow()
-
-        db.session.commit()
-        return jsonify({'message': f"Successfully added!"}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': 'Failed to add medicine.'}), 500
-
-@app.route('/api/medicines/batch', methods=['POST'])
-def add_medicine_batch():
-    data = request.json
-    pharm_id = data.get('pharmacyId')
-    items = data.get('items', [])
-    try:
-        for item in items:
-            gen_name = item.get('genericName', '')
-            brand_name = item.get('brandName', '')
-            dosage = item.get('dosage', '')
-            
-            item_name = brand_name if brand_name else gen_name
-            final_name = item.get('name', item_name)
-            
-            new_med = Medicine(
-                MedicineName=final_name,
-                GenericName=gen_name,
-                BrandName=brand_name,
-                Dosage=dosage,
-                Price=item.get('price', 0),
-                Description=item.get('category', 'Over the Counter (OTC)'),
-                InStock=True if item.get('status') == 'In Stock' else False,
-                PharmacyID=pharm_id
-            )
-            db.session.add(new_med)
-
-        status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
-        if status:
-            if status.IsDeactivated:
-                status.IsDeactivated = False
                 status.StrikeCount = 0
             status.LastStockUpdate = datetime.utcnow()
 
         db.session.commit()
-        return jsonify({'message': f"Added {len(items)} items."}), 201
+        return jsonify({'message': f"{data.get('name')} added successfully and Account standing updated!"}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Failed to process batch upload.'}), 500
+        return jsonify({'error': 'Failed to add medicine.'}), 500
 
 @app.route('/api/medicines/<int:med_id>/status', methods=['PUT'])
 def update_med_status(med_id):
@@ -555,13 +474,7 @@ def search_medicine():
             .join(Pharmacy, Medicine.PharmacyID == Pharmacy.PharmacyID)\
             .join(Barangay, Pharmacy.BarangayID == Barangay.BarangayID)\
             .join(PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID)\
-            .filter(
-                db.or_(
-                    Medicine.MedicineName.ilike(f"%{medicine_query}%"),
-                    Medicine.GenericName.ilike(f"%{medicine_query}%"),
-                    Medicine.BrandName.ilike(f"%{medicine_query}%")
-                )
-            )\
+            .filter(Medicine.MedicineName.ilike(f"%{medicine_query}%"))\
             .filter(Medicine.InStock == True)
 
         query = query.filter(PharmacyStatus.IsDeactivated == False)
@@ -577,9 +490,7 @@ def search_medicine():
                 'pharmacyId': pharm.PharmacyID,
                 'pharmacyName': pharm.PharmacyName,
                 'branch': brgy.BarangayName,
-                'item': med.MedicineName,
-                'genericName': med.GenericName,
-                'dosage': med.Dosage,
+                'medicine': med.MedicineName,
                 'price': str(med.Price),
                 'address': pharm.FullAddress,
                 'inStock': med.InStock,
@@ -587,11 +498,10 @@ def search_medicine():
                 'storeImage': pharm.LogoPhotoPath,
                 'openTime': pharm.OpenTime,
                 'closeTime': pharm.CloseTime,
-                'contactNumber': pharm.ContactNumber,
-                'permitPhoto': pharm.PermitPhotoPath
+                'contactNumber': pharm.ContactNumber
             })
             
-            # LOG VISIBILITY FOR ANALYTICS
+            # LOG VISIBILITY FOR ANALYTICS (Appeared in Search)
             try:
                 vis_log = PharmacyVisibilityLog(PharmacyID=pharm.PharmacyID, Action='Appeared', MedicineName=med.MedicineName)
                 db.session.add(vis_log)
@@ -647,7 +557,7 @@ def report_pharmacy_stock():
                         send_async_email(account.Email, subject, body)
                     elif medicine.StrikeCount >= 10:
                         medicine.InStock = False
-                        medicine.StrikeCount = 0 
+                        medicine.StrikeCount = 0
                         subject = 'Oath of Care - Medicine Auto-Disabled'
                         body = f'Notice: "{medicine.MedicineName}" has received 10 out-of-stock reports and was automatically marked as OUT OF STOCK to protect the reliability of the network.'
                         send_async_email(account.Email, subject, body)
@@ -729,9 +639,11 @@ def get_pharmacy_analytics(pharm_id):
         print("Analytics Error:", e)
         return jsonify({'error': 'Failed to load analytics'}), 500
 
+
 # ==========================================
 # ADMIN ENDPOINTS (UPDATED & IMPLEMENTED)
 # ==========================================
+
 @app.route('/api/admin/stats', methods=['GET'])
 def get_admin_stats():
     filter_date = request.args.get('filter', 'all')
@@ -776,6 +688,7 @@ def get_admin_stats():
                 'isDeactivated': getattr(status, 'IsDeactivated', False)
             })
 
+        # Display descending order of flags
         accuracy_data.sort(key=lambda x: x['strikes'], reverse=True)
 
         return jsonify({
@@ -813,10 +726,9 @@ def get_pending_applications():
                 'operatingDays': getattr(p, 'OperatingDays', 'Not specified'),
                 'openTime': p.OpenTime,
                 'closeTime': p.CloseTime,
-                'fdaLicense': getattr(p, 'FDALicense', None),
+                'fdaLicense': getattr(p, 'FDALicense', p.LogoPhotoPath),
                 'permitPhoto': p.PermitPhotoPath,
-                'storePhoto': p.LogoPhotoPath,
-                'prcId': getattr(p, 'PRC_ID', None)
+                'prcId': getattr(p, 'PRC_ID', 'Hidden for security')
             })
 
         pending_admins = []
@@ -830,7 +742,7 @@ def get_pending_applications():
                     'email': a.Email
                 })
         except Exception:
-            pass 
+            pass # Fallback in case Auto-Patcher has not been completed
 
         return jsonify({
             'pharmacies': pharm_results,
@@ -845,7 +757,7 @@ def resolve_application():
     data = request.json
     app_id = data.get('id')
     app_type = data.get('type')
-    action = data.get('action')
+    action = data.get('action') # 'approve' or 'reject'
 
     try:
         if app_type == 'pharmacy':
@@ -891,7 +803,7 @@ def toggle_pharmacy():
         if status:
             status.IsDeactivated = not status.IsDeactivated
             if status.IsDeactivated:
-                status.StrikeCount = 0 
+                status.StrikeCount = 0 # Cleaning the slate during active deactivation
             db.session.commit()
             return jsonify({'message': 'Pharmacy status toggled'}), 200
         return jsonify({'error': 'Not found'}), 404
@@ -899,8 +811,29 @@ def toggle_pharmacy():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/admin/register', methods=['POST'])
+def register_admin():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+
+    if Admin.query.filter_by(Email=email).first():
+        return jsonify({'error': 'Email is already registered'}), 400
+
+    hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
+    try:
+        # Default IsApproved to false requiring manual approval from DB or SuperAdmin
+        new_admin = Admin(Email=email, PasswordHash=hashed_pw, IsApproved=False)
+        db.session.add(new_admin)
+        db.session.commit()
+        return jsonify({'message': 'Admin registration submitted for approval.'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Database error'}), 500
+
 def run_auto_deletion_check():
     try:
+        # DELETE FOR 3 MONTHS (90 days) OF DEACTIVATION
         three_months_ago = datetime.utcnow() - timedelta(days=90)
         abandoned_pharmacies = PharmacyStatus.query.filter(
             PharmacyStatus.IsDeactivated == True,
@@ -927,6 +860,7 @@ with app.app_context():
     db.create_all()
     
     # === DATABASE AUTO-PATCHER ===
+    # Safely adds new columns and tables if they don't exist yet protecting production db
     try:
         db.session.execute(text('ALTER TABLE pharmacy_status ADD COLUMN "StrikeCount" INTEGER DEFAULT 0;'))
         db.session.commit()
@@ -947,6 +881,7 @@ with app.app_context():
         db.session.commit()
     except Exception: db.session.rollback()
     
+    # === NEW AUTO-PATCHERS FOR UI UPDATES ===
     try:
         db.session.execute(text('ALTER TABLE admin ADD COLUMN "IsApproved" BOOLEAN DEFAULT FALSE;'))
         db.session.commit()
@@ -967,22 +902,8 @@ with app.app_context():
         db.session.commit()
     except Exception: db.session.rollback()
 
-    try:
-        db.session.execute(text('ALTER TABLE medicine ADD COLUMN "GenericName" VARCHAR(150);'))
-        db.session.commit()
-    except Exception: db.session.rollback()
-
-    try:
-        db.session.execute(text('ALTER TABLE medicine ADD COLUMN "BrandName" VARCHAR(150);'))
-        db.session.commit()
-    except Exception: db.session.rollback()
-
-    try:
-        db.session.execute(text('ALTER TABLE medicine ADD COLUMN "Dosage" VARCHAR(50);'))
-        db.session.commit()
-    except Exception: db.session.rollback()
-
     # === MASTER ADMIN OVERRIDE ===
+    # Prevents the original creator from being locked out by the new approval system
     try:
         master_admin = Admin.query.filter_by(Email='oathofcare@gmail.com').first()
         if master_admin and not master_admin.IsApproved:
