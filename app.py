@@ -22,7 +22,9 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 # ==========================================
 # DATABASE CONFIGURATION
 # ==========================================
-db_url = os.environ.get('DATABASE_URL', 'postgresql://neondb_owner:npg_aG9UQpT6Nswf@ep-wild-resonance-a1xpry7g-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require')
+db_url = os.environ.get('DATABASE_URL')
+if not db_url:
+    raise RuntimeError('DATABASE_URL is required')
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
@@ -333,17 +335,7 @@ def login():
 
 @app.route('/api/reset-password', methods=['POST'])
 def reset_password():
-    data = request.json
-    email = data.get('email')
-    user = ClientAccount.query.filter_by(Email=email).first()
-    if not user:
-        user = PharmacyAccount.query.filter_by(Email=email).first()
-    if not user:
-        return jsonify({'error': 'Account not found.'}), 404
-        
-    user.PasswordHash = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
-    db.session.commit()
-    return jsonify({'message': 'Password has been successfully reset.'}), 200
+    return jsonify({'error': 'Temporarily unavailable'}), 503
 
 # ==========================================
 # PHARMACY INVENTORY & EDIT ENDPOINTS
@@ -738,112 +730,15 @@ def get_admin_stats():
 
 @app.route('/api/admin/pending', methods=['GET'])
 def get_pending_applications():
-    try:
-        pending_pharms = db.session.query(Pharmacy, PharmacyAccount, Barangay)\
-            .join(PharmacyAccount, Pharmacy.PharmacyAccountID == PharmacyAccount.PharmacyAccountID)\
-            .join(Barangay, Pharmacy.BarangayID == Barangay.BarangayID)\
-            .join(PharmacyStatus, Pharmacy.PharmacyID == PharmacyStatus.PharmacyID)\
-            .filter(PharmacyStatus.AccountStatus == 'Pending').all()
-
-        pharm_results = []
-        for p, acc, b in pending_pharms:
-            pharm_results.append({
-                'type': 'pharmacy',
-                'id': p.PharmacyID,
-                'name': p.PharmacyName,
-                'email': acc.Email,
-                'contact': p.ContactNumber,
-                'branch': b.BarangayName,
-                'address': p.FullAddress,
-                'mapLink': p.GoogleMapLink,
-                'operatingDays': getattr(p, 'OperatingDays', 'Not specified'),
-                'openTime': p.OpenTime,
-                'closeTime': p.CloseTime,
-                'storePhoto': p.LogoPhotoPath, 
-                'fdaLicense': getattr(p, 'FDALicense', ''),
-                'permitPhoto': p.PermitPhotoPath,
-                'prcId': getattr(p, 'PRC_ID', '')
-            })
-
-        pending_admins = []
-        try:
-            admins = Admin.query.filter(Admin.IsApproved == False).all()
-            for a in admins:
-                pending_admins.append({
-                    'type': 'admin',
-                    'id': a.AdminID,
-                    'name': 'System Administrator',
-                    'email': a.Email
-                })
-        except Exception:
-            pass
-
-        return jsonify({
-            'pharmacies': pharm_results,
-            'admins': pending_admins
-        }), 200
-    except Exception as e:
-        print("Pending Error:", e)
-        return jsonify({'error': str(e)}), 500
+    return jsonify({'error': 'Temporarily unavailable'}), 503
 
 @app.route('/api/admin/resolve', methods=['POST'])
 def resolve_application():
-    data = request.json
-    app_id = data.get('id')
-    app_type = data.get('type')
-    action = data.get('action') 
-
-    try:
-        if app_type == 'pharmacy':
-            status = PharmacyStatus.query.filter_by(PharmacyID=app_id).first()
-            pharmacy = Pharmacy.query.get(app_id)
-            if status and pharmacy:
-                account = PharmacyAccount.query.get(pharmacy.PharmacyAccountID)
-                if action == 'approve':
-                    status.AccountStatus = 'Approved'
-                    db.session.commit()
-                    send_async_email(account.Email, "Oath of Care - Application Approved", "Your pharmacy application has been approved. You can now log in and manage your inventory.")
-                elif action == 'reject':
-                    db.session.delete(status)
-                    db.session.delete(pharmacy)
-                    db.session.delete(account)
-                    db.session.commit()
-                    send_async_email(account.Email, "Oath of Care - Application Rejected", "Unfortunately, your pharmacy application was rejected during review.")
-
-        elif app_type == 'admin':
-            admin = Admin.query.get(app_id)
-            if admin:
-                if action == 'approve':
-                    admin.IsApproved = True
-                    db.session.commit()
-                    send_async_email(admin.Email, "Oath of Care - Admin Access Granted", "Your admin access has been approved and you can now log in.")
-                elif action == 'reject':
-                    db.session.delete(admin)
-                    db.session.commit()
-                    send_async_email(admin.Email, "Oath of Care - Admin Access Denied", "Your request for admin access has been denied.")
-
-        return jsonify({'message': f'Successfully {action}d'}), 200
-    except Exception as e:
-        db.session.rollback()
-        print("Resolve Error:", e)
-        return jsonify({'error': str(e)}), 500
+    return jsonify({'error': 'Temporarily unavailable'}), 503
 
 @app.route('/api/admin/toggle-pharmacy', methods=['POST'])
 def toggle_pharmacy():
-    data = request.json
-    pharm_id = data.get('pharmacyId')
-    try:
-        status = PharmacyStatus.query.filter_by(PharmacyID=pharm_id).first()
-        if status:
-            status.IsDeactivated = not status.IsDeactivated
-            if status.IsDeactivated:
-                status.StrikeCount = 0 
-            db.session.commit()
-            return jsonify({'message': 'Pharmacy status toggled'}), 200
-        return jsonify({'error': 'Not found'}), 404
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+    return jsonify({'error': 'Temporarily unavailable'}), 503
 
 @app.route('/api/admin/register', methods=['POST'])
 def register_admin():
@@ -944,33 +839,6 @@ with app.app_context():
         db.session.execute(text('ALTER TABLE medicine ADD COLUMN "Dosage" VARCHAR(50);'))
         db.session.commit()
     except Exception: db.session.rollback()
-
-    # === MASTER ADMIN OVERRIDE ===
-    try:
-        master_admin = Admin.query.filter_by(Email='oathofcare@gmail.com').first()
-        
-        # FIX: Check if master_admin is None. If it is None, create it.
-        if not master_admin:
-            print("⚠️ Master Admin not found. Creating default admin account...")
-            hashed_pw = bcrypt.generate_password_hash('OathAdmin123!').decode('utf-8')
-            new_master = Admin(
-                Email='oathofcare@gmail.com',
-                PasswordHash=hashed_pw,
-                IsApproved=True,
-                IsFirstLogin=False
-            )
-            db.session.add(new_master)
-            db.session.commit()
-            print("✅ Master Admin created successfully: oathofcare@gmail.com / OathAdmin123!")
-            
-        elif not master_admin.IsApproved:
-            master_admin.IsApproved = True
-            db.session.commit()
-            print("✅ Master Admin 'oathofcare@gmail.com' has been auto-approved.")
-            
-    except Exception as e:
-        print("❌ Failed to setup Master Admin:", e)
-        db.session.rollback()
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
